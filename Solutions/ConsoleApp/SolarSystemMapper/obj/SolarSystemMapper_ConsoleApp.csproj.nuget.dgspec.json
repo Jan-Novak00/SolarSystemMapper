@@ -1,0 +1,211 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj",
+        "projectName": "EphemerisData",
+        "projectPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj",
+        "packagesPath": "C:\\Users\\njan3\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\njan3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj",
+        "projectName": "NASAHorizonsDataFetch",
+        "projectPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj",
+        "packagesPath": "C:\\Users\\njan3\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\NASAHorizonsDataFetch\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\njan3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj": {
+                "projectPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj",
+        "projectName": "SolarSystemMapper_ConsoleApp",
+        "projectPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj",
+        "packagesPath": "C:\\Users\\njan3\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\SolarSystemMapper\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\njan3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj": {
+                "projectPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj"
+              },
+              "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj": {
+                "projectPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
