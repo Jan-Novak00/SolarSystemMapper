@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uVeccZvyLkkSz/ZRTUQNVnFnlaSkZsCzZlEXWkYHLRj6ljKD2FNUAhCwhGlV42+7/Mi3++5kmB21wKwqAntOAg==",
+  "dgSpecHash": "XJ5q5uMaWoWr4kuqFvfzeB1ycMvHNxCdPjdNQK6JG6Ur6o/7R+tvkPx+e3PiOIrOa/aYuYNI8Jgo9XurHHNC3w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj",
+  "projectFilePath": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\EphemerisData.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj",
+      "projectUniqueName": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\EphemerisData.csproj",
       "projectName": "EphemerisData",
-      "projectPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\EphemerisData.csproj",
+      "projectPath": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\EphemerisData.csproj",
       "packagesPath": "C:\\Users\\njan3\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\EphemerisData\\obj\\",
+      "outputPath": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

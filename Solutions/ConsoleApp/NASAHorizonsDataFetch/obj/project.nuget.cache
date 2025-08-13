@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kmh6IYYIiDy0z6Q8c6aKmLwvZgMKsGKVRZ/YBThVlN/y3c+/6rrKU2+3QiavGbZSneCDbHRvMOVUrlT2s9yNZg==",
+  "dgSpecHash": "Tgw+TgrkGUQQo0RM2om8egyCMUXAWYPD5FTbwtSP2pjLWdjPVjGdIUDtx+gZZVtT8K9+hnbJDaXqb8PWokyN7w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj",
+  "projectFilePath": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

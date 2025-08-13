@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EimnYw/ILIwJUlbBN0Dt+C6bJXNr2bH0eaSy1J/gbf+dpJ5aPjKXN1ilNragobOEeK+fi4lT/M1q0bka4arkPw==",
+  "dgSpecHash": "4p+nqIrZMQym7GugxtE5zuOCSJrQVidaCdSNzvrxCK8DYH+gpJVyhbZmfMtg0AlUFzpaldyPnPYKff8Wj/34pQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\njan3\\source\\repos\\SolarSystemMapper\\Solutions\\SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj",
+  "projectFilePath": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
