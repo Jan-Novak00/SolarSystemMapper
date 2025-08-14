@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarSystemMapper_ConsoleAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NASAHorizonsDataFetch", "NASAHorizonsDataFetch\NASAHorizonsDataFetch.csproj", "{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EphemerisData", "EphemerisData\EphemerisData.csproj", "{594724C2-F49F-44A3-94CC-4B263AC6A5BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EphemerisData", "EphemerisData\EphemerisData.csproj", "{594724C2-F49F-44A3-94CC-4B263AC6A5BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolarMapperUI", "SolarMapperUI\SolarMapperUI.csproj", "{D2DCD657-75E2-4F7D-88FB-75CC693E6930}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{594724C2-F49F-44A3-94CC-4B263AC6A5BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{594724C2-F49F-44A3-94CC-4B263AC6A5BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{594724C2-F49F-44A3-94CC-4B263AC6A5BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2DCD657-75E2-4F7D-88FB-75CC693E6930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2DCD657-75E2-4F7D-88FB-75CC693E6930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2DCD657-75E2-4F7D-88FB-75CC693E6930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2DCD657-75E2-4F7D-88FB-75CC693E6930}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

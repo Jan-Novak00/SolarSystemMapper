@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NASAHorizonsDataFetch")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4cd33c6ea4f65dd21b41f0fa3081730bc5c82171")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2b7c40ca1556db96642b0be0c9c98fd47d434779")]
 [assembly: System.Reflection.AssemblyProductAttribute("NASAHorizonsDataFetch")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NASAHorizonsDataFetch")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

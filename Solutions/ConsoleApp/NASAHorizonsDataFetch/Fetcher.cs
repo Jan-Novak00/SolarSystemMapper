@@ -38,20 +38,21 @@ namespace SolarSystemMapper
 
             using var client = new HttpClient();
             string center = (Mode == MapMode.NightSky) ? "399" : "@10";
+            string ephemType = (Mode == MapMode.NightSky) ? "OBSERVER" : "VECTOR";
             var query = new string[]
             {
                 "format=text",
                 $"COMMAND='{objectCode}'",
-                "EPHEM_TYPE=OBSERVER",
+                $"EPHEM_TYPE={ephemType}",
                 $"CENTER='{center}'",
                 $"SITE_COORD='{this._observerLatitude},{this._observerLongitude},0'",
                 $"START_TIME='{this._startDate.ToString("yyyy-MM-dd")}'",
-                $"STOP_TIME='{this._startDate.ToString("yyyy-MM-dd")}'",
+                $"STOP_TIME='{this._endDate.ToString("yyyy-MM-dd")}'",
                 "STEP_SIZE='1 d'",
                 "QUANTITIES='1,3,4'"
             };
 
-            var url = NASAHorizonsURL + string.Join("&", query);
+            var url = NASAHorizonsURL + "?" + string.Join("&", query);
             return await client.GetStringAsync(url);
 
 

@@ -4,32 +4,26 @@
     {
         static void Main(string[] args)
         {
-            string data = GetHorizonsData().GetAwaiter().GetResult();
-            Console.WriteLine(data);
-            HorizonsVectorResponseReader reader = new HorizonsVectorResponseReader(data, "Mars", 500);
-            Console.WriteLine(reader.Read().ToString());
+            var data = GetHorizonsData().GetAwaiter().GetResult();
+            foreach (var item in data) Console.WriteLine(item);
+
+            var I = (data.ToList<IEphemerisData<IEphemerisTableRow>>()[0]);
+            var J = (EphemerisVectorData)I;
+            Console.WriteLine("Here it comes...");
+            var value = J.ephemerisTable.ToList<EphemerisVectorData.EphemerisTableRowVector>()[0].X;
+            Console.WriteLine(value.Value);
         }
-        static async Task<string> GetHorizonsData()
+        static async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> GetHorizonsData()
         {
-            using var client = new HttpClient();
-
-            var baseUrl = "https://ssd.jpl.nasa.gov/api/horizons.api";
-            var query = new[]
+            var objects = new List<ObjectEntry>()
             {
-            "format=text",
-            "COMMAND='499'", // Mars
-            "EPHEM_TYPE=VECTOR",
-            "CENTER='500@399'", // pozorovatel: Země
-            "SITE_COORD='0,0,0'", // volitelně GPS
-            "START_TIME='2000-07-08'",
-            "STOP_TIME='2000-07-12'",
-            "STEP_SIZE='1 d'",
-            "QUANTITIES='1,3,4'"
+                new ObjectEntry("Mercury",199,"Planet"),
+                new ObjectEntry("Venus",299, "Planet"),
+                new ObjectEntry("Earth",399,"Planet")
             };
-
-            var url = baseUrl + "?" + string.Join("&", query);
-            var response = await client.GetStringAsync(url);
-            return response;
+            var fetcher = new NASAHorizonsDataFetcher(NASAHorizonsDataFetcher.MapMode.SolarSystem, objects, DateTime.Today, DateTime.Today.AddDays(3));
+            var result = await fetcher.Fetch();
+            return result;
         }
 
     }
