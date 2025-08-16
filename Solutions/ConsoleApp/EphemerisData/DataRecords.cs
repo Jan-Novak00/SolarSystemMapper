@@ -37,7 +37,7 @@ namespace SolarSystemMapper
 
     public record ObjectData(string Name, int Code, double Radius_km = double.NaN, double Density_gpcm3 = double.NaN, double Mass_kg = double.NaN, 
         double RotationPeriod_hr = double.NaN, double EquatorialGravity_mps2 = double.NaN,
-        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN, double OrbitalSpeed_kmps = double.NaN);
+        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN, double OrbitalSpeed_kmps = double.NaN, string Type = "");
 
     public interface IEphemerisData<out TRow> where TRow : IEphemerisTableRow
     {
@@ -92,41 +92,42 @@ namespace SolarSystemMapper
 
     }
 
+    public record EphemerisTableRowVector(DateTime? date, double? X, double? Y, double? Z, double? VX, double? VY, double? VZ, double? LightTime, double? Range, double? RangeRate) : IEphemerisTableRow
+    {
+        public static EphemerisTableRowVector stringToRow(string data)
+        {
+            var dateMatch = Regex.Match(data, @"A\.D\.\s+(\d{4}-[A-Za-z]{3}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d+)");
+
+            string? dateString = (dateMatch.Success) ? dateMatch.Groups[1].Value : null;
+            DateTime? parsedDate = (dateString != null) ? DateTime.ParseExact(dateString, "yyyy-MMM-dd HH:mm:ss.ffff", CultureInfo.InvariantCulture) : null;
+
+            // 2. Parsování číselných hodnot
+            double? x = GetDouble(data, @"X\s*=\s*([-+Ee\d\.]+)");
+            double? y = GetDouble(data, @"Y\s*=\s*([-+Ee\d\.]+)");
+            double? z = GetDouble(data, @"Z\s*=\s*([-+Ee\d\.]+)");
+            double? vx = GetDouble(data, @"VX\s*=\s*([-+Ee\d\.]+)");
+            double? vy = GetDouble(data, @"VY\s*=\s*([-+Ee\d\.]+)");
+            double? vz = GetDouble(data, @"VZ\s*=\s*([-+Ee\d\.]+)");
+            double? lt = GetDouble(data, @"LT\s*=\s*([-+Ee\d\.]+)");
+            double? rg = GetDouble(data, @"RG\s*=\s*([-+Ee\d\.]+)");
+            double? rr = GetDouble(data, @"RR\s*=\s*([-+Ee\d\.]+)");
+
+            return new EphemerisTableRowVector(parsedDate, x, y, z, vx, vy, vz, lt, rg, rr);
+        }
+
+        private static double? GetDouble(string input, string pattern)
+        {
+            var match = Regex.Match(input, pattern);
+            if (!match.Success) return null;
+            return double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
+        }
+
+
+    }
     public record EphemerisVectorData(IEnumerable<EphemerisTableRowVector> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowVector>
     {
 
-        public record EphemerisTableRowVector(DateTime? date, double? X, double? Y, double? Z, double? VX, double? VY, double? VZ, double? LightTime, double? Range, double? RangeRate) : IEphemerisTableRow
-        {
-            public static EphemerisTableRowVector stringToRow(string data)
-            {
-                var dateMatch = Regex.Match(data, @"A\.D\.\s+(\d{4}-[A-Za-z]{3}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d+)");
 
-                string? dateString = (dateMatch.Success) ? dateMatch.Groups[1].Value : null;
-                DateTime? parsedDate = (dateString != null) ? DateTime.ParseExact(dateString, "yyyy-MMM-dd HH:mm:ss.ffff", CultureInfo.InvariantCulture) : null;
-
-                // 2. Parsování číselných hodnot
-                double? x = GetDouble(data, @"X\s*=\s*([-+Ee\d\.]+)");
-                double? y = GetDouble(data, @"Y\s*=\s*([-+Ee\d\.]+)");
-                double? z = GetDouble(data, @"Z\s*=\s*([-+Ee\d\.]+)");
-                double? vx = GetDouble(data, @"VX\s*=\s*([-+Ee\d\.]+)");
-                double? vy = GetDouble(data, @"VY\s*=\s*([-+Ee\d\.]+)");
-                double? vz = GetDouble(data, @"VZ\s*=\s*([-+Ee\d\.]+)");
-                double? lt = GetDouble(data, @"LT\s*=\s*([-+Ee\d\.]+)");
-                double? rg = GetDouble(data, @"RG\s*=\s*([-+Ee\d\.]+)");
-                double? rr = GetDouble(data, @"RR\s*=\s*([-+Ee\d\.]+)");
-
-                return new EphemerisTableRowVector(parsedDate, x, y, z, vx, vy, vz, lt, rg, rr);
-            }
-
-            private static double? GetDouble(string input, string pattern)
-            {
-                var match = Regex.Match(input, pattern);
-                if (!match.Success) return null;
-                return double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
-            }
-
-
-        }
         public override string ToString()
         {
             var builder = new StringBuilder();

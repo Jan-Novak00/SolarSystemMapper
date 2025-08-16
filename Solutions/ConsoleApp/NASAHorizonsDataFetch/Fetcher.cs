@@ -70,8 +70,8 @@ namespace SolarSystemMapper
                 var code = _objectsToFetch[i].Code;
 
                 IHorizonsResponseReader<TData> dataReader = (Mode == MapMode.NightSky)
-                                                            ? (IHorizonsResponseReader<TData>)new HorizonsObserverResponseReader(answer, name, code)
-                                                            : (IHorizonsResponseReader<TData>)new HorizonsVectorResponseReader(answer, name, code);
+                                                            ? (IHorizonsResponseReader<TData>)new HorizonsObserverResponseReader(answer, name, _objectsToFetch[i].Type, code)
+                                                            : (IHorizonsResponseReader<TData>)new HorizonsVectorResponseReader(answer, name, _objectsToFetch[i].Type, code);
 
                 result.Add(dataReader.Read());
             }

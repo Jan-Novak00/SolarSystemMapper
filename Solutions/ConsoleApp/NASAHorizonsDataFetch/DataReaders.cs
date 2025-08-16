@@ -21,6 +21,7 @@ namespace SolarSystemMapper
     {
         protected string? _data { get; set; }
         protected string _objectName { get; set; } = "";
+        protected string _objectType { get; set; } = "";
         protected int _objectCode { get; set; }
         protected const string _StartOfTableRegex = @".*\$\$SOE.*";
         protected const string _EndOfTableRegex = @".*\$\$EOE.*";
@@ -96,11 +97,12 @@ namespace SolarSystemMapper
     public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
     {
 
-        public HorizonsObserverResponseReader(string data, string objectName, int objectCode)
+        public HorizonsObserverResponseReader(string data, string objectName, string objectType, int objectCode)
         {
             this._data = data ?? throw new ArgumentNullException(nameof(data));
             this._objectName = objectName;
             this._objectCode = objectCode;
+            this._objectType = objectType;
         }
 
         public EphemerisObserverData Read()
@@ -148,11 +150,12 @@ namespace SolarSystemMapper
     {
         
 
-        public HorizonsVectorResponseReader(string data, string objectName, int objectCode)
+        public HorizonsVectorResponseReader(string data, string objectName, string objectType, int objectCode)
         {
             this._data = data;
             this._objectName = objectName;
             this._objectCode = objectCode;
+            this._objectType = objectType;
         }
 
         public EphemerisVectorData Read() //prozkoumat
