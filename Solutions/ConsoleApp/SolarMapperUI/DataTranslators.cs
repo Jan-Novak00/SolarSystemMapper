@@ -37,6 +37,41 @@ namespace SolarMapperUI
             PixelInfos = pixelInfo;
         }
 
+        public string BodyReport(DateTime date)
+        {
+            var strBuilder = new StringBuilder();
+            strBuilder.Append(BodyData.ToString());
+
+            if (this.BodyData is EphemerisVectorData data)
+            {
+
+                double x = 0; double y = 0; double z = 0;
+                double vx = 0; double vy = 0; double vz = 0;
+                foreach (var row in data.ephemerisTable)
+                {
+                    if (!row.date.HasValue) continue;
+                    if (row.date.Value.Date == date.Date)
+                    {
+                        x = row.X ?? 0;
+                        y = row.Y ?? 0;
+                        z = row.Z ?? 0;
+                        vx = row.VX ?? 0;
+                        vy = row.VY ?? 0;
+                        vz = row.VZ ?? 0;
+                        break;
+                    }
+
+                }
+                strBuilder.Append($"Current distance from the Sun: {Math.Sqrt(x*x+y*y+z*z)} km    Current speed (relative to the Sun): {Math.Sqrt(vx*vx+vy*vy+vz*vz)} km/s");   
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            return strBuilder.ToString();
+        }
+
     }
 
     internal static class Translation
@@ -82,7 +117,7 @@ namespace SolarMapperUI
                 case "Dwarf Planet":
                     return 8;
                 default:
-                    return 4;
+                    return 8;
             }
         }
 
@@ -91,11 +126,12 @@ namespace SolarMapperUI
             throw new NotImplementedException();
         }
 
-        internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowVector row, Point center, float scale_Km)
+        internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowVector row, Point center, float scale_Km, string bodyType, string bodyName)
         {
+            int diameter = _getDiameter(bodyType);
             Point pixelCoordiantes = _KmToPixels(row.X, row.Y, scale_Km);
-            Point finalCoordinates = new Point(pixelCoordiantes.X + center.X, pixelCoordiantes.Y+center.Y);
-            return new PixelBodyInfo(finalCoordinates, center, false, 0, Color.White);
+            Point finalCoordinates = new Point(pixelCoordiantes.X + center.X - diameter/2, pixelCoordiantes.Y+center.Y - diameter / 2);
+            return new PixelBodyInfo(finalCoordinates, center, false, diameter, _getColor(bodyName));
         }
 
         internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,float scale_Km,int mapRadius)
@@ -126,10 +162,8 @@ namespace SolarMapperUI
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
             foreach (var row in vectorData.ephemerisTable)
             {
-                var pixelBodyInfo = row.ToPixelBodyInfo(center, scale_Km);
+                var pixelBodyInfo = row.ToPixelBodyInfo(center, scale_Km, vectorData.objectData.Type, vectorData.objectData.Name);
                 pixelBodyInfo.Visible = !((pixelBodyInfo.BodyCoordinates.X > mapWidth) || (pixelBodyInfo.BodyCoordinates.X < 0) || (pixelBodyInfo.BodyCoordinates.Y > mapHeight) || (pixelBodyInfo.BodyCoordinates.Y < 0));
-                pixelBodyInfo.Diameter = _getDiameter(vectorData.objectData.Type);
-                pixelBodyInfo.Color = _getColor(vectorData.objectData.Name);
                 pixelBodyInfos.Add(pixelBodyInfo);
             }
 

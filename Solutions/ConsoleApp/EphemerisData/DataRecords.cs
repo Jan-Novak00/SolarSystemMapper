@@ -37,7 +37,20 @@ namespace SolarSystemMapper
 
     public record ObjectData(string Name, int Code, double Radius_km = double.NaN, double Density_gpcm3 = double.NaN, double Mass_kg = double.NaN, 
         double RotationPeriod_hr = double.NaN, double EquatorialGravity_mps2 = double.NaN,
-        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN, double OrbitalSpeed_kmps = double.NaN, string Type = "");
+        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN, double OrbitalSpeed_kmps = double.NaN, string Type = "")
+    {
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append($"Object name: {Name.ToUpper()}    Object type: {Type}\n");
+            stringBuilder.Append($"Radius: {Radius_km} km    Mass: {Mass_kg} kg\n");
+            stringBuilder.Append($"Density: {Density_gpcm3} g/(cm^3)    Gravity: {EquatorialGravity_mps2} m/(s^2)\n");
+            stringBuilder.Append($"Surface temperature: {Temperature_K - 273.15} °C    Surface pressure: {Pressure_bar*0.98693267} atm hPa\n");
+            stringBuilder.Append($"Rotation period: {RotationPeriod_hr} h\n");
+            stringBuilder.Append($"Orbital period: {OrbitalPeriod_y} year    Orbital speed: {OrbitalSpeed_kmps} km/s\n");
+            return stringBuilder.ToString();
+        }
+    }
 
     public interface IEphemerisData<out TRow> where TRow : IEphemerisTableRow
     {
@@ -92,7 +105,7 @@ namespace SolarSystemMapper
 
     }
 
-    public record EphemerisTableRowVector(DateTime? date, double? X, double? Y, double? Z, double? VX, double? VY, double? VZ, double? LightTime, double? Range, double? RangeRate) : IEphemerisTableRow
+    public record EphemerisTableRowVector(DateTime? date = null, double? X = null, double? Y = null, double? Z = null, double? VX = null, double? VY = null, double? VZ = null, double? LightTime = null, double? Range = null, double? RangeRate = null) : IEphemerisTableRow
     {
         public static EphemerisTableRowVector stringToRow(string data)
         {
@@ -130,14 +143,7 @@ namespace SolarSystemMapper
 
         public override string ToString()
         {
-            var builder = new StringBuilder();
-            builder.AppendLine(objectData.ToString());
-            builder.AppendLine("*****************************************************************************************");
-            builder.AppendLine("SOE");
-            builder.AppendLine(this.ephemerisTable.Count().ToString());
-            foreach (var row in this.ephemerisTable) builder.AppendLine(row.ToString());
-            builder.AppendLine("EOE");
-            return builder.ToString();
+            return objectData.ToString();
         }
     }
 }
