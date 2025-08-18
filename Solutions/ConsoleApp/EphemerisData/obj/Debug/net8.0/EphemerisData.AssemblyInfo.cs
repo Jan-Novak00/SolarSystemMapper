@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EphemerisData")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5f09657ac437eb4d7cc5d790da32cef5eb49cb3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+04f70e82c3437f75665e285aca86865a1f5dc4d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("EphemerisData")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EphemerisData")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
