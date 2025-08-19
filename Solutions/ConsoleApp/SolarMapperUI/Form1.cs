@@ -7,6 +7,19 @@ namespace SolarMapperUI
     public partial class SolarMapperUI : Form
     {
 
+        private List<EphemerisObserverData> testData = new List<EphemerisObserverData>()
+    {
+        new EphemerisObserverData(new List<EphemerisTableRowObserver>()
+        {
+            new EphemerisTableRowObserver(DateTime.Today, null, null, null, null, 0, 30)
+        },
+         new ObjectData("Sun", 10, 500000, 3, double.PositiveInfinity, 1, 50, 3000, 0, 0, 0, "Star")
+        )
+
+    };
+
+
+
         private MapPanel _mapPanel;
 
         private enum MapType
@@ -26,7 +39,7 @@ namespace SolarMapperUI
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
             // Vytvoøení panelu, který vyplní celé okno
-            _mapPanel = (mapType == MapType.SolarSystem) ? new SolarSystemMapPanel() : new NightSkyMapPanel();
+            _mapPanel = (mapType == MapType.SolarSystem) ? new SolarSystemMapPanel() : new NightSkyMapPanel(testData);
             //_mapPanel.Paint += DrawPanel_Paint; // pøipojení události Paint
             this.Controls.Add(_mapPanel);
             this.Load += this.SolarSystemMap_Load;

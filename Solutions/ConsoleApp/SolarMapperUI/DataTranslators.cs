@@ -64,10 +64,32 @@ namespace SolarMapperUI
                 }
                 strBuilder.Append($"Current distance from the Sun: {Math.Sqrt(x*x+y*y+z*z)} km    Current speed (relative to the Sun): {Math.Sqrt(vx*vx+vy*vy+vz*vz)} km/s");   
             }
-            else
+            else if (this.BodyData is EphemerisObserverData odata)
             {
-                throw new NotImplementedException();
+                double rad = 0;
+                double dec = 0;
+                double azi = 0;
+                double elev = 0;
+                foreach (var row in odata.ephemerisTable)
+                {
+                    if (!row.date.HasValue) continue;
+                    if (row.date.Value.Date == date.Date)
+                    {
+                        
+                        rad = (!(row.RA is null)) ? row.RA[0] + row.RA[1] / 60 + row.RA[2] / 3600 : double.NaN;
+                        dec = (!(row.DEC is null)) ? row.DEC[0] + row.DEC[1] / 60 + row.DEC[2] / 3600 : double.NaN;
+                        azi = row.Azi ?? double.NaN;
+                        elev = row.Elev ?? double.NaN;
+
+                        break;
+                    }
+
+                }
+                strBuilder.AppendLine($"Right Ascention: {rad} h    Declination: {dec}°");
+                strBuilder.AppendLine($"Azimuth: {azi}°    Elevation: {elev}°");
+
             }
+            
 
             return strBuilder.ToString();
         }
@@ -121,9 +143,14 @@ namespace SolarMapperUI
             }
         }
 
-        internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowObserver row, Point center, float scale_Km)
+        internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowObserver row, Point center, int mapRadius, string bodyType, string bodyName)
         {
-            throw new NotImplementedException();
+            
+            Point pixelCoordinates = _degreesToPixels(row.Azi ?? 0, row.Elev ?? double.NegativeInfinity, mapRadius);
+            int diameter = _getDiameter(bodyType);
+            Point finalCoordinates = new Point(center.X + pixelCoordinates.X - diameter/2, center.Y + pixelCoordinates.Y - diameter/2);
+            return new PixelBodyInfo(finalCoordinates, center, row.Elev >= 0, diameter, _getColor(bodyName));
+
         }
 
         internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowVector row, Point center, float scale_Km, string bodyType, string bodyName)
@@ -134,13 +161,13 @@ namespace SolarMapperUI
             return new PixelBodyInfo(finalCoordinates, center, false, diameter, _getColor(bodyName));
         }
 
-        internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,float scale_Km,int mapRadius)
+        internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,int mapRadius)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
 
             foreach (var row in observerData.ephemerisTable)
             {
-                var pixelBodyInfo = row.ToPixelBodyInfo(center, scale_Km);
+                var pixelBodyInfo = row.ToPixelBodyInfo(center, mapRadius, observerData.objectData.Type, observerData.objectData.Name);
 
                 int dx = pixelBodyInfo.BodyCoordinates.X - center.X;
                 int dy = pixelBodyInfo.BodyCoordinates.Y - center.Y;
@@ -174,6 +201,22 @@ namespace SolarMapperUI
             int xPx = (!(xKm is null)) ? (int)(xKm / scale_Km) : int.MinValue;
             int yPx = (!(yKm is null)) ? (int)(yKm / scale_Km) : int.MinValue;
             return new Point(xPx, yPx);
+        }
+
+        public static Point _degreesToPixels(double azimuthDeg, double elevationDeg, double mapRadius)
+        {
+            // převod na radiány
+            double az = azimuthDeg * Math.PI / 180.0;
+            double el = elevationDeg * Math.PI / 180.0;
+
+            // vzdálenost od středu (zenitu) – čím menší elevace, tím dál od středu
+            double r = (Math.PI / 2.0 - el) / (Math.PI / 2.0) * mapRadius;
+
+            // souřadnice
+            double x = r * Math.Sin(az);
+            double y = - r * Math.Cos(az);
+
+            return new Point((int)x, (int)y);
         }
     }
 

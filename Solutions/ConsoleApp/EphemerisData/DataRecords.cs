@@ -93,13 +93,7 @@ namespace SolarSystemMapper
     {
         public override string ToString()
         {
-            var builder = new StringBuilder();
-            builder.AppendLine(objectData.ToString());
-            builder.AppendLine("*****************************************************************************************");
-            builder.AppendLine("SOE");
-            foreach (var row in this.ephemerisTable) builder.AppendLine(row.ToString());
-            builder.AppendLine("EOE");
-            return builder.ToString();
+            return objectData.ToString();
         }
         
 
