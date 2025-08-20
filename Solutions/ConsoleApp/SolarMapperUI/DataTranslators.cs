@@ -11,13 +11,14 @@ namespace SolarMapperUI
 {
     internal class PixelBodyInfo
     { 
-        public PixelBodyInfo(Point bodyCoordinates, Point centerCoordinates, bool visible, int diameter, Color color)
+        public PixelBodyInfo(Point bodyCoordinates, Point centerCoordinates, bool visible, int diameter, Color color, bool showName)
         {
             BodyCoordinates = bodyCoordinates;
             CenterCoordinates = centerCoordinates;
             Visible = visible;
             Diameter = diameter;
             Color = color;
+            ShowName = showName;
         }
 
         public Point BodyCoordinates { get; }
@@ -25,6 +26,7 @@ namespace SolarMapperUI
         public bool Visible { get; set; }
         public int Diameter { get; set; }
         public Color Color { get; set; }
+        public bool ShowName { get; set; }
     }
     internal class FormBody<TData> where TData : IEphemerisData<IEphemerisTableRow>
     {
@@ -149,7 +151,7 @@ namespace SolarMapperUI
             Point pixelCoordinates = _degreesToPixels(row.Azi ?? 0, row.Elev ?? double.NegativeInfinity, mapRadius);
             int diameter = _getDiameter(bodyType);
             Point finalCoordinates = new Point(center.X + pixelCoordinates.X - diameter/2, center.Y + pixelCoordinates.Y - diameter/2);
-            return new PixelBodyInfo(finalCoordinates, center, row.Elev >= 0, diameter, _getColor(bodyName));
+            return new PixelBodyInfo(finalCoordinates, center, row.Elev >= 0, diameter, _getColor(bodyName), bodyType == "Planet" || bodyType == "Star");
 
         }
 
@@ -158,7 +160,7 @@ namespace SolarMapperUI
             int diameter = _getDiameter(bodyType);
             Point pixelCoordiantes = _KmToPixels(row.X, row.Y, scale_Km);
             Point finalCoordinates = new Point(pixelCoordiantes.X + center.X - diameter/2, pixelCoordiantes.Y+center.Y - diameter / 2);
-            return new PixelBodyInfo(finalCoordinates, center, false, diameter, _getColor(bodyName));
+            return new PixelBodyInfo(finalCoordinates, center, false, diameter, _getColor(bodyName), bodyType == "Planet" || bodyType == "Star");
         }
 
         internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,int mapRadius)
@@ -196,6 +198,9 @@ namespace SolarMapperUI
 
             return new FormBody<EphemerisVectorData>(vectorData, pixelBodyInfos);
         }
+
+
+
         private static Point _KmToPixels(double? xKm, double? yKm, float scale_Km)
         {
             int xPx = (!(xKm is null)) ? (int)(xKm / scale_Km) : int.MinValue;

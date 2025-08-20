@@ -10,13 +10,11 @@ using System.Xml.Linq;
 
 namespace SolarMapperUI
 {
-    internal class NightSkyMapPanel : MapPanel
+    internal class NightSkyMapPanel : MapPanel<EphemerisObserverData>
     {
-        private List<EphemerisObserverData> _originalData;
+        
 
-        private List<FormBody<EphemerisObserverData>> _data;
-
-        private List<FormBody<EphemerisObserverData>> _prepareBodyData(List<EphemerisObserverData> data)
+        protected override List<FormBody<EphemerisObserverData>> _prepareBodyData(List<EphemerisObserverData> data)
         {
             List<FormBody<EphemerisObserverData>> result = new List<FormBody<EphemerisObserverData>>();
             Point center = new Point(this.DisplayRectangle.Width / 2, this.Height / 2);
@@ -39,6 +37,8 @@ namespace SolarMapperUI
 
         public NightSkyMapPanel(List<EphemerisObserverData> Data)
         {
+            this._pictureIndex = 0;
+            this._currentPictureDate = Data[0].ephemerisTable[this._pictureIndex].date.Value;
             this._originalData = Data;
             this._data = null;
             this.BackColor = Color.DarkBlue;
@@ -49,7 +49,7 @@ namespace SolarMapperUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            SetData();
+            this.BeginInvoke(new Action(() => SetData()));
         }
 
         protected override void InitializeHandlers()
@@ -93,22 +93,19 @@ namespace SolarMapperUI
 
         protected override void PrintObjects(object sender, PaintEventArgs e)
         {
-            foreach (var formBody in _data)
+            foreach (var formBody in this._data)
             {
-                var showName = formBody.BodyData.objectData.Type == "Planet" || formBody.BodyData.objectData.Type == "Star";
-                if (formBody.PixelInfos[0].Visible) drawFormBody(formBody.PixelInfos, e, (showName) ? formBody.BodyData.objectData.Name : null);
-                Debug.WriteLine(formBody.PixelInfos[0].BodyCoordinates);
-                Debug.WriteLine((int)Math.Min((this.Width * 0.8), (this.Height * 0.8)));
+                if (formBody.PixelInfos[this._pictureIndex].Visible) drawFormBody(formBody.PixelInfos[this._pictureIndex], e, (formBody.PixelInfos[this._pictureIndex].ShowName) ? formBody.BodyData.objectData.Name : null);
             }
         }
         protected override void BodyClick(object sender, MouseEventArgs e)
         {
             foreach (var formBody in _data)
             {
-                var centerX = formBody.PixelInfos[0].BodyCoordinates.X + formBody.PixelInfos[0].Diameter / 2;
-                var centerY = formBody.PixelInfos[0].BodyCoordinates.Y + formBody.PixelInfos[0].Diameter / 2;
+                var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
+                var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < formBody.PixelInfos[0].Diameter / 2) ShowBodyReport(formBody.BodyReport(DateTime.Today));
+                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2) ShowBodyReport(formBody.BodyReport(formBody.BodyData.ephemerisTable[this._pictureIndex].date.Value));
             }
         }
     }

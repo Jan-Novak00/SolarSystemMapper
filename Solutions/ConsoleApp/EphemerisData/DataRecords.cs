@@ -11,6 +11,7 @@ namespace SolarSystemMapper
 
     public interface IEphemerisTableRow
     {
+        public DateTime? date { get; }
         static TRow stringToRow<TRow>(string data) where TRow : IEphemerisTableRow
         {
             throw new NotImplementedException();
@@ -54,7 +55,7 @@ namespace SolarSystemMapper
 
     public interface IEphemerisData<out TRow> where TRow : IEphemerisTableRow
     {
-        public IEnumerable<TRow> ephemerisTable { get; }
+        public IReadOnlyList<TRow> ephemerisTable { get; }
         public ObjectData objectData { get; }
     }
 
@@ -89,7 +90,7 @@ namespace SolarSystemMapper
 
 
     }
-    public record EphemerisObserverData(IEnumerable<EphemerisTableRowObserver> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowObserver>
+    public record EphemerisObserverData(IReadOnlyList<EphemerisTableRowObserver> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowObserver>
     {
         public override string ToString()
         {
@@ -131,7 +132,7 @@ namespace SolarSystemMapper
 
 
     }
-    public record EphemerisVectorData(IEnumerable<EphemerisTableRowVector> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowVector>
+    public record EphemerisVectorData(IReadOnlyList<EphemerisTableRowVector> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowVector>
     {
 
 

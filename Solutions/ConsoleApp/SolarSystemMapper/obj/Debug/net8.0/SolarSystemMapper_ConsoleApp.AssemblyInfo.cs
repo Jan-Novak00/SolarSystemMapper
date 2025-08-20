@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SolarSystemMapper_ConsoleApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+42a6d5b1713d4e10b9dd8d87ab7447fb91ec82c9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d10017fbb8fb4c8565c1aedf0939e0829b6ba8d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SolarSystemMapper_ConsoleApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SolarSystemMapper_ConsoleApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

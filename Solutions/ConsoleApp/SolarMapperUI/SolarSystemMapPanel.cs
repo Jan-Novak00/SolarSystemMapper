@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace SolarMapperUI
 {
-    internal class SolarSystemMapPanel : MapPanel
+    internal class SolarSystemMapPanel : MapPanel<EphemerisVectorData>
     {
         private List<EphemerisVectorData> testData;
+
+
+        protected override List<FormBody<EphemerisVectorData>> _prepareBodyData(List<EphemerisVectorData> data)
+        {
+            throw new NotImplementedException();
+        }
+
         public SolarSystemMapPanel()
         {
             testData = new List<EphemerisVectorData>()
@@ -37,8 +44,7 @@ namespace SolarMapperUI
             {
                 Point center = new Point(this.DisplayRectangle.Width / 2, this.Height / 2);
                 var formBody = data.ToFormBody(center, 1000_000, this.Height, this.Width);
-                var showName = formBody.BodyData.objectData.Type == "Planet" || formBody.BodyData.objectData.Type == "Star";
-                if (formBody.PixelInfos[0].Visible) drawFormBody(formBody.PixelInfos, e, (showName) ? formBody.BodyData.objectData.Name : null);
+                if (formBody.PixelInfos[0].Visible) drawFormBody(formBody.PixelInfos[this._pictureIndex], e, (formBody.PixelInfos[0].ShowName) ? formBody.BodyData.objectData.Name : null);
             }
         }
 
@@ -54,7 +60,7 @@ namespace SolarMapperUI
                 var centerX = formBody.PixelInfos[0].BodyCoordinates.X + formBody.PixelInfos[0].Diameter / 2;
                 var centerY = formBody.PixelInfos[0].BodyCoordinates.Y + formBody.PixelInfos[0].Diameter / 2;
                 var distance = System.Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < formBody.PixelInfos[0].Diameter / 2) ShowBodyReport(formBody.BodyReport(DateTime.Today));
+                if (distance < formBody.PixelInfos[0].Diameter / 2) ShowBodyReport(formBody.BodyReport(formBody.BodyData.ephemerisTable[this._pictureIndex].date.Value));
             }
 
         }
