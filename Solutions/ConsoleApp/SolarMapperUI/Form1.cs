@@ -1,5 +1,7 @@
 using SolarSystemMapper;
+using System.Data;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace SolarMapperUI
@@ -22,14 +24,14 @@ namespace SolarMapperUI
 
 
 
-        private NightSkyMapPanel _mapPanel;
+        private Panel _mapPanel;
 
         private enum MapType
         {
             NightSky, SolarSystem
         }
 
-        private MapType mapType = MapType.NightSky;
+        private MapType mapType = MapType.SolarSystem;
 
         public SolarMapperUI()
         {
@@ -41,7 +43,9 @@ namespace SolarMapperUI
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
             // Vytvoøení panelu, který vyplní celé okno
-            _mapPanel =  new NightSkyMapPanel(testData);
+            var entries = new HashSet<ObjectEntry>(DataTables.Planets);
+            entries.UnionWith(DataTables.Stars);
+            _mapPanel =  (this.mapType == MapType.NightSky) ? new NightSkyMapPanel(entries.ToList(),DateTime.Today) : new SolarSystemMapPanel(entries.ToList(), DateTime.Today);
             //_mapPanel.Paint += DrawPanel_Paint; // pøipojení události Paint
             this.Controls.Add(_mapPanel);
             this.Load += this.SolarSystemMap_Load;
@@ -109,7 +113,10 @@ namespace SolarMapperUI
             btn.Text = ">>";
             btn.AutoSize = true;
             btn.Location = new Point(10, 10);
-            btn.Click += (s, e) => _mapPanel.AdvanceMap();
+            if (_mapPanel is IMap map) 
+            { 
+                btn.Click += (s, e) => map.AdvanceMap();
+            }
             overlayForm.Controls.Add(btn);
 
             // pozice overlay nad MapPanel

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SolarMapperUI
 {
@@ -34,22 +35,40 @@ namespace SolarMapperUI
             _data = _prepareBodyData(_originalData);
         }
 
-
-        public NightSkyMapPanel(List<EphemerisObserverData> Data)
+        protected override async Task<IReadOnlyList<EphemerisObserverData>> GetHorizonsData(List<ObjectEntry> objects)
         {
+            var fetcher = new NASAHorizonsDataFetcher(NASAHorizonsDataFetcher.MapMode.NightSky, objects, this._currentPictureDate, this._currentPictureDate.AddDays(30));
+            var result = await fetcher.Fetch();
+            return result.Cast<EphemerisObserverData>().ToList().AsReadOnly();
+        }
+
+
+
+        public NightSkyMapPanel(List<ObjectEntry> objects, DateTime mapStartDate)
+        {
+            this.objects = objects;
             this._pictureIndex = 0;
-            this._currentPictureDate = Data[0].ephemerisTable[this._pictureIndex].date.Value;
-            this._originalData = Data;
+            this._currentPictureDate = mapStartDate;
+            this._originalData = null;
             this._data = null;
             this.BackColor = Color.DarkBlue;
             this.Paint += PrintObjects;
             
         }
 
+        private async Task InitializeDataAsync()
+        {
+            _originalData = (await GetHorizonsData(objects)).ToList();
+            SetData();
+            
+            this.Invalidate();
+        }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            this.BeginInvoke(new Action(() => SetData()));
+            //this.BeginInvoke(new Action(() => SetData()));
+            _ = InitializeDataAsync();
         }
 
         protected override void InitializeHandlers()
@@ -91,22 +110,6 @@ namespace SolarMapperUI
         }
 
 
-        protected override void PrintObjects(object sender, PaintEventArgs e)
-        {
-            foreach (var formBody in this._data)
-            {
-                if (formBody.PixelInfos[this._pictureIndex].Visible) drawFormBody(formBody.PixelInfos[this._pictureIndex], e, (formBody.PixelInfos[this._pictureIndex].ShowName) ? formBody.BodyData.objectData.Name : null);
-            }
-        }
-        protected override void BodyClick(object sender, MouseEventArgs e)
-        {
-            foreach (var formBody in _data)
-            {
-                var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
-                var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
-                var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2) ShowBodyReport(formBody.BodyReport(formBody.BodyData.ephemerisTable[this._pictureIndex].date.Value));
-            }
-        }
+       
     }
 }

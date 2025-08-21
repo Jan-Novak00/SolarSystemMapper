@@ -9,14 +9,28 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SolarMapperUI
 {
-    internal abstract class MapPanel<TData> : Panel where TData : IEphemerisData<IEphemerisTableRow>
+
+    internal interface IMap
+    {
+        public void AdvanceMap();
+    }
+
+    internal abstract class MapPanel<TData> : Panel, IMap
+        where TData : IEphemerisData<IEphemerisTableRow>
     {
         protected List<TData> _originalData;
 
         protected List<FormBody<TData>> _data;
 
+        protected List<ObjectEntry> objects;
+
         protected int _pictureIndex { get; set; } = 0;
         protected DateTime _currentPictureDate { get; set; }
+
+
+        protected abstract Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects);
+
+
 
         protected MapPanel()
         {
@@ -46,8 +60,25 @@ namespace SolarMapperUI
         }
 
 
-        protected abstract void PrintObjects(object sender, PaintEventArgs e);
-        protected abstract void BodyClick(object sender, MouseEventArgs e);
+        protected virtual void PrintObjects(object sender, PaintEventArgs e)
+        {
+            if (_data == null) return;
+            foreach (var formBody in this._data)
+            {
+                if (formBody.PixelInfos[this._pictureIndex].Visible) drawFormBody(formBody.PixelInfos[this._pictureIndex], e, (formBody.PixelInfos[this._pictureIndex].ShowName) ? formBody.BodyData.objectData.Name : null);
+            }
+        }
+        protected virtual void BodyClick(object sender, MouseEventArgs e)
+        {
+            if (_data == null) return;
+            foreach (var formBody in _data)
+            {
+                var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
+                var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
+                var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
+                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2) ShowBodyReport(formBody.BodyReport(formBody.BodyData.ephemerisTable[this._pictureIndex].date.Value));
+            }
+        }
 
         protected virtual void drawFormBody(PixelBodyInfo pixelInfo, PaintEventArgs e, string? name)
         {

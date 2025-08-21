@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EphemerisData
+namespace SolarSystemMapper
 {
     public static class DataTables
     {
@@ -39,7 +39,7 @@ namespace EphemerisData
 
         public static readonly HashSet<ObjectEntry> ArtificialSatelites = new HashSet<ObjectEntry>
         {
-            new ObjectEntry("ISS", -125544, "ArtificialSatelites"),
+            //new ObjectEntry("ISS", -125544, "ArtificialSatelites"),
             new ObjectEntry("Mars Orbiter Mission", -3, "ArtificialSatelites"),
             new ObjectEntry("Hubble Space Telescope", -48, "ArtificialSatelites"),
             new ObjectEntry("James Webb Space Telescope", -170, "ArtificialSatelites")
@@ -81,7 +81,7 @@ namespace EphemerisData
         public static readonly HashSet<ObjectEntry> NightSkyMapSpecial = new HashSet<ObjectEntry>()
         {
             new ObjectEntry("Luna",301,"Moon"),
-            new ObjectEntry("ISS", -125544, "ArtificialSatelites"),
+            //new ObjectEntry("ISS", -125544, "ArtificialSatelites"),
             new ObjectEntry("Hubble Space Telescope", -48, "ArtificialSatelites"),
             new ObjectEntry("James Webb Space Telescope", -170, "ArtificialSatelites"),
 

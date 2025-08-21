@@ -1,6 +1,4 @@
-﻿using EphemerisData;
-
-namespace SolarSystemMapper
+﻿namespace SolarSystemMapper
 {
     internal class Program
     {
