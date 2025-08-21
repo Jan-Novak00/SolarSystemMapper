@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,6 +58,7 @@ namespace SolarSystemMapper
 
 
         }
+        [Obsolete]
         private IEnumerable<TData> _readData<TReader, TData>(string[] rawData)
             where TReader : IHorizonsResponseReader<TData>
             where TData : IEphemerisData<IEphemerisTableRow>
@@ -82,18 +84,61 @@ namespace SolarSystemMapper
         public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch()
         {
 
-            string[] answers = new string[_objectsToFetch.Count];
+            var answers = await _fetchAnswersWithLimit(2);
 
-            for (int i = 0; i < answers.Length; i++)
+            return (Mode == MapMode.NightSky)
+                ? _readDataParallel<HorizonsObserverResponseReader, EphemerisObserverData>(answers)
+                : _readDataParallel<HorizonsVectorResponseReader, EphemerisVectorData>(answers);
+
+        }
+        private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
+        {
+            using var semaphore = new SemaphoreSlim(maxParallelism);
+            var tasks = new Task<string>[_objectsToFetch.Count];
+
+            for (int i = 0; i < _objectsToFetch.Count; i++)
             {
-                answers[i] = await _askServerForData(_objectsToFetch[i].Code);
+                int idx = i; // nutné kvůli closure
+                tasks[idx] = Task.Run(async () =>
+                {
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                        string answer = await _askServerForData(_objectsToFetch[idx].Code);
+                        Debug.WriteLine(answer);
+                        Debug.WriteLine("------------------");
+                        return answer;
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
             }
 
+            return await Task.WhenAll(tasks);
+        }
 
-            return (Mode == MapMode.NightSky) ? _readData<HorizonsObserverResponseReader, EphemerisObserverData>(answers) :
-                                                _readData<HorizonsVectorResponseReader, EphemerisVectorData>(answers);
 
+        private IEnumerable<TData> _readDataParallel<TReader, TData>(string[] rawData)
+            where TReader : IHorizonsResponseReader<TData>
+            where TData : IEphemerisData<IEphemerisTableRow>
+        {
+            var results = new TData[rawData.Length];
 
+            Parallel.ForEach(
+                Enumerable.Range(0, rawData.Length),
+                i =>
+                {
+                    var obj = _objectsToFetch[i];
+                    IHorizonsResponseReader<TData> reader = (Mode == MapMode.NightSky)
+                                                            ? (IHorizonsResponseReader<TData>) new HorizonsObserverResponseReader(rawData[i], obj.Name, obj.Type, obj.Code)
+                                                            : (IHorizonsResponseReader<TData>) new HorizonsVectorResponseReader(rawData[i], obj.Name, obj.Type, obj.Code);
+
+                    results[i] = reader.Read();
+                });
+
+            return results;
         }
 
 
