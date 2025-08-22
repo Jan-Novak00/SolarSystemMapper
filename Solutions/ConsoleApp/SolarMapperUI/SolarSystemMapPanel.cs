@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static SolarSystemMapper.NASAHorizonsDataFetcher;
 
 namespace SolarMapperUI
 {
@@ -13,6 +14,7 @@ namespace SolarMapperUI
         private List<EphemerisVectorData> testData;
         private float scale_km = 1_000_000;
 
+        protected override NASAHorizonsDataFetcher.MapMode _mode { get; } = MapMode.SolarSystem;
 
         protected override List<FormBody<EphemerisVectorData>> _prepareBodyData(List<EphemerisVectorData> data)
         {
@@ -34,12 +36,7 @@ namespace SolarMapperUI
             _data = _prepareBodyData(_originalData);
         }
 
-        protected override async Task<IReadOnlyList<EphemerisVectorData>> GetHorizonsData(List<ObjectEntry> objects)
-        {
-            var fetcher = new NASAHorizonsDataFetcher(NASAHorizonsDataFetcher.MapMode.SolarSystem, objects, this._currentPictureDate, this._currentPictureDate.AddDays(30));
-            var result = await fetcher.Fetch();
-            return result.Cast<EphemerisVectorData>().ToList().AsReadOnly();
-        }
+        
 
 
 
@@ -48,7 +45,7 @@ namespace SolarMapperUI
             this.scale_km = scale_km;
             this.objects = objects;
             this._pictureIndex = 0;
-            this._currentPictureDate = mapStartDate;
+            this.CurrentPictureDate = mapStartDate;
             this._originalData = null;
             this._data = null;
             this.BackColor = Color.Black;

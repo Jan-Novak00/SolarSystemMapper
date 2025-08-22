@@ -13,6 +13,7 @@ namespace SolarMapperUI
     internal interface IMap
     {
         public void AdvanceMap();
+        public DateTime CurrentPictureDate { get; }
     }
 
     internal abstract class MapPanel<TData> : Panel, IMap
@@ -24,11 +25,18 @@ namespace SolarMapperUI
 
         protected List<ObjectEntry> objects;
 
+        protected virtual NASAHorizonsDataFetcher.MapMode _mode { get; }
+
         protected int _pictureIndex { get; set; } = 0;
-        protected DateTime _currentPictureDate { get; set; }
+        public DateTime CurrentPictureDate { get; protected set; }
 
 
-        protected abstract Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects);
+        protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
+        {
+            var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(365));
+            var result = await fetcher.Fetch();
+            return result.Cast<TData>().ToList().AsReadOnly();
+        }
 
 
 
@@ -55,7 +63,7 @@ namespace SolarMapperUI
         public virtual void AdvanceMap()
         {
             this._pictureIndex = (this._pictureIndex + 1 == _data[0].BodyData.ephemerisTable.Count()) ? 0 : this._pictureIndex + 1;
-            this._currentPictureDate = _data[0].BodyData.ephemerisTable[this._pictureIndex].date.Value;
+            this.CurrentPictureDate = _data[0].BodyData.ephemerisTable[this._pictureIndex].date.Value;
             this.Invalidate();
         }
 

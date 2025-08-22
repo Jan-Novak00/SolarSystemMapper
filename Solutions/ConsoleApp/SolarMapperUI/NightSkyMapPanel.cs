@@ -7,13 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static SolarSystemMapper.NASAHorizonsDataFetcher;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SolarMapperUI
 {
     internal class NightSkyMapPanel : MapPanel<EphemerisObserverData>
     {
-        
+
+        protected override  NASAHorizonsDataFetcher.MapMode _mode { get; } = MapMode.NightSky;
+
 
         protected override List<FormBody<EphemerisObserverData>> _prepareBodyData(List<EphemerisObserverData> data)
         {
@@ -35,12 +38,7 @@ namespace SolarMapperUI
             _data = _prepareBodyData(_originalData);
         }
 
-        protected override async Task<IReadOnlyList<EphemerisObserverData>> GetHorizonsData(List<ObjectEntry> objects)
-        {
-            var fetcher = new NASAHorizonsDataFetcher(NASAHorizonsDataFetcher.MapMode.NightSky, objects, this._currentPictureDate, this._currentPictureDate.AddDays(30));
-            var result = await fetcher.Fetch();
-            return result.Cast<EphemerisObserverData>().ToList().AsReadOnly();
-        }
+        
 
 
 
@@ -48,7 +46,7 @@ namespace SolarMapperUI
         {
             this.objects = objects;
             this._pictureIndex = 0;
-            this._currentPictureDate = mapStartDate;
+            this.CurrentPictureDate = mapStartDate;
             this._originalData = null;
             this._data = null;
             this.BackColor = Color.DarkBlue;

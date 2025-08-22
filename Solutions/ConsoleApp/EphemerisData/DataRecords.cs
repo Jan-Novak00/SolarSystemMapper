@@ -36,9 +36,9 @@ namespace SolarSystemMapper
         }
     }
 
-    public record ObjectData(string Name, int Code, double Radius_km = double.NaN, double Density_gpcm3 = double.NaN, double Mass_kg = double.NaN, 
+    public record ObjectData(string Name, int Code, string Type, double Radius_km = double.NaN, double Density_gpcm3 = double.NaN, double Mass_kg = double.NaN, 
         double RotationPeriod_hr = double.NaN, double EquatorialGravity_mps2 = double.NaN,
-        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN, double OrbitalSpeed_kmps = double.NaN, string Type = "")
+        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN, double OrbitalSpeed_kmps = double.NaN)
     {
         public override string ToString()
         {

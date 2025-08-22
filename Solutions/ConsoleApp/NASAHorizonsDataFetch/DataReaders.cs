@@ -79,6 +79,7 @@ namespace SolarSystemMapper
             }
             return new ObjectData(this._objectName,
                                   this._objectCode,
+                                  this._objectType,
                                   valueDict["radius"],
                                   valueDict["density"],
                                   valueDict["mass"],
