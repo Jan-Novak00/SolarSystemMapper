@@ -39,7 +39,7 @@ namespace SolarMapperUI
                 Visible = false,
             };
 
-    protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
+        protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
         protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
         {
             var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(10));

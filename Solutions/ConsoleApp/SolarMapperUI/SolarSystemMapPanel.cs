@@ -20,12 +20,15 @@ namespace SolarMapperUI
         {
             List<FormBody<EphemerisVectorData>> result = new List<FormBody<EphemerisVectorData>>();
             Point center = new Point(this.Width / 2, this.Height / 2);
-            Debug.Write($"Center: {center}");
-            foreach (var info in data)
+            object lockObj = new object();
+            Parallel.ForEach(data, info =>
             {
                 var formBody = info.ToFormBody(center, this.scale_km, this.Height, this.Width);
-                result.Add(formBody);
-            }
+                lock (lockObj)
+                {
+                    result.Add(formBody);
+                }
+            });
             return result;
 
 

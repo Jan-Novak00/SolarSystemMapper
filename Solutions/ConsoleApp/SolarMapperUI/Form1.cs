@@ -9,20 +9,6 @@ namespace SolarMapperUI
     public partial class SolarMapperUI : Form
     {
 
-        private List<EphemerisObserverData> testData = new List<EphemerisObserverData>()
-    {
-        new EphemerisObserverData(new List<EphemerisTableRowObserver>()
-        {
-            new EphemerisTableRowObserver(DateTime.Today, null, null, null, null, 90, 5),
-            new EphemerisTableRowObserver(DateTime.Today.AddDays(1), null, null, null, null, 0, 40),
-            new EphemerisTableRowObserver(DateTime.Today.AddDays(2), null, null, null, null, 20, 60)
-        },
-         new ObjectData("Sun", 10, "Star", 500000, 3, double.PositiveInfinity, 1, 50, 3000, 0, 0, 0)
-        )
-
-    };
-
-
 
         private Panel _mapPanel;
 
@@ -32,6 +18,8 @@ namespace SolarMapperUI
         }
 
         private MapType mapType = MapType.SolarSystem;
+
+        private ControlForm _controlForm;
 
         public SolarMapperUI()
         {
@@ -47,6 +35,10 @@ namespace SolarMapperUI
             entries.UnionWith(DataTables.Stars);
             _mapPanel =  (this.mapType == MapType.NightSky) ? new NightSkyMapPanel(entries.ToList(),DateTime.Today) : new SolarSystemMapPanel(entries.ToList(), DateTime.Today);
             //_mapPanel.Paint += DrawPanel_Paint; // pøipojení události Paint
+
+            if (_mapPanel is IMap map) _controlForm = new ControlForm(map);
+
+
             this.Controls.Add(_mapPanel);
             this.Load += this.SolarSystemMap_Load;
             this.KeyPreview = true; // pøeposílá klávesy na form
@@ -96,96 +88,104 @@ namespace SolarMapperUI
             this._showClosingMessage();
         }
 
-        protected void ShowFloatingControl()
-        {
-            if (_mapPanel is IMap map)
-            {
+        //protected void ShowFloatingControl()
+        //{
+        //    if (_mapPanel is IMap map)
+        //    {
 
 
-                var overlayForm = new Form();
-                overlayForm.Text = "Advance Control";
-                overlayForm.StartPosition = FormStartPosition.Manual;
-                overlayForm.BackColor = Color.Black;
-                overlayForm.ForeColor = Color.White;
-                overlayForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-                overlayForm.MaximizeBox = false;
-                overlayForm.MinimizeBox = false;
-                overlayForm.ShowInTaskbar = false;
-                overlayForm.AutoSize = true;
-                overlayForm.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        //        var overlayForm = new Form();
+        //        overlayForm.Text = "Advance Control";
+        //        overlayForm.StartPosition = FormStartPosition.Manual;
+        //        overlayForm.BackColor = Color.Black;
+        //        overlayForm.ForeColor = Color.White;
+        //        overlayForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+        //        overlayForm.MaximizeBox = false;
+        //        overlayForm.MinimizeBox = false;
+        //        overlayForm.ShowInTaskbar = false;
+        //        overlayForm.AutoSize = true;
+        //        overlayForm.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
-                var label = new Label();
-                label.AutoSize = true;
-                label.Location = new Point(10, 10);
-                label.ForeColor = Color.LimeGreen;
+        //        var label = new Label();
+        //        label.AutoSize = true;
+        //        label.Location = new Point(10, 10);
+        //        label.ForeColor = Color.LimeGreen;
 
-                label.Text = map.CurrentPictureDate.ToString();
+        //        label.Text = map.CurrentPictureDate.ToString();
 
-                overlayForm.Controls.Add(label);
+        //        overlayForm.Controls.Add(label);
 
-                // tlaèítko pro posun mapy
-                var oneStepButton = new System.Windows.Forms.Button();
-                oneStepButton.Text = ">>";
-                oneStepButton.AutoSize = true;
-                oneStepButton.Location = new Point(10, 40);
-                oneStepButton.Click += (s, e) =>
-                {
-                    map.AdvanceMap();
-                    label.Text = map.CurrentPictureDate.ToString();
-                };
-                overlayForm.Controls.Add(oneStepButton);
+        //        // tlaèítko pro posun mapy
+        //        var oneStepButton = new System.Windows.Forms.Button();
+        //        oneStepButton.Text = ">>";
+        //        oneStepButton.AutoSize = true;
+        //        oneStepButton.Location = new Point(10, 40);
+        //        oneStepButton.Click += (s, e) =>
+        //        {
+        //            map.AdvanceMap();
+        //            label.Text = map.CurrentPictureDate.ToString();
+        //        };
+        //        overlayForm.Controls.Add(oneStepButton);
 
-                System.Windows.Forms.Timer autoTimer = new System.Windows.Forms.Timer();
-                autoTimer.Interval = 500; 
-                bool timerRunning = false;
+        //        System.Windows.Forms.Timer autoTimer = new System.Windows.Forms.Timer();
+        //        autoTimer.Interval = 500; 
+        //        bool timerRunning = false;
 
-                var autoButton = new Button();
-                autoButton.Text = "Start";
-                autoButton.AutoSize = true;
-                autoButton.Location = new Point(10, 80); // vedle oneStepButton
-                autoButton.Click += (s, e) =>
-                {
-                    if (!timerRunning)
-                    {
-                        autoTimer.Tick += (ts, te) =>
-                        {
-                            map.AdvanceMap();
-                            label.Text = map.CurrentPictureDate.ToString();
-                        };
-                        autoTimer.Start();
-                        autoButton.Text = "Stop";
-                        timerRunning = true;
-                    }
-                    else
-                    {
-                        autoTimer.Stop();
-                        autoButton.Text = "Start";
-                        timerRunning = false;
-                        autoTimer.Tick -= null; // odpojit všechny Tick handlery
-                    }
-                };
-                overlayForm.Controls.Add(autoButton);
-
-
-
-                // pozice overlay nad MapPanel
-                var panelArea = this.ClientRectangle;
-                overlayForm.Location = this.PointToScreen(new Point(
-                    panelArea.Right - overlayForm.Width - 20,
-                    panelArea.Top + 20
-                ));
+        //        var autoButton = new Button();
+        //        autoButton.Text = "Start";
+        //        autoButton.AutoSize = true;
+        //        autoButton.Location = new Point(10, 80); // vedle oneStepButton
+        //        autoButton.Click += (s, e) =>
+        //        {
+        //            if (!timerRunning)
+        //            {
+        //                autoTimer.Tick += (ts, te) =>
+        //                {
+        //                    map.AdvanceMap();
+        //                    label.Text = map.CurrentPictureDate.ToString();
+        //                };
+        //                autoTimer.Start();
+        //                autoButton.Text = "Stop";
+        //                timerRunning = true;
+        //            }
+        //            else
+        //            {
+        //                autoTimer.Stop();
+        //                autoButton.Text = "Start";
+        //                timerRunning = false;
+        //                autoTimer.Tick -= null; // odpojit všechny Tick handlery
+        //            }
+        //        };
+        //        overlayForm.Controls.Add(autoButton);
 
 
-                // dùležité: okno se nesmí blokovat klikání mimo nìj
-                overlayForm.Show(this);
-            }
-        }
+
+        //        // pozice overlay nad MapPanel
+        //        var panelArea = this.ClientRectangle;
+        //        overlayForm.Location = this.PointToScreen(new Point(
+        //            panelArea.Right - overlayForm.Width - 20,
+        //            panelArea.Top + 20
+        //        ));
+
+
+               
+        //        overlayForm.Show(this);
+        //    }
+        //}
         private void SolarMapperUI_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Tab) // stisk Tab spustí overlay
             {
-                ShowFloatingControl();
-                
+                if (_controlForm != null)
+                {
+                    // pokud už byl skrytý, zobrazíme ho
+                    if (!_controlForm.Visible)
+                    {
+                        _controlForm.Show(this); // zobrazí nad hlavním formuláøem
+                    }
+                    _controlForm.BringToFront();
+                }
+
             }
         }
 

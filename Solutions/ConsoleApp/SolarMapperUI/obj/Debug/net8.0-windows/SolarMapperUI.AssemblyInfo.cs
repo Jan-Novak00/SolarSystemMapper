@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SolarMapperUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+22ba846c15cc5566ed9a59067507f03f7593fda5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dabe07d823939bf2eaabe5e18329fdbd1a7718fd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SolarMapperUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SolarMapperUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
