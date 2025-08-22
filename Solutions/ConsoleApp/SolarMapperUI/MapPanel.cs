@@ -31,21 +31,44 @@ namespace SolarMapperUI
         public DateTime CurrentPictureDate { get; protected set; }
 
 
+        private Label _loadingLabel = new Label
+            {
+                Text = "Loading...",
+                ForeColor = Color.LimeGreen,
+                AutoSize = true,
+                Visible = false,
+            };
+
+    protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
         protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
         {
-            var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(365));
+            var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(10));
             var result = await fetcher.Fetch();
             return result.Cast<TData>().ToList().AsReadOnly();
         }
+        private void SetData()
+        {
+            _data = _prepareBodyData(_originalData);
+        }
 
+        protected async Task SettingDataAsync()
+        {
+            _loadingLabel.Location = new Point(this.Width/2, this.Height/2);
+            _loadingLabel.Visible = true;
+            _originalData = (await GetHorizonsData(objects)).ToList();
+            SetData();
+            _loadingLabel.Visible = false;
+
+            this.Invalidate();
+        }
 
 
         protected MapPanel()
         {
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.Black;
+            this.Controls.Add(_loadingLabel);
 
-            
             this.InitializeHandlers();
 
             
@@ -58,13 +81,24 @@ namespace SolarMapperUI
             this.Paint += PrintObjects;
         }
 
-        protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
-
-        public virtual void AdvanceMap()
+        public virtual async void AdvanceMap()
         {
-            this._pictureIndex = (this._pictureIndex + 1 == _data[0].BodyData.ephemerisTable.Count()) ? 0 : this._pictureIndex + 1;
-            this.CurrentPictureDate = _data[0].BodyData.ephemerisTable[this._pictureIndex].date.Value;
+            if (this._data == null || this._data.Count == 0) return;
+
+            if (this._pictureIndex + 1 == _data[0].BodyData.ephemerisTable.Count)
+            {
+                this._data = null;
+                this._pictureIndex = 0;
+                this.CurrentPictureDate = this.CurrentPictureDate.AddDays(1);
+                await SettingDataAsync();
+            }
+            else
+            {
+                _pictureIndex++;
+                CurrentPictureDate = _data[0].BodyData.ephemerisTable[_pictureIndex].date.Value;
+            }
             this.Invalidate();
+
         }
 
 

@@ -31,15 +31,7 @@ namespace SolarMapperUI
 
         }
 
-        private void SetData()
-        {
-            _data = _prepareBodyData(_originalData);
-        }
-
-        
-
-
-
+       
         public SolarSystemMapPanel(List<ObjectEntry> objects, DateTime mapStartDate, float scale_km = 1_000_000)
         {
             this.scale_km = scale_km;
@@ -52,19 +44,13 @@ namespace SolarMapperUI
             this.Paint += PrintObjects;
 
         }
-        private async Task InitializeDataAsync()
-        {
-            _originalData = (await GetHorizonsData(objects)).ToList();
-            SetData();
-
-            this.Invalidate();
-        }
+        
 
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             //this.BeginInvoke(new Action(() => SetData()));
-            _ = InitializeDataAsync();
+            _ = SettingDataAsync();
         }
 
 
