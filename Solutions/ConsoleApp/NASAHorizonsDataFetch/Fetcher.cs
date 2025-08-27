@@ -98,7 +98,7 @@ namespace SolarSystemMapper
 
             for (int i = 0; i < _objectsToFetch.Count; i++)
             {
-                int idx = i; // nutné kvůli closure
+                int idx = i;
                 tasks[idx] = Task.Run(async () =>
                 {
                     await semaphore.WaitAsync();

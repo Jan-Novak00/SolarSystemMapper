@@ -52,7 +52,7 @@ namespace SolarMapperUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            //this.BeginInvoke(new Action(() => SetData()));
+            
             _ = SettingDataAsync();
         }
 

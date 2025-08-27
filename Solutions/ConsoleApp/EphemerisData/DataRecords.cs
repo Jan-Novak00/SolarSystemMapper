@@ -38,7 +38,7 @@ namespace SolarSystemMapper
 
     public record ObjectData(string Name, int Code, string Type, double Radius_km = double.NaN, double Density_gpcm3 = double.NaN, double Mass_kg = double.NaN, 
         double RotationPeriod_hr = double.NaN, double EquatorialGravity_mps2 = double.NaN,
-        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN, double OrbitalSpeed_kmps = double.NaN)
+        double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN)
     {
         public override string ToString()
         {
@@ -48,7 +48,7 @@ namespace SolarSystemMapper
             stringBuilder.Append($"Density: {Density_gpcm3} g/(cm^3)    Gravity: {EquatorialGravity_mps2} m/(s^2)\n");
             stringBuilder.Append($"Surface temperature: {Temperature_K - 273.15} °C    Surface pressure: {Pressure_bar*0.98693267} atm hPa\n");
             stringBuilder.Append($"Rotation period: {RotationPeriod_hr} h\n");
-            stringBuilder.Append($"Orbital period: {OrbitalPeriod_y} year    Orbital speed: {OrbitalSpeed_kmps} km/s\n");
+            stringBuilder.Append($"Orbital period: {OrbitalPeriod_y} year");
             return stringBuilder.ToString();
         }
     }
