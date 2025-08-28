@@ -17,7 +17,7 @@ namespace SolarMapperUI
             NightSky, SolarSystem
         }
 
-        private MapType mapType = MapType.SolarSystem;
+        private MapType mapType = MapType.NightSky;
 
         private ControlForm _controlForm;
 
@@ -31,11 +31,15 @@ namespace SolarMapperUI
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
             // Vytvoøení panelu, který vyplní celé okno
-            var entries = new HashSet<ObjectEntry>(DataTables.Planets);
-            entries.UnionWith(DataTables.Stars);
+            //var entries = new HashSet<ObjectEntry>(DataTables.Planets);
+            //entries.UnionWith(DataTables.Stars);
+            //entries.UnionWith(DataTables.DwarfPlanets);
+            //entries.UnionWith(DataTables.Spacecrafts);
             //entries.Add(new ObjectEntry("James Webb Space Telescope", -170, "ArtificialSatelites"));
             //entries.Add(new ObjectEntry("Europa", 502, "Moon"));
-            _mapPanel =  (this.mapType == MapType.NightSky) ? new NightSkyMapPanel(entries.ToList(),DateTime.Today) : new SolarSystemMapPanel(entries.ToList(), DateTime.Today);
+            var entries = new HashSet<ObjectEntry>() { new ObjectEntry("Earth", 399, "Planet"), new ObjectEntry("Luna", 301, "Moon")};
+            //var entries = new HashSet<ObjectEntry>() { new ObjectEntry("Jupiter", 599, "Planet"), new ObjectEntry("Europa", 502, "Moon") };
+            _mapPanel = new SateliteMap(entries.ToList(), DateTime.Today, NASAHorizonsDataFetcher.MapMode.EarthSatelites);//(this.mapType == MapType.NightSky) ? new NightSkyMapPanel(entries.Where(x => x.Name != "Earth").ToList(),DateTime.Today) : new SolarSystemMapPanel(entries.Where(x => x.Type != "Moon").ToList(), DateTime.Today);
             //_mapPanel.Paint += DrawPanel_Paint; // pøipojení události Paint
 
             if (_mapPanel is IMap map) _controlForm = new ControlForm(map);

@@ -15,7 +15,7 @@ namespace SolarMapperUI
     internal class NightSkyMapPanel : MapPanel<EphemerisObserverData>
     {
 
-        protected override  NASAHorizonsDataFetcher.MapMode _mode { get; } = MapMode.NightSky;
+        protected override  NASAHorizonsDataFetcher.MapMode _mode { get; init; } = MapMode.NightSky;
 
 
         protected override List<FormBody<EphemerisObserverData>> _prepareBodyData(List<EphemerisObserverData> data)

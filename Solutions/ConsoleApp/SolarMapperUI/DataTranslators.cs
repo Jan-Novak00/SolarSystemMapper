@@ -186,12 +186,14 @@ namespace SolarMapperUI
             return new FormBody<EphemerisObserverData>(observerData, pixelBodyInfos);
         }
 
-        internal static FormBody<EphemerisVectorData> ToFormBody(this EphemerisVectorData vectorData, Point center, float scale_Km, int mapHeight, int mapWidth)
+        internal static FormBody<EphemerisVectorData> ToFormBody(this EphemerisVectorData vectorData, Point center, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
             foreach (var row in vectorData.ephemerisTable)
             {
                 var pixelBodyInfo = row.ToPixelBodyInfo(center, scale_Km, vectorData.objectData.Type, vectorData.objectData.Name);
+                if (respectScale) pixelBodyInfo.Diameter = (int)(Math.Ceiling((vectorData.objectData.Radius_km == double.NaN) ? 0 : vectorData.objectData.Radius_km) / scale_Km);
+
                 pixelBodyInfo.Visible = !((pixelBodyInfo.BodyCoordinates.X > mapWidth) || (pixelBodyInfo.BodyCoordinates.X < 0) || (pixelBodyInfo.BodyCoordinates.Y > mapHeight) || (pixelBodyInfo.BodyCoordinates.Y < 0));
                 pixelBodyInfos.Add(pixelBodyInfo);
             }

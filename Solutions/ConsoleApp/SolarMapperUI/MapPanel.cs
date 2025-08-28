@@ -25,7 +25,7 @@ namespace SolarMapperUI
 
         protected List<ObjectEntry> objects;
 
-        protected virtual NASAHorizonsDataFetcher.MapMode _mode { get; }
+        protected virtual NASAHorizonsDataFetcher.MapMode _mode { get; init; }
 
         protected int _pictureIndex { get; set; } = 0;
         public DateTime CurrentPictureDate { get; protected set; }
@@ -40,11 +40,13 @@ namespace SolarMapperUI
             };
 
         protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
+
+        protected readonly int _numberOfDaysToPrefetch = 30;
         protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
         {
-            var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(10));
+            var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(this._numberOfDaysToPrefetch));
             var result = await fetcher.Fetch();
-            return result.Cast<TData>().ToList().AsReadOnly();
+            return result.Cast<TData>().Where(x => x.ephemerisTable.Count == this._numberOfDaysToPrefetch+1).ToList().AsReadOnly();
         }
         private void SetData()
         {
@@ -106,7 +108,8 @@ namespace SolarMapperUI
         {
             if (_data == null) return;
             foreach (var formBody in this._data)
-            {
+            {   
+                if (formBody.PixelInfos.Count == 0) continue;
                 if (formBody.PixelInfos[this._pictureIndex].Visible) drawFormBody(formBody.PixelInfos[this._pictureIndex], e, (formBody.PixelInfos[this._pictureIndex].ShowName) ? formBody.BodyData.objectData.Name : null);
             }
         }
@@ -115,10 +118,11 @@ namespace SolarMapperUI
             if (_data == null) return;
             foreach (var formBody in _data)
             {
+                
                 var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
                 var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2) ShowBodyReport(formBody.BodyReport(formBody.BodyData.ephemerisTable[this._pictureIndex].date.Value));
+                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5) ShowBodyReport(formBody.BodyReport(formBody.BodyData.ephemerisTable[this._pictureIndex].date.Value));
             }
         }
 
@@ -128,6 +132,7 @@ namespace SolarMapperUI
             var leftCornerX = pixelInfo.BodyCoordinates.X;
             var leftCornerY = pixelInfo.BodyCoordinates.Y;
             var diameter = pixelInfo.Diameter;
+            if (diameter < 4) diameter = 4;
             e.Graphics.FillEllipse(brush, leftCornerX, leftCornerY, diameter, diameter);
             var textSize = e.Graphics.MeasureString(name, DefaultFont);
             float textX = leftCornerX - textSize.Width / 2 + diameter / 2;

@@ -13,6 +13,9 @@
     <Compile Update="NightSkyMapPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="SateliteMap.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="SolarSystemMapPanel.cs">
       <SubType>Component</SubType>
     </Compile>

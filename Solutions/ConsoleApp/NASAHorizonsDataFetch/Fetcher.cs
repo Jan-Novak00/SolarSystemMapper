@@ -12,7 +12,14 @@ namespace SolarSystemMapper
         public enum MapMode
         {
             NightSky,
-            SolarSystem
+            SolarSystem,
+            EarthSatelites = 399,
+            MarsSatelites = 499,
+            JupiterSatelites = 599,
+            SaturnSatelites = 699,
+            UranusSatelites = 799,
+            NeptuneSatelites = 899,
+            PlutoSatelites = 999
         }
 
         public MapMode Mode { get; private set; }
@@ -38,7 +45,13 @@ namespace SolarSystemMapper
         {
 
             using var client = new HttpClient();
-            string center = (Mode == MapMode.NightSky) ? "399" : "@10";
+            string center = this.Mode switch
+            {
+                MapMode.NightSky => "399",
+                MapMode.SolarSystem => "@10",
+                _ => "@" + ((int)this.Mode).ToString(),
+            };
+
             string ephemType = (Mode == MapMode.NightSky) ? "OBSERVER" : "VECTOR";
             var query = new string[]
             {

@@ -11,10 +11,11 @@ namespace SolarMapperUI
 {
     internal class SolarSystemMapPanel : MapPanel<EphemerisVectorData>
     {
-        private List<EphemerisVectorData> testData;
-        private float scale_km = 1_000_000;
+        protected float scale_km { get; set; }
 
-        protected override NASAHorizonsDataFetcher.MapMode _mode { get; } = MapMode.SolarSystem;
+        protected override NASAHorizonsDataFetcher.MapMode _mode { get; init; } = MapMode.SolarSystem;
+
+        protected virtual bool _respectScaleForBodySize { get; } = false;
 
         protected override List<FormBody<EphemerisVectorData>> _prepareBodyData(List<EphemerisVectorData> data)
         {
@@ -23,7 +24,7 @@ namespace SolarMapperUI
             object lockObj = new object();
             Parallel.ForEach(data, info =>
             {
-                var formBody = info.ToFormBody(center, this.scale_km, this.Height, this.Width);
+                var formBody = info.ToFormBody(center, this.scale_km, this.Height, this.Width, this._respectScaleForBodySize);
                 lock (lockObj)
                 {
                     result.Add(formBody);
