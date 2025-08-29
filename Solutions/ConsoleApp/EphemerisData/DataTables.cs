@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -171,6 +172,33 @@ namespace SolarSystemMapper
             return moons;
         }
 
+        public static readonly HashSet<string> ObjectsWithSatelites = new HashSet<string>()
+        {
+            "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
+        };
+
+        public static HashSet<ObjectEntry> GiveSatelitesToPlanet(string planetName)
+        {
+            switch (planetName)
+            {
+                case "Earth":
+                    return EarthSatelites;
+                case "Mars":
+                    return MarsSatelites;
+                case "Jupiter":
+                    return JupiterSatelites;
+                case "Saturn":
+                    return SaturnSatelites;
+                case "Uranus":
+                    return UranusSatelites;
+                case "Neptune":
+                    return NeptuneSatelites;
+                case "Pluto":
+                    return PlutoSatelites;
+                default:
+                    return new HashSet<ObjectEntry>();
+            }
+        }
 
 
 

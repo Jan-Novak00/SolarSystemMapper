@@ -22,6 +22,29 @@ namespace SolarSystemMapper
             PlutoSatelites = 999
         }
 
+        public static MapMode ObjectToMapMode(string objectName)
+        {
+            switch (objectName)
+            {
+                case "Earth":
+                    return MapMode.EarthSatelites;
+                case "Mars":
+                    return MapMode.MarsSatelites;
+                case "Jupiter":
+                    return MapMode.JupiterSatelites;
+                case "Saturn":
+                    return MapMode.SaturnSatelites;
+                case "Uranus":
+                    return MapMode.UranusSatelites;
+                case "Neptune":
+                    return MapMode.NeptuneSatelites;
+                case "Pluto":
+                    return MapMode.PlutoSatelites;
+                default:
+                    return (MapMode)(-1);
+            }
+        }
+
         public MapMode Mode { get; private set; }
         private List<ObjectEntry> _objectsToFetch;
         private readonly DateTime _startDate;

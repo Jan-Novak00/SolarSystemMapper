@@ -70,8 +70,29 @@ namespace SolarMapperUI
                 _autoButton.Click += (s, e) => this._autoButtonClick();
                 this.Controls.Add(_autoButton);
 
+                
+                if (_map is SateliteMap)
+                {
+                    Button backButton = new Button
+                    {
+                        Text = "Back",
+                        AutoSize = true,
+                        Location = new Point(_autoButton.Right + 10, _autoButton.Top) 
+                    };
+                    backButton.Click += (s, e) => this._returnBackClicked();
+                    this.Controls.Add(backButton);
+                }
+
                 PreventDisposeOnClose();
 
+            }
+
+            private void _returnBackClicked()
+            {
+                if (_map is SateliteMap map) 
+                {
+                    map.ReturnBack();
+                }
             }
 
             private void _setDateLabelText()

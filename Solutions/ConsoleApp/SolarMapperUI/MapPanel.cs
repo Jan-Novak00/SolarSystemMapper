@@ -10,10 +10,31 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace SolarMapperUI
 {
 
-    internal interface IMap
+    internal class SwitchViewRequestedEvent : EventArgs
+    {
+        public List<ObjectEntry> ObjectEntries;
+        public DateTime Date;
+        public NASAHorizonsDataFetcher.MapMode MapMode;
+
+        public SwitchViewRequestedEvent(List<ObjectEntry> objectEntries, DateTime date, NASAHorizonsDataFetcher.MapMode mapMode)
+        {
+            ObjectEntries = objectEntries;
+            Date = date;
+            MapMode = mapMode;
+        }
+    }
+
+
+    internal interface IMap : IDisposable
     {
         public void AdvanceMap();
         public DateTime CurrentPictureDate { get; }
+
+        public event EventHandler<SwitchViewRequestedEvent> MapSwitch;
+
+        public void CleanAndDispose();
+
+
     }
 
     internal abstract class MapPanel<TData> : Panel, IMap
@@ -25,7 +46,11 @@ namespace SolarMapperUI
 
         protected List<ObjectEntry> objects;
 
+        public event EventHandler<SwitchViewRequestedEvent> MapSwitch;
+
         protected virtual NASAHorizonsDataFetcher.MapMode _mode { get; init; }
+
+        private HashSet<string> _objectsWithVisibleName = new HashSet<string>();
 
         protected int _pictureIndex { get; set; } = 0;
         public DateTime CurrentPictureDate { get; protected set; }
@@ -41,6 +66,15 @@ namespace SolarMapperUI
 
         protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
 
+        protected virtual void _updateVisibility()
+        {
+            if (this._data == null) return;
+            foreach (var body in this._data) 
+            {
+                if (_objectsWithVisibleName.Contains(body.BodyData.objectData.Name)) body.SwitchNameVisibility();
+            }
+        }
+
         protected readonly int _numberOfDaysToPrefetch = 30;
         protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
         {
@@ -51,6 +85,7 @@ namespace SolarMapperUI
         private void SetData()
         {
             _data = _prepareBodyData(_originalData);
+            _updateVisibility();
         }
 
         protected async Task SettingDataAsync()
@@ -89,6 +124,8 @@ namespace SolarMapperUI
 
             if (this._pictureIndex + 1 == _data[0].BodyData.ephemerisTable.Count)
             {
+                IEnumerable<string> visibleObjects = this._data.Where(formBody => formBody.PixelInfos[this._pictureIndex].ShowName).Select(x => x.BodyData.objectData.Name);
+                _objectsWithVisibleName.UnionWith(visibleObjects);
                 this._data = null;
                 this._pictureIndex = 0;
                 this.CurrentPictureDate = this.CurrentPictureDate.AddDays(1);
@@ -122,7 +159,7 @@ namespace SolarMapperUI
                 var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
                 var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5) ShowBodyReport(formBody.BodyReport(formBody.BodyData.ephemerisTable[this._pictureIndex].date.Value));
+                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5) ShowBodyReport(formBody);
             }
         }
 
@@ -140,8 +177,12 @@ namespace SolarMapperUI
             e.Graphics.DrawString(name, DefaultFont, Brushes.White, textX, textY);
         }
 
-        protected void ShowBodyReport(string report)
+        protected void ShowBodyReport(FormBody<TData> formBody)
         {
+
+            string report = formBody.BodyReport(this.CurrentPictureDate);
+            string bodyName = formBody.BodyData.objectData.Name;
+
             var reportForm = new Form();
             reportForm.Text = "Body Information";
             reportForm.StartPosition = FormStartPosition.Manual;
@@ -162,32 +203,75 @@ namespace SolarMapperUI
 
             reportForm.Controls.Add(label);
 
-            var button = new System.Windows.Forms.Button();
-            button.Text = "start";
-            button.AutoSize = true;
-            button.Location = new Point(10, label.Bottom + 10); // pod labelem
-            button.Click += (s, e) => this.TestClick(); // výpis do debug konzole
-            reportForm.Controls.Add(button);
+
+            int width = label.Right;
+            int height = label.Bottom;
 
 
-            // spočítání velikosti formuláře podle labelu
-            int width = Math.Max(label.Right, button.Right) + 10;
-            int height = Math.Max(label.Bottom, button.Bottom) + 10;
+            System.Windows.Forms.Button? viewMoonsButton = null;
+            if (DataTables.ObjectsWithSatelites.Contains(bodyName))
+            {
+                viewMoonsButton = new System.Windows.Forms.Button();
+                viewMoonsButton.Text = "Moon view";
+                viewMoonsButton.AutoSize = true;
+                viewMoonsButton.Location = new Point(10, label.Bottom + 10); // pod labelem
+
+
+                viewMoonsButton.Click += (s, e) => this.ShowMoonsButtonClick(bodyName); // výpis do debug konzole
+                reportForm.Controls.Add(viewMoonsButton);
+            }
+
+            System.Windows.Forms.Button switchNameVisibilityButton = new System.Windows.Forms.Button();
+            switchNameVisibilityButton.Text = (!formBody.PixelInfos[this._pictureIndex].ShowName) ? "Track" : "Untrack";
+            switchNameVisibilityButton.AutoSize = true;
+            switchNameVisibilityButton.Location = (viewMoonsButton != null) ? new Point(viewMoonsButton.Width + 15, label.Bottom + 10) : new Point(10, label.Bottom + 10);
+            switchNameVisibilityButton.Click += (s, e) =>
+            {
+                if (switchNameVisibilityButton.Text == "Track") switchNameVisibilityButton.Text = "Untrack";
+                else switchNameVisibilityButton.Text = "Track";
+                formBody.SwitchNameVisibility();
+                this.Invalidate();
+            };
+            reportForm.Controls.Add(switchNameVisibilityButton);
+
+            if (viewMoonsButton != null)
+            { 
+                width = Math.Max(width, viewMoonsButton.Right);
+                height = Math.Max(height, viewMoonsButton.Bottom);
+            }
+            width = Math.Max(width, switchNameVisibilityButton.Right) + 10;
+            height = Math.Max(width, switchNameVisibilityButton.Bottom) + 10;
+
+
             reportForm.ClientSize = new Size(width, height);
 
-            // pozice v pravém dolním rohu panelu
-            var panelArea = this.ClientRectangle;
+           
             reportForm.Location = this.PointToScreen(new Point(
-                panelArea.Right - reportForm.Width - 20,
-                panelArea.Bottom - reportForm.Height - 20
+                this.ClientRectangle.Right - reportForm.Width - 20,
+                this.ClientRectangle.Bottom - reportForm.Height - 20
             ));
 
             reportForm.Show(this); // zobrazí okno nad hlavním formulářem
         }
 
-        private void TestClick() => Debug.WriteLine("click");
-        
+        private void ShowMoonsButtonClick(string planetName)
+        {
+            var objectEntries = DataTables.GiveSatelitesToPlanet(planetName);
+            var currentObject = this.objects.Where(x => x.Name == planetName);
+            objectEntries.UnionWith(currentObject);
+            this.InvokeMapSwitch(objectEntries.ToList(),this.CurrentPictureDate, NASAHorizonsDataFetcher.ObjectToMapMode(planetName));
+        }
 
+        public virtual void CleanAndDispose()
+        {
+            this.MapSwitch = null;
+            this.Dispose();
+        }
+
+        protected virtual void InvokeMapSwitch(List<ObjectEntry> objectEntries, DateTime date, NASAHorizonsDataFetcher.MapMode mode)
+        {
+            MapSwitch?.Invoke(this, new SwitchViewRequestedEvent(objectEntries, date, mode));
+        }
 
 
 

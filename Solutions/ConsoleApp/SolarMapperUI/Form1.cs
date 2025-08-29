@@ -1,4 +1,5 @@
 using SolarSystemMapper;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -10,14 +11,17 @@ namespace SolarMapperUI
     {
 
 
-        private Panel _mapPanel;
+        private Panel _mainMapPanel;
+
+        private SateliteMap _sateliteMap = null;
+        private List<ObjectEntry> ObjectEntries = new List<ObjectEntry>(DataTables.Planets);
 
         private enum MapType
         {
             NightSky, SolarSystem
         }
 
-        private MapType mapType = MapType.NightSky;
+        private MapType mainMapType = MapType.SolarSystem;
 
         private ControlForm _controlForm;
 
@@ -30,26 +34,58 @@ namespace SolarMapperUI
             this.TopMost = true;
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
-            // Vytvoøení panelu, který vyplní celé okno
-            //var entries = new HashSet<ObjectEntry>(DataTables.Planets);
-            //entries.UnionWith(DataTables.Stars);
-            //entries.UnionWith(DataTables.DwarfPlanets);
-            //entries.UnionWith(DataTables.Spacecrafts);
-            //entries.Add(new ObjectEntry("James Webb Space Telescope", -170, "ArtificialSatelites"));
-            //entries.Add(new ObjectEntry("Europa", 502, "Moon"));
-            var entries = new HashSet<ObjectEntry>() { new ObjectEntry("Earth", 399, "Planet"), new ObjectEntry("Luna", 301, "Moon")};
-            //var entries = new HashSet<ObjectEntry>() { new ObjectEntry("Jupiter", 599, "Planet"), new ObjectEntry("Europa", 502, "Moon") };
-            _mapPanel = new SateliteMap(entries.ToList(), DateTime.Today, NASAHorizonsDataFetcher.MapMode.EarthSatelites);//(this.mapType == MapType.NightSky) ? new NightSkyMapPanel(entries.Where(x => x.Name != "Earth").ToList(),DateTime.Today) : new SolarSystemMapPanel(entries.Where(x => x.Type != "Moon").ToList(), DateTime.Today);
-            //_mapPanel.Paint += DrawPanel_Paint; // pøipojení události Paint
 
-            if (_mapPanel is IMap map) _controlForm = new ControlForm(map);
+            ObjectEntries.Concat(DataTables.Stars);
+            ObjectEntries.Concat(DataTables.DwarfPlanets);
 
+            this._setUpMainMapPanel(ObjectEntries.ToList(),DateTime.Today);
 
-            this.Controls.Add(_mapPanel);
             this.Load += this.SolarSystemMap_Load;
             this.KeyPreview = true; // pøeposílá klávesy na form
-            this.KeyDown += SolarMapperUI_KeyDown;
+            this.KeyDown += this.SolarMapperUI_KeyDown;
 
+        }
+
+        private void _setUpMainMapPanel(List<ObjectEntry> entries, DateTime date)
+        {
+            //entries.UnionWith(DataTables.Spacecrafts);
+            _mainMapPanel = (this.mainMapType == MapType.NightSky) ? new NightSkyMapPanel(entries.Where(x => x.Name != "Earth").ToList(), date) : new SolarSystemMapPanel(entries.Where(x => x.Type != "Moon").ToList(), date);
+            //_mainMapPanel.Paint += DrawPanel_Paint; // pøipojení události Paint
+
+            if (_mainMapPanel is IMap map)
+            {
+                this._controlForm = new ControlForm(map);
+                map.MapSwitch += ShowMoonPanel;
+            }
+            this.Controls.Add(_mainMapPanel);
+        }
+
+        private void _destroyMainMapPanel()
+        {
+            if (_mainMapPanel != null && _mainMapPanel is IMap map) map.CleanAndDispose();
+            this._controlForm.Close();
+            this._controlForm.Dispose();
+            this.Controls.Remove(_mainMapPanel);
+
+        }
+
+        private void setUpMoonMapPanel(List<ObjectEntry> entries, DateTime date, NASAHorizonsDataFetcher.MapMode mode)
+        {
+            this._sateliteMap = new SateliteMap(entries, date, mode);
+            _controlForm = new ControlForm(_sateliteMap);
+            this.Controls.Add( _sateliteMap);
+            _sateliteMap.MapSwitch += ShowMainPanel;
+
+        }
+
+        private void _destroyMoonPanel() 
+        {
+            if (this._sateliteMap == null) return;
+            this._sateliteMap.CleanAndDispose();
+            this._controlForm.Close();
+            this._controlForm.Dispose();
+            this.Controls.Remove(_sateliteMap);
+            
         }
 
         private void _showClosingMessage()
@@ -65,12 +101,12 @@ namespace SolarMapperUI
 
             // Umístìní labelu do støedu panelu
             closingLabel.Location = new Point(
-                (_mapPanel.Width - closingLabel.PreferredWidth) / 2,
+                (_mainMapPanel.Width - closingLabel.PreferredWidth) / 2,
                 (closingLabel.PreferredHeight)
             );
             var hideTimer = new System.Windows.Forms.Timer();
             hideTimer.Interval = 3000;
-            _mapPanel.Controls.Add(closingLabel);
+            _mainMapPanel.Controls.Add(closingLabel);
             hideTimer.Tick += (s, e) =>
             {
                 closingLabel.Visible = false;
@@ -109,6 +145,18 @@ namespace SolarMapperUI
                 }
 
             }
+        }
+
+        private void ShowMoonPanel(object sender, SwitchViewRequestedEvent e)
+        {
+            this._destroyMainMapPanel();
+            this.setUpMoonMapPanel(e.ObjectEntries, e.Date, e.MapMode);
+        }
+
+        private void ShowMainPanel(object sender, SwitchViewRequestedEvent e)
+        {
+            this._destroyMoonPanel();   
+            this._setUpMainMapPanel(this.ObjectEntries, e.Date);
         }
 
 

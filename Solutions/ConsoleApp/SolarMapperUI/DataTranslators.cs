@@ -96,6 +96,10 @@ namespace SolarMapperUI
             return strBuilder.ToString();
         }
 
+        public void SwitchNameVisibility()
+        {
+            foreach (var info in this.PixelInfos) info.ShowName = !info.ShowName;
+        }
     }
 
     internal static class Translation

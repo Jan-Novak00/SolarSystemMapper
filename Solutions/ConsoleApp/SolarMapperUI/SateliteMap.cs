@@ -67,6 +67,12 @@ namespace SolarMapperUI
 
         }
 
+        public void ReturnBack()
+        {
+            this.InvokeMapSwitch(null,this.CurrentPictureDate,0);
+        }
+
+
 
     }
 }
