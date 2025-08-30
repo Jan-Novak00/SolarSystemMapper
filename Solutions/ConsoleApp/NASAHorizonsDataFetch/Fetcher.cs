@@ -9,7 +9,7 @@ namespace SolarSystemMapper
 {
     public class NASAHorizonsDataFetcher
     {
-        public enum MapMode
+        public enum MapMode : int
         {
             NightSky,
             SolarSystem,
@@ -64,7 +64,7 @@ namespace SolarSystemMapper
             this._observerLongitude = observerLongitude;
         }
 
-        private async Task<string> _askServerForData(int objectCode)
+        private string _generateURl(int objectCode)
         {
 
             using var client = new HttpClient();
@@ -89,8 +89,8 @@ namespace SolarSystemMapper
                 "QUANTITIES='1,3,4'"
             };
 
-            var url = NASAHorizonsURL + "?" + string.Join("&", query);
-            return await client.GetStringAsync(url);
+            return NASAHorizonsURL + "?" + string.Join("&", query);
+            
 
 
         }
@@ -130,30 +130,28 @@ namespace SolarSystemMapper
         private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
         {
             using var semaphore = new SemaphoreSlim(maxParallelism);
-            var tasks = new Task<string>[_objectsToFetch.Count];
+            using var client = new HttpClient();
 
-            for (int i = 0; i < _objectsToFetch.Count; i++)
+            IEnumerable<Task<string>> tasks = _objectsToFetch.Select(async obj =>
             {
-                int idx = i;
-                tasks[idx] = Task.Run(async () =>
+                await semaphore.WaitAsync();
+                try
                 {
-                    await semaphore.WaitAsync();
-                    try
-                    {
-                        string answer = await _askServerForData(_objectsToFetch[idx].Code);
-                        Debug.WriteLine(answer);
-                        Debug.WriteLine("------------------");
-                        return answer;
-                    }
-                    finally
-                    {
-                        semaphore.Release();
-                    }
-                });
-            }
+                    string answer = await client.GetStringAsync(_generateURl(obj.Code));
+                    //Debug.WriteLine(answer);
+                    Debug.WriteLine("------------------");
+                    return answer;
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+
+            });
 
             return await Task.WhenAll(tasks);
         }
+
 
 
         private IEnumerable<TData> _readDataParallel<TReader, TData>(string[] rawData)

@@ -43,12 +43,15 @@ namespace SolarSystemMapper
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append($"Object name: {Name.ToUpper()}    Object type: {Type}\n");
-            stringBuilder.Append($"Radius: {Radius_km} km    Mass: {Mass_kg} kg\n");
-            stringBuilder.Append($"Density: {Density_gpcm3} g/(cm^3)    Gravity: {EquatorialGravity_mps2} m/(s^2)\n");
-            stringBuilder.Append($"Surface temperature: {Temperature_K - 273.15} °C    Surface pressure: {Pressure_bar*0.98693267} atm hPa\n");
-            stringBuilder.Append($"Rotation period: {RotationPeriod_hr} h\n");
-            stringBuilder.Append($"Orbital period: {OrbitalPeriod_y} year");
+            stringBuilder.AppendLine($"Object name: {Name.ToUpper()}    Object type: {Type}");
+            if (Double.IsNormal(Radius_km)) stringBuilder.AppendLine($"Radius: {Radius_km} km");
+            if (Double.IsNormal(Mass_kg)) stringBuilder.AppendLine($"Mass: {Mass_kg} kg");
+            if (Double.IsNormal(Density_gpcm3)) stringBuilder.AppendLine($"Density: {Density_gpcm3} g/(cm^3)");
+            if (Double.IsNormal(EquatorialGravity_mps2)) stringBuilder.AppendLine($"Gravity: {EquatorialGravity_mps2} m/(s^2)");
+            if (Double.IsNormal(Temperature_K)) stringBuilder.AppendLine($"Surface temperature: {Temperature_K - 273.15} kg");
+            if (Double.IsNormal(Pressure_bar)) stringBuilder.AppendLine($"Surface pressure: {Pressure_bar*0.98693267} hPa");
+            if (Double.IsNormal(RotationPeriod_hr)) stringBuilder.AppendLine($"Rotation period: {RotationPeriod_hr} h");
+            if (Double.IsNormal(OrbitalPeriod_y)) stringBuilder.AppendLine($"Orbital period: {OrbitalPeriod_y} year");
             return stringBuilder.ToString();
         }
     }

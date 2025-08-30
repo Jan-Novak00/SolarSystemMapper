@@ -66,12 +66,31 @@ namespace SolarMapperUI
 
         protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
 
-        protected virtual void _updateVisibility()
+        private bool _initialFetchDone = false;
+
+        protected virtual void _updateNameVisibilityBaseOnUserInteraction()
         {
             if (this._data == null) return;
             foreach (var body in this._data) 
             {
-                if (_objectsWithVisibleName.Contains(body.BodyData.objectData.Name)) body.SwitchNameVisibility();
+               body.SetNameVisibility(_objectsWithVisibleName.Contains(body.BodyData.objectData.Name));
+            }
+        }
+
+
+        protected virtual void _updateNameVisibilityBasedOnLocation() 
+        {
+            foreach (var body in this._data)
+            {
+                foreach (var pixelInfo in body.PixelInfos)
+                {
+                    if (body.BodyData.objectData.Type != "Star") 
+                    { 
+                        if (Math.Sqrt(Math.Pow(pixelInfo.CenterCoordinates.X - pixelInfo.BodyCoordinates.X, 2) + Math.Pow(pixelInfo.CenterCoordinates.Y - pixelInfo.BodyCoordinates.Y, 2)) < 10) pixelInfo.ShowName = false; 
+                        else if (Math.Sqrt(Math.Pow(pixelInfo.CenterCoordinates.X - pixelInfo.BodyCoordinates.X, 2) + Math.Pow(pixelInfo.CenterCoordinates.Y - pixelInfo.BodyCoordinates.Y, 2)) >= 10 && this._objectsWithVisibleName.Contains(body.BodyData.objectData.Name)) pixelInfo.ShowName = true;
+                    }
+
+                }
             }
         }
 
@@ -85,15 +104,18 @@ namespace SolarMapperUI
         private void SetData()
         {
             _data = _prepareBodyData(_originalData);
-            _updateVisibility();
+            _updateNameVisibilityBasedOnLocation();
+            if (_initialFetchDone) _updateNameVisibilityBaseOnUserInteraction();
+            else _registerVisibleObjects();
         }
 
         protected async Task SettingDataAsync()
         {
-            _loadingLabel.Location = new Point(this.Width/2, this.Height/2);
+            _loadingLabel.Location = new Point(this.ClientRectangle.Width/2, this.ClientRectangle.Height /2);
             _loadingLabel.Visible = true;
             _originalData = (await GetHorizonsData(objects)).ToList();
             SetData();
+            _initialFetchDone = true;
             _loadingLabel.Visible = false;
 
             this.Invalidate();
@@ -118,14 +140,20 @@ namespace SolarMapperUI
             this.Paint += PrintObjects;
         }
 
+        protected void _registerVisibleObjects()
+        {
+            IEnumerable<string> visibleObjects = this._data.Where(formBody => formBody.PixelInfos[this._pictureIndex].ShowName).Select(x => x.BodyData.objectData.Name);
+            _objectsWithVisibleName = visibleObjects.ToHashSet();
+        }
+
         public virtual async void AdvanceMap()
         {
             if (this._data == null || this._data.Count == 0) return;
 
             if (this._pictureIndex + 1 == _data[0].BodyData.ephemerisTable.Count)
             {
-                IEnumerable<string> visibleObjects = this._data.Where(formBody => formBody.PixelInfos[this._pictureIndex].ShowName).Select(x => x.BodyData.objectData.Name);
-                _objectsWithVisibleName.UnionWith(visibleObjects);
+                _registerVisibleObjects();
+                foreach (var obj in _objectsWithVisibleName) Debug.WriteLine(obj);
                 this._data = null;
                 this._pictureIndex = 0;
                 this.CurrentPictureDate = this.CurrentPictureDate.AddDays(1);
@@ -217,7 +245,7 @@ namespace SolarMapperUI
                 viewMoonsButton.Location = new Point(10, label.Bottom + 10); // pod labelem
 
 
-                viewMoonsButton.Click += (s, e) => this.ShowMoonsButtonClick(bodyName); // výpis do debug konzole
+                viewMoonsButton.Click += (s, e) => this.ShowMoonsButtonClick(bodyName); 
                 reportForm.Controls.Add(viewMoonsButton);
             }
 
@@ -227,8 +255,17 @@ namespace SolarMapperUI
             switchNameVisibilityButton.Location = (viewMoonsButton != null) ? new Point(viewMoonsButton.Width + 15, label.Bottom + 10) : new Point(10, label.Bottom + 10);
             switchNameVisibilityButton.Click += (s, e) =>
             {
-                if (switchNameVisibilityButton.Text == "Track") switchNameVisibilityButton.Text = "Untrack";
-                else switchNameVisibilityButton.Text = "Track";
+                if (switchNameVisibilityButton.Text == "Track")
+                {
+                    switchNameVisibilityButton.Text = "Untrack";
+                    this._objectsWithVisibleName.Remove(bodyName);
+                }
+                else
+                {
+                    switchNameVisibilityButton.Text = "Track";
+                    this._objectsWithVisibleName.Add(bodyName);
+                }
+
                 formBody.SwitchNameVisibility();
                 this.Invalidate();
             };

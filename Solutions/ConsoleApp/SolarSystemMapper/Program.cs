@@ -19,7 +19,7 @@
         }
         static async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> GetHorizonsData()
         {
-            var objects = DataTables.Moons.ToList();
+            var objects = DataTables.Planets.ToList();
             var fetcher = new NASAHorizonsDataFetcher(NASAHorizonsDataFetcher.MapMode.SolarSystem, objects, DateTime.Today, DateTime.Today.AddDays(3));
             var result = await fetcher.Fetch();
             return result;

@@ -31,7 +31,7 @@ namespace SolarMapperUI
     internal class FormBody<TData> where TData : IEphemerisData<IEphemerisTableRow>
     {
         public TData BodyData { get; init; }
-        public List<PixelBodyInfo> PixelInfos { get; init; }
+        public List<PixelBodyInfo> PixelInfos { get; private set; }
 
         public FormBody(TData bodyData, List<PixelBodyInfo> pixelInfo)
         {
@@ -64,7 +64,7 @@ namespace SolarMapperUI
                     }
 
                 }
-                strBuilder.Append($"Current distance from the Sun: {Math.Sqrt(x*x+y*y+z*z)} km    Current speed (relative to the Sun): {Math.Sqrt(vx*vx+vy*vy+vz*vz)} km/s");   
+                strBuilder.Append($"Current distance from the center: {Math.Sqrt(x*x+y*y+z*z)} km    Current speed (relative to the center): {Math.Sqrt(vx*vx+vy*vy+vz*vz)} km/s");   
             }
             else if (this.BodyData is EphemerisObserverData odata)
             {
@@ -100,6 +100,18 @@ namespace SolarMapperUI
         {
             foreach (var info in this.PixelInfos) info.ShowName = !info.ShowName;
         }
+
+        public void SetNameVisibility(bool visibility)
+        {
+            foreach (var info in this.PixelInfos) info.ShowName = visibility;
+        }
+
+
+        public void ChangePixelInfos(List<PixelBodyInfo> pixelInfos)
+        {
+            this.PixelInfos = pixelInfos;
+        }
+
     }
 
     internal static class Translation
@@ -190,13 +202,15 @@ namespace SolarMapperUI
             return new FormBody<EphemerisObserverData>(observerData, pixelBodyInfos);
         }
 
+
+
         internal static FormBody<EphemerisVectorData> ToFormBody(this EphemerisVectorData vectorData, Point center, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
             foreach (var row in vectorData.ephemerisTable)
             {
                 var pixelBodyInfo = row.ToPixelBodyInfo(center, scale_Km, vectorData.objectData.Type, vectorData.objectData.Name);
-                if (respectScale) pixelBodyInfo.Diameter = (int)(Math.Ceiling((vectorData.objectData.Radius_km == double.NaN) ? 0 : vectorData.objectData.Radius_km) / scale_Km);
+                if (respectScale) pixelBodyInfo.Diameter = (int)(Math.Ceiling((vectorData.objectData.Radius_km == double.NaN) ? 1 : vectorData.objectData.Radius_km) / scale_Km);
 
                 pixelBodyInfo.Visible = !((pixelBodyInfo.BodyCoordinates.X > mapWidth) || (pixelBodyInfo.BodyCoordinates.X < 0) || (pixelBodyInfo.BodyCoordinates.Y > mapHeight) || (pixelBodyInfo.BodyCoordinates.Y < 0));
                 pixelBodyInfos.Add(pixelBodyInfo);
@@ -205,6 +219,20 @@ namespace SolarMapperUI
             return new FormBody<EphemerisVectorData>(vectorData, pixelBodyInfos);
         }
 
+        internal static void ChangeScale(this FormBody<EphemerisVectorData> formBody, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
+        {
+            List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
+            for (int i = 0; i<formBody.PixelInfos.Count; i++)
+            {
+                var currentPixelInfo = formBody.PixelInfos[i];
+                var pixelInfo = formBody.BodyData.ephemerisTable[i].ToPixelBodyInfo(currentPixelInfo.CenterCoordinates, scale_Km, formBody.BodyData.objectData.Type, formBody.BodyData.objectData.Name);
+                pixelInfo.Visible = !((pixelInfo.BodyCoordinates.X > mapWidth) || (pixelInfo.BodyCoordinates.X < 0) || (pixelInfo.BodyCoordinates.Y > mapHeight) || (pixelInfo.BodyCoordinates.Y < 0));
+                if (respectScale) pixelInfo.Diameter = (int)(Math.Ceiling((formBody.BodyData.objectData.Radius_km == double.NaN) ? 1 : formBody.BodyData.objectData.Radius_km) / scale_Km);
+                pixelInfo.ShowName = currentPixelInfo.ShowName;
+                pixelBodyInfos.Add((pixelInfo));
+            }
+            formBody.ChangePixelInfos(pixelBodyInfos);
+        }
 
 
         private static Point _KmToPixels(double? xKm, double? yKm, float scale_Km)

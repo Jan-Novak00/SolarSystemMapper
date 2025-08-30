@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace SolarMapperUI
 {
-    public partial class SolarMapperUI : Form
-    {
-
-        private class ControlForm : Form
+    
+        internal class ControlForm : Form
         {
             private IMap _map { get; init; }
             private Label _dateLabel { get; set; } = new Label();
@@ -28,8 +26,8 @@ namespace SolarMapperUI
                 {
                     if (e.CloseReason == CloseReason.UserClosing)
                     {
-                        e.Cancel = true; 
-                        this.Hide();     
+                        e.Cancel = true;
+                        this.Hide();
                     }
                 };
             }
@@ -49,7 +47,7 @@ namespace SolarMapperUI
                 this.AutoSize = true;
                 this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
-                
+
                 _dateLabel.AutoSize = true;
                 _dateLabel.Location = new Point(10, 10);
                 _dateLabel.ForeColor = Color.LimeGreen;
@@ -70,30 +68,40 @@ namespace SolarMapperUI
                 _autoButton.Click += (s, e) => this._autoButtonClick();
                 this.Controls.Add(_autoButton);
 
-                
-                if (_map is SateliteMap)
+
+                if (_map is SateliteMap sateliteMap)
                 {
-                    Button backButton = new Button
-                    {
-                        Text = "Back",
-                        AutoSize = true,
-                        Location = new Point(_autoButton.Right + 10, _autoButton.Top) 
-                    };
-                    backButton.Click += (s, e) => this._returnBackClicked();
+                    Button backButton = new Button();
+
+                    backButton.Text = "Back";
+                    backButton.AutoSize = true;
+                    backButton.Location = new Point(_autoButton.Right + 10, _autoButton.Top);
+                    backButton.Click += (s, e) => sateliteMap.ReturnBack();
                     this.Controls.Add(backButton);
+                }
+
+                if (_map is SolarSystemMapPanel systemMap)
+                {
+                    Button zoomInButton = new Button();
+                    zoomInButton.Text = "Zoom out";
+                    zoomInButton.AutoSize = true;
+                    zoomInButton.Location = new Point(10, 120);
+                    zoomInButton.Click += (s, e) => systemMap.InvokeScaleSwitchEvent(systemMap.Scale_km * 2);
+                    this.Controls.Add(zoomInButton);
+
+                    Button zoomOutButton = new Button();
+                    zoomOutButton.Text = "Zoom in";
+                    zoomOutButton.AutoSize = true;
+                    zoomOutButton.Location = new Point(5 + zoomInButton.Right, 120);
+                    zoomOutButton.Click += (s, e) => systemMap.InvokeScaleSwitchEvent(systemMap.Scale_km / 2);
+                    this.Controls.Add(zoomOutButton);
                 }
 
                 PreventDisposeOnClose();
 
             }
 
-            private void _returnBackClicked()
-            {
-                if (_map is SateliteMap map) 
-                {
-                    map.ReturnBack();
-                }
-            }
+
 
             private void _setDateLabelText()
             {
@@ -108,7 +116,7 @@ namespace SolarMapperUI
 
             private void _autoButtonClick()
             {
-                if(!_timerRunning)
+                if (!_timerRunning)
                 {
                     _autoTimer.Tick += (ts, te) =>
                     {
@@ -127,15 +135,15 @@ namespace SolarMapperUI
                 }
             }
 
-            
+
 
 
         }
 
 
 
-        
 
 
-    }
+
+    
 }

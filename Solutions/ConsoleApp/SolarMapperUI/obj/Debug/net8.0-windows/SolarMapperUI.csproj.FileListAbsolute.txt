@@ -1,3 +1,4 @@
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.csproj.AssemblyReference.cache
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\SolarMapperUI.exe
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\SolarMapperUI.deps.json
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\SolarMapperUI.runtimeconfig.json
@@ -7,7 +8,8 @@ C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\b
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\NASAHorizonsDataFetch.dll
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\EphemerisData.pdb
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\NASAHorizonsDataFetch.pdb
-C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.csproj.AssemblyReference.cache
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.ControlForm.resources
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.SolarMapperUI.resources
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.csproj.GenerateResource.cache
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.AssemblyInfoInputs.cache
@@ -20,4 +22,3 @@ C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\o
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.pdb
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.genruntimeconfig.cache
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\ref\SolarMapperUI.dll
-C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.SolarMapperUI.resources

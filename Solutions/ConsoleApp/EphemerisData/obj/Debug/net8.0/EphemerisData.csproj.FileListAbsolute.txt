@@ -1,14 +1,3 @@
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\bin\Debug\net8.0\EphemerisData.deps.json
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\bin\Debug\net8.0\EphemerisData.dll
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\bin\Debug\net8.0\EphemerisData.pdb
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\EphemerisData.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\EphemerisData.AssemblyInfoInputs.cache
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\EphemerisData.AssemblyInfo.cs
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\EphemerisData.csproj.CoreCompileInputs.cache
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\EphemerisData.dll
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\refint\EphemerisData.dll
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\EphemerisData.pdb
-C:\Users\njan3\source\repos\SolarSystemMapper\EphemerisData\obj\Debug\net8.0\ref\EphemerisData.dll
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\bin\Debug\net8.0\EphemerisData.deps.json
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\bin\Debug\net8.0\EphemerisData.dll
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\bin\Debug\net8.0\EphemerisData.pdb
