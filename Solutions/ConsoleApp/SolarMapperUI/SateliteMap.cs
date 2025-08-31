@@ -10,9 +10,22 @@ namespace SolarMapperUI
     internal class SateliteMap : SolarSystemMapPanel
     {
         protected override bool _respectScaleForBodySize { get; } = true;
-        public SateliteMap(List<ObjectEntry> objects, DateTime mapStartDate, NASAHorizonsDataFetcher.MapMode Mode, float scale_km = 1000) : base(objects, mapStartDate, scale_km)
+
+        public override string CenterName { get; protected init; }
+
+        private IEnumerable<ObjectEntry> _directionObjects;
+
+
+        public SateliteMap(List<ObjectEntry> objects, DateTime mapStartDate, NASAHorizonsDataFetcher.MapMode Mode, string CenterName,float scale_km = 1000) : base(objects, mapStartDate, scale_km)
         {
             this._mode = Mode;
+            this.CenterName = CenterName;
+            this._directionObjects = DataTables.Stars
+                                    .Where(x => x.Name == "Sun")
+                                    .Union(DataTables.Planets
+                                           .Where(x => x.Name == "Earth" && CenterName != "Earth"));
+
+            this.objects = this.objects.Union(this._directionObjects).ToList();
         }
 
 
@@ -54,7 +67,7 @@ namespace SolarMapperUI
 
         private void _printDirections(PaintEventArgs e)
         {
-            var objectsForArrows = this._data.Where(x => x.BodyData.objectData.Name == "Earth" || x.BodyData.objectData.Name == "Sun");
+            var objectsForArrows = this._data.Where(x => _directionObjects.Any( y => x.BodyData.objectData.Name == y.Name) && !x.PixelInfos[this._pictureIndex].Visible);
 
             foreach (var body in objectsForArrows)
             {
@@ -67,9 +80,16 @@ namespace SolarMapperUI
 
         }
 
+        protected override void PrintObjects(object sender, PaintEventArgs e)
+        {
+            if (this._data == null) return;     
+            base.PrintObjects(sender, e);
+            _printDirections(e);
+        }
+
         public void ReturnBack()
         {
-            this.InvokeMapSwitch(null,this.CurrentPictureDate,0);
+            this.InvokeMapSwitch(null,this.CurrentPictureDate,0, "");
         }
 
 

@@ -4,17 +4,18 @@
     {
         static void Main(string[] args)
         {
-            var data = GetHorizonsData().GetAwaiter().GetResult();
-            foreach (var item in data) 
-            { 
-                Console.WriteLine(item);
-                foreach (var row in item.ephemerisTable)
-                {
-                    Console.WriteLine(row);
-                }
-                Console.WriteLine("------------------------------------------");
-            }
+            //var data = GetHorizonsData().GetAwaiter().GetResult();
+            //foreach (var item in data) 
+            //{ 
+            //    Console.WriteLine(item);
+            //    foreach (var row in item.ephemerisTable)
+            //    {
+            //        Console.WriteLine(row);
+            //    }
+            //    Console.WriteLine("------------------------------------------");
+            //}
 
+            foreach (var data in DataTables.Stars) Console.WriteLine(data);
            
         }
         static async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> GetHorizonsData()

@@ -15,12 +15,14 @@ namespace SolarMapperUI
         public List<ObjectEntry> ObjectEntries;
         public DateTime Date;
         public NASAHorizonsDataFetcher.MapMode MapMode;
+        public string CenterName;
 
-        public SwitchViewRequestedEvent(List<ObjectEntry> objectEntries, DateTime date, NASAHorizonsDataFetcher.MapMode mapMode)
+        public SwitchViewRequestedEvent(List<ObjectEntry> objectEntries, DateTime date, NASAHorizonsDataFetcher.MapMode mapMode, string centerName)
         {
             ObjectEntries = objectEntries;
             Date = date;
             MapMode = mapMode;
+            CenterName = centerName;
         }
     }
 
@@ -104,7 +106,6 @@ namespace SolarMapperUI
         private void SetData()
         {
             _data = _prepareBodyData(_originalData);
-            _updateNameVisibilityBasedOnLocation();
             if (_initialFetchDone) _updateNameVisibilityBaseOnUserInteraction();
             else _registerVisibleObjects();
         }
@@ -175,7 +176,16 @@ namespace SolarMapperUI
             foreach (var formBody in this._data)
             {   
                 if (formBody.PixelInfos.Count == 0) continue;
-                if (formBody.PixelInfos[this._pictureIndex].Visible) drawFormBody(formBody.PixelInfos[this._pictureIndex], e, (formBody.PixelInfos[this._pictureIndex].ShowName) ? formBody.BodyData.objectData.Name : null);
+                if (formBody.PixelInfos[this._pictureIndex].Visible) 
+                    drawFormBody(formBody.PixelInfos[this._pictureIndex], 
+                    e, 
+                    (formBody.PixelInfos[this._pictureIndex].ShowName && 
+                     _visibleNameInThisLocation(
+                         formBody.PixelInfos[this._pictureIndex].CenterCoordinates, 
+                         formBody.PixelInfos[this._pictureIndex].BodyCoordinates, 
+                         formBody.BodyData.objectData.Name)) 
+                                                            ? formBody.BodyData.objectData.Name 
+                                                            : null);
             }
         }
         protected virtual void BodyClick(object sender, MouseEventArgs e)
@@ -296,7 +306,7 @@ namespace SolarMapperUI
             var objectEntries = DataTables.GiveSatelitesToPlanet(planetName);
             var currentObject = this.objects.Where(x => x.Name == planetName);
             objectEntries.UnionWith(currentObject);
-            this.InvokeMapSwitch(objectEntries.ToList(),this.CurrentPictureDate, NASAHorizonsDataFetcher.ObjectToMapMode(planetName));
+            this.InvokeMapSwitch(objectEntries.ToList(),this.CurrentPictureDate, NASAHorizonsDataFetcher.ObjectToMapMode(planetName), planetName);
         }
 
         public virtual void CleanAndDispose()
@@ -305,10 +315,12 @@ namespace SolarMapperUI
             this.Dispose();
         }
 
-        protected virtual void InvokeMapSwitch(List<ObjectEntry> objectEntries, DateTime date, NASAHorizonsDataFetcher.MapMode mode)
+        protected virtual void InvokeMapSwitch(List<ObjectEntry> objectEntries, DateTime date, NASAHorizonsDataFetcher.MapMode mode, string centerName)
         {
-            MapSwitch?.Invoke(this, new SwitchViewRequestedEvent(objectEntries, date, mode));
+            MapSwitch?.Invoke(this, new SwitchViewRequestedEvent(objectEntries, date, mode, centerName));
         }
+
+        protected virtual bool _visibleNameInThisLocation(Point center, Point location, string Name) => true;
 
 
 

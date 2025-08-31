@@ -1,0 +1,7 @@
+[
+  { "Name": "Io", "Code": 501, "Type": "Moon" },
+  { "Name": "Europa", "Code": 502, "Type": "Moon" },
+  { "Name": "Ganymede", "Code": 503, "Type": "Moon" },
+  { "Name": "Callisto", "Code": 504, "Type": "Moon" },
+  { "Name": "Amalthea", "Code": 505, "Type": "Moon" }
+]

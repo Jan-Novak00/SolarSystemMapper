@@ -35,8 +35,9 @@ namespace SolarMapperUI
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
 
-            ObjectEntries.Concat(DataTables.Stars);
-            ObjectEntries.Concat(DataTables.DwarfPlanets);
+            ObjectEntries = ObjectEntries.Union(DataTables.Stars).ToList();
+            ObjectEntries = ObjectEntries.Union(DataTables.DwarfPlanets).ToList();
+            foreach (ObjectEntry entry in ObjectEntries) Debug.WriteLine(entry);
 
             this._setUpMainMapPanel(ObjectEntries.ToList(),DateTime.Today);
 
@@ -69,9 +70,9 @@ namespace SolarMapperUI
 
         }
 
-        private void setUpMoonMapPanel(List<ObjectEntry> entries, DateTime date, NASAHorizonsDataFetcher.MapMode mode)
+        private void setUpMoonMapPanel(List<ObjectEntry> entries, DateTime date, NASAHorizonsDataFetcher.MapMode mode, string centerName)
         {
-            this._sateliteMap = new SateliteMap(entries, date, mode);
+            this._sateliteMap = new SateliteMap(entries, date, mode, centerName);
             _controlForm = new ControlForm(_sateliteMap);
             this.Controls.Add( _sateliteMap);
             _sateliteMap.MapSwitch += ShowMainPanel;
@@ -150,7 +151,7 @@ namespace SolarMapperUI
         private void ShowMoonPanel(object sender, SwitchViewRequestedEvent e)
         {
             this._destroyMainMapPanel();
-            this.setUpMoonMapPanel(e.ObjectEntries, e.Date, e.MapMode);
+            this.setUpMoonMapPanel(e.ObjectEntries, e.Date, e.MapMode, e.CenterName);
         }
 
         private void ShowMainPanel(object sender, SwitchViewRequestedEvent e)

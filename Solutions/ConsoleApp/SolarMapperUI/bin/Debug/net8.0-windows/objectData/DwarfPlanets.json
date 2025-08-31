@@ -1,0 +1,8 @@
+[
+  { "Name": "Vesta",    "Code": 4,         "Type": "DwarfPlanet" },
+  { "Name": "Ceres",    "Code": 2000001,   "Type": "DwarfPlanet" },
+  { "Name": "Pluto",    "Code": 999,       "Type": "DwarfPlanet" },
+  { "Name": "Eris",     "Code": 920136199, "Type": "DwarfPlanet" },
+  { "Name": "Haumea",   "Code": 136108,    "Type": "DwarfPlanet" },
+  { "Name": "Makemake", "Code": 136472,    "Type": "DwarfPlanet" }
+]

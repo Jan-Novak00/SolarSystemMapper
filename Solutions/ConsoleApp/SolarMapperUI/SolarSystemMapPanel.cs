@@ -33,6 +33,8 @@ namespace SolarMapperUI
 
         public event EventHandler<ChangeScaleEvent> ScaleChange;
 
+        public virtual string CenterName { get; protected init; } = "Sun";
+
         protected override List<FormBody<EphemerisVectorData>> _prepareBodyData(List<EphemerisVectorData> data)
         {
             List<FormBody<EphemerisVectorData>> result = new List<FormBody<EphemerisVectorData>>();
@@ -82,7 +84,6 @@ namespace SolarMapperUI
             {
                 formBody.ChangeScale(this.Scale_km, this.ClientRectangle.Height, this.ClientRectangle.Height, this._respectScaleForBodySize);
             });
-            _updateNameVisibilityBasedOnLocation();
             this.Invalidate();
 
         }
@@ -92,6 +93,11 @@ namespace SolarMapperUI
             ScaleChange?.Invoke(this, new ChangeScaleEvent(scale_km));
         }
 
+        protected override bool _visibleNameInThisLocation(Point center, Point location, string Name)
+        {
+            if (Name == this.CenterName) return true;
+            else return (Math.Sqrt(Math.Pow(center.X - location.X, 2) + Math.Pow(center.Y - location.Y, 2)) > 10);
+        }
 
 
     }
