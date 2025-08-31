@@ -22,3 +22,4 @@ C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\o
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.pdb
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.genruntimeconfig.cache
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\ref\SolarMapperUI.dll
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUIApp.OpeningForm.resources
