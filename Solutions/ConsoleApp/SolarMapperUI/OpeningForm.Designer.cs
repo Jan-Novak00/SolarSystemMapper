@@ -1,4 +1,4 @@
-﻿namespace SolarMapperUIApp
+﻿namespace SolarMapperUI
 {
     partial class OpeningForm
     {
@@ -33,8 +33,8 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             label1 = new Label();
             button1 = new Button();
-            label2 = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
+            label2 = new Label();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             SuspendLayout();
@@ -85,15 +85,7 @@
             button1.TabIndex = 1;
             button1.Text = "START";
             button1.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(70, 61);
-            label2.Name = "label2";
-            label2.Size = new Size(209, 32);
-            label2.TabIndex = 0;
-            label2.Text = "Author: Jan Novák";
+            button1.Click += button1_Click;
             // 
             // tableLayoutPanel2
             // 
@@ -108,6 +100,15 @@
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 70.95238F));
             tableLayoutPanel2.Size = new Size(390, 210);
             tableLayoutPanel2.TabIndex = 2;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(70, 61);
+            label2.Name = "label2";
+            label2.Size = new Size(209, 32);
+            label2.TabIndex = 0;
+            label2.Text = "Author: Jan Novák";
             // 
             // OpeningForm
             // 

@@ -129,6 +129,19 @@ namespace SolarSystemMapper
             "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
         };
 
+        public static HashSet<ObjectEntry> GiveEntries(string typeName)
+        {
+            switch (typeName)
+            {
+                case "Stars":
+                    return Stars;
+                default:
+                    return new HashSet<ObjectEntry>();
+            }
+
+
+        }
+
 
 
         public static HashSet<ObjectEntry> GiveSatelitesToPlanet(string planetName)

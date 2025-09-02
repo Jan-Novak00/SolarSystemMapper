@@ -77,16 +77,15 @@ namespace SolarSystemMapper
                 date = parsedDate;
 
             // RA: hh mm ss.ss
-            double[]? RA = IEphemerisTableRow.TryParseTriple(tokens, 2);
+            // RA, DEC, dRA_dt, dDEC_dt budou vždy null
+            double[]? RA = null;
+            double[]? DEC = null;
+            double? dRA_dt = null;
+            double? dDEC_dt = null;
 
-            // DEC: ±dd mm ss.s
-            double[]? DEC = IEphemerisTableRow.TryParseTriple(tokens, 5);
-
-            // dRA/dt, dDEC/dt, Azi, Elev
-            double? dRA_dt = IEphemerisTableRow.TryParseNullable(tokens[8]);
-            double? dDEC_dt = IEphemerisTableRow.TryParseNullable(tokens[9]);
-            double? azi = IEphemerisTableRow.TryParseNullable(tokens[10]);
-            double? elev = IEphemerisTableRow.TryParseNullable(tokens[11]);
+            // AZI a ELEV
+            double? azi = tokens.Length > 2 ? IEphemerisTableRow.TryParseNullable(tokens[tokens.Length - 2]) : null;
+            double? elev = tokens.Length > 1 ? IEphemerisTableRow.TryParseNullable(tokens[tokens.Length - 1]) : null;
 
             return new EphemerisTableRowObserver(date, RA, DEC, dRA_dt, dDEC_dt, azi, elev);
         }

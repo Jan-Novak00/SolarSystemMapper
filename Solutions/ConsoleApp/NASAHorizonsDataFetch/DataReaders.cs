@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using static SolarSystemMapper.EphemerisObserverData;
 using static SolarSystemMapper.EphemerisVectorData;
 using System.Text;
+using System.Diagnostics;
 
 
 namespace SolarSystemMapper
@@ -395,78 +396,6 @@ namespace SolarSystemMapper
         }
 
 
-
-
-
-
-        protected readonly Dictionary<string, string> _RegexDictionary  = new Dictionary<string, string>()
-        {
-            { "radius",          @"Vol\. mean radius \(km\)\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" },
-            { "density",         @"Density \(g/cm\^3\)\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" },
-            { "mass",            @"Mass x10\^23 \(kg\)\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" },
-            { "rotationPeriod",  @"Sidereal rot\. period\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" },
-            { "gravity",         @"Equ\. gravity\s*m/s\^2\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" },
-            { "temperature",     @"Mean temperature \(K\)\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" },
-            { "pressure",        @"Atmos\. pressure \(bar\)\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" },
-            { "orbitalPeriod",   @"Mean sidereal orb per\s*=\s*([-+]?\d*\.?\d+(?:[Ee][-+]?\d+)?)" }
-        };
-
-        [Obsolete]
-        protected ObjectData readObjectinfo()
-        {
-
-            var dataReader = new StringReader(this._data!);
-            var valueDict = new Dictionary<string, double>();
-            foreach (var key in this._RegexDictionary.Keys)
-            {
-                valueDict.Add(key, double.NaN);
-            }
-
-
-            while (true)
-            {
-                var line = dataReader.ReadLine();
-                if (line == null) break;
-
-                int numberOfMatches = 0;
-
-                foreach (var keyRegex in this._RegexDictionary)
-                {
-                    var key = keyRegex.Key;
-                    var regex = keyRegex.Value;
-
-                    var match = Regex.Match(line, regex);
-                    if (match.Success)
-                    {
-                        var value = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
-                        valueDict[key] = value;
-                        numberOfMatches++;
-
-                        if (numberOfMatches == 2) break;
-
-
-                    }
-                    else continue;
-
-                }
-
-            }
-            return new ObjectData(this._objectName,
-                                  this._objectCode,
-                                  this._objectType,
-                                  valueDict["radius"],
-                                  valueDict["density"],
-                                  valueDict["mass"],
-                                  valueDict["rotationPeriod"],
-                                  valueDict["gravity"],
-                                  valueDict["temperature"],
-                                  valueDict["pressure"],
-                                  valueDict["orbitalPeriod"]
-                                 );
-
-
-
-        }
     }
 
     public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
@@ -514,6 +443,9 @@ namespace SolarSystemMapper
                 }
 
             }
+            Debug.WriteLine(objectData.Name);
+            foreach (var row in ephemerisTableObservers) Debug.WriteLine(row);
+            Debug.WriteLine("_____________________-");
             return new EphemerisObserverData(ephemerisTableObservers, objectData);
 
             
@@ -586,6 +518,9 @@ namespace SolarSystemMapper
             {
                 ephemerisTableVector.Add(EphemerisTableRowVector.stringToRow(textBuffer.ToString()));
             }
+            Debug.WriteLine(objectData.Name);
+            foreach (var row in ephemerisTableVector) Debug.WriteLine(row);
+            Debug.WriteLine("_____________________-");
 
             return new EphemerisVectorData(ephemerisTableVector, objectData);
         }

@@ -10,14 +10,20 @@
     <Compile Update="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="OpeningForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="NightSkyMapPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="OpeningForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="SateliteMap.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="SettingsFormControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TypeFilterForm.cs">
+      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
 </Project>

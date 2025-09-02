@@ -8,8 +8,6 @@ C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\b
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\NASAHorizonsDataFetch.dll
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\EphemerisData.pdb
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\bin\Debug\net8.0-windows\NASAHorizonsDataFetch.pdb
-C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.ControlForm.resources
-C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.SolarMapperUI.resources
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.csproj.GenerateResource.cache
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.AssemblyInfoInputs.cache
@@ -22,4 +20,8 @@ C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\o
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.pdb
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.genruntimeconfig.cache
 C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\ref\SolarMapperUI.dll
-C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUIApp.OpeningForm.resources
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.ControlForm.resources
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.SolarMapperMainForm.resources
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.MapSettingsForm.resources
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.OpeningForm.resources
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\SolarMapperUI\obj\Debug\net8.0-windows\SolarMapperUI.TypeFilterForm.resources

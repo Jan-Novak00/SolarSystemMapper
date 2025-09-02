@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -182,6 +183,12 @@ namespace SolarMapperUI
         internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,int mapRadius)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
+            if (observerData.objectData.Name == "Sun")
+            {
+                
+                foreach (var row in observerData.ephemerisTable) Debug.WriteLine(row);
+                Debug.WriteLine("_____________________");
+            }
 
             foreach (var row in observerData.ephemerisTable)
             {

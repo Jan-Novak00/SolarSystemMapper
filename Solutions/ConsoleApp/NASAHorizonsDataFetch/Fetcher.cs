@@ -54,7 +54,7 @@ namespace SolarSystemMapper
 
         private const string NASAHorizonsURL = "https://ssd.jpl.nasa.gov/api/horizons.api";
 
-        public NASAHorizonsDataFetcher(MapMode mode, List<ObjectEntry> ObjectsToFetch, DateTime startDate, DateTime endDate, double observerLatitude = 0, double observerLongitude = 0)
+        public NASAHorizonsDataFetcher(MapMode mode, List<ObjectEntry> ObjectsToFetch, DateTime startDate, DateTime endDate, double observerLatitude = 0, double observerLongitude = -90)
         {
             Mode = mode;
             _objectsToFetch = ObjectsToFetch;
@@ -70,7 +70,7 @@ namespace SolarSystemMapper
             using var client = new HttpClient();
             string center = this.Mode switch
             {
-                MapMode.NightSky => "399",
+                MapMode.NightSky => "coord@399",
                 MapMode.SolarSystem => "@10",
                 _ => "@" + ((int)this.Mode).ToString(),
             };
@@ -139,7 +139,7 @@ namespace SolarSystemMapper
                 {
                     string answer = await client.GetStringAsync(_generateURl(obj.Code));
                     //Debug.WriteLine(answer);
-                    Debug.WriteLine("------------------");
+                    //Debug.WriteLine("------------------");
                     return answer;
                 }
                 finally

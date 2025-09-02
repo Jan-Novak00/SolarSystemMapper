@@ -57,7 +57,7 @@ namespace SolarMapperUI
         public SolarSystemMapPanel(List<ObjectEntry> objects, DateTime mapStartDate, float scale_km = 1_000_000)
         {
             this.Scale_km = scale_km;
-            this.objects = objects;
+            this._objectEntries = objects;
             this._pictureIndex = 0;
             this.CurrentPictureDate = mapStartDate;
             this._originalData = null;

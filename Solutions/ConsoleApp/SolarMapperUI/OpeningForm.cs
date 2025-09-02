@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SolarMapperUIApp
+namespace SolarMapperUI
 {
     public partial class OpeningForm : Form
     {
@@ -30,6 +30,12 @@ namespace SolarMapperUIApp
         private void tableLayoutPanel1_Paint_1(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }

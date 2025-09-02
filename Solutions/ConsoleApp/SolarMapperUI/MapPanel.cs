@@ -46,7 +46,7 @@ namespace SolarMapperUI
 
         protected List<FormBody<TData>> _data;
 
-        protected List<ObjectEntry> objects;
+        protected List<ObjectEntry> _objectEntries;
 
         public event EventHandler<SwitchViewRequestedEvent> MapSwitch;
 
@@ -107,27 +107,81 @@ namespace SolarMapperUI
         {
             _data = _prepareBodyData(_originalData);
             if (_initialFetchDone) _updateNameVisibilityBaseOnUserInteraction();
-            else _registerVisibleObjects();
+            else
+            {
+                _registerVisibleObjects();
+                _filter();
+            }
         }
 
         protected async Task SettingDataAsync()
         {
             _loadingLabel.Location = new Point(this.ClientRectangle.Width/2, this.ClientRectangle.Height /2);
             _loadingLabel.Visible = true;
-            _originalData = (await GetHorizonsData(objects)).ToList();
+            _originalData = (await GetHorizonsData(_objectEntries)).ToList();
             SetData();
             _initialFetchDone = true;
             _loadingLabel.Visible = false;
 
             this.Invalidate();
         }
+        //GeneralMapSettings(SolarMapperMainForm.MapType MapType,
+        //DateTime StartDate,
+        //List<string> ObjectTypes, List<string> WhiteList,
+        //List<string> BlackList, Predicate<FormBody<IEphemerisData<IEphemerisTableRow>>> GeneralFilter,
+        //double? latitude = null,
+        //double? longitude = null);
+        
 
+        protected void _filter()
+        {
+            if (_data == null) return;
+            var filteredData = _data.Where(x => _generalFilter(x.BodyData.objectData)); //uses general filter
+            //typove filtrovani
+            //....
+            _data = filteredData.Union(from x in _data
+                               where this._whiteList.Any(name => name == x.BodyData.objectData.Name) // _objectEntries which are on whitelist
+                               && !this._blackList.Any(name => name == x.BodyData.objectData.Name) // _objectEntries which are not on blackList
+                               select x).ToList();
+            _objectEntries = (from entry in _objectEntries                                                        // no filtering required in future fetches
+                      where _data.Any(x => x.BodyData.objectData.Name == entry.Name)
+                      || _data.Any(x => x.BodyData.objectData.Code == entry.Code)
+                      select entry).ToList();
+
+        }
+
+        protected Predicate<ObjectData> _generalFilter { get; set; }
+        protected List<string> _whiteList {  get; set; }
+        protected List<string> _blackList { get; set; }
+        public MapPanel(GeneralMapSettings generalMapSettings)
+        {
+            
+            _generalFilter = generalMapSettings.GeneralFilter;
+            _whiteList = generalMapSettings.WhiteList;
+            _blackList = generalMapSettings.BlackList;
+
+            IEnumerable<ObjectEntry> objectsEnumerable = new List<ObjectEntry>();
+            foreach (var typeName in generalMapSettings.ObjectTypes)
+            {
+                objectsEnumerable = objectsEnumerable.Union(DataTables.GiveEntries(typeName));
+            }
+            _objectEntries = objectsEnumerable.ToList();
+
+            this.Dock = DockStyle.Fill;
+            this.BackColor = Color.Black;
+            this.Controls.Add(_loadingLabel);
+
+            this.InitializeHandlers();
+
+
+        }
 
         protected MapPanel()
         {
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.Black;
             this.Controls.Add(_loadingLabel);
+
 
             this.InitializeHandlers();
 
@@ -208,7 +262,7 @@ namespace SolarMapperUI
             var leftCornerY = pixelInfo.BodyCoordinates.Y;
             var diameter = pixelInfo.Diameter;
             if (diameter < 4) diameter = 4;
-            e.Graphics.FillEllipse(brush, leftCornerX, leftCornerY, diameter, diameter);
+                e.Graphics.FillEllipse(brush, leftCornerX, leftCornerY, diameter, diameter);
             var textSize = e.Graphics.MeasureString(name, DefaultFont);
             float textX = leftCornerX - textSize.Width / 2 + diameter / 2;
             float textY = leftCornerY + diameter / 2 + 10;
@@ -304,7 +358,7 @@ namespace SolarMapperUI
         private void ShowMoonsButtonClick(string planetName)
         {
             var objectEntries = DataTables.GiveSatelitesToPlanet(planetName);
-            var currentObject = this.objects.Where(x => x.Name == planetName);
+            var currentObject = this._objectEntries.Where(x => x.Name == planetName);
             objectEntries.UnionWith(currentObject);
             this.InvokeMapSwitch(objectEntries.ToList(),this.CurrentPictureDate, NASAHorizonsDataFetcher.ObjectToMapMode(planetName), planetName);
         }

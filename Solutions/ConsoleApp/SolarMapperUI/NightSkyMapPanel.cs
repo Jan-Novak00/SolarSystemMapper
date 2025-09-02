@@ -36,10 +36,20 @@ namespace SolarMapperUI
 
 
         }
+        public NightSkyMapPanel(GeneralMapSettings generalMapSettings): base(generalMapSettings)
+        {
+            
+            this._pictureIndex = 0;
+            this._originalData = null;
+            this._data = null;
+            this.BackColor = Color.DarkBlue;
+            this.Paint += PrintObjects;
+        }
+
 
         public NightSkyMapPanel(List<ObjectEntry> objects, DateTime mapStartDate)
         {
-            this.objects = objects;
+            this._objectEntries = objects;
             this._pictureIndex = 0;
             this.CurrentPictureDate = mapStartDate;
             this._originalData = null;
@@ -54,7 +64,6 @@ namespace SolarMapperUI
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            //this.BeginInvoke(new Action(() => SetData()));
             _ = SettingDataAsync();
         }
 

@@ -7,7 +7,8 @@ using System.Windows.Forms;
 
 namespace SolarMapperUI
 {
-    public partial class SolarMapperUI : Form
+   
+    public partial class SolarMapperMainForm : Form
     {
 
 
@@ -15,19 +16,19 @@ namespace SolarMapperUI
 
         private SateliteMap _sateliteMap = null;
         private List<ObjectEntry> ObjectEntries = new List<ObjectEntry>(DataTables.Planets);
-
-        private enum MapType
+        internal enum MapType
         {
             NightSky, SolarSystem
         }
 
-        private MapType mainMapType = MapType.SolarSystem;
+        private MapType mainMapType = MapType.NightSky  ;
 
         private ControlForm _controlForm;
 
-        public SolarMapperUI()
+        public SolarMapperMainForm()
         {
             InitializeComponent();
+            
 
             this.WindowState = FormWindowState.Maximized;
             this.FormBorderStyle = FormBorderStyle.None;
@@ -39,7 +40,8 @@ namespace SolarMapperUI
             ObjectEntries = ObjectEntries.Union(DataTables.DwarfPlanets).ToList();
             foreach (ObjectEntry entry in ObjectEntries) Debug.WriteLine(entry);
 
-            this._setUpMainMapPanel(ObjectEntries.ToList(),DateTime.Today);
+
+            this._setUpMainMapPanel(ObjectEntries.ToList(), DateTime.Today);
 
             this.Load += this.SolarSystemMap_Load;
             this.KeyPreview = true; // pøeposílá klávesy na form

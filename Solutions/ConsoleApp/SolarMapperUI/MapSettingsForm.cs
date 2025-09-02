@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SolarMapperUI;
+using SolarSystemMapper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,13 +10,142 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SolarMapperUIApp
+namespace SolarMapperUI
 {
+
+    internal record GeneralMapSettings(SolarMapperMainForm.MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, double? latitude = null, double? longitude = null);
+
+
     public partial class MapSettingsForm : Form
     {
+        internal GeneralMapSettings GeneralMapSettings { get; private set; }
         public MapSettingsForm()
         {
             InitializeComponent();
+            MapType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            MapType_ComboBox.SelectedIndex = 0;
+        }
+
+        private void NextPage_Button_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Do you wish to continue? You can not return to this window afterward.",
+                                                    "Are you sure?",
+                                                    MessageBoxButtons.OKCancel
+                                                    );
+            if (result == DialogResult.Cancel) return;
+
+            SolarMapperMainForm.MapType mapType = (MapType_ComboBox.SelectedValue == "Night Sky") ? SolarMapperMainForm.MapType.NightSky : SolarMapperMainForm.MapType.SolarSystem;
+            DateTime date = Date_TimePicker.Value;
+            List<string> objectTypes = ObjectTypes_CheckedListBox.CheckedItems.Cast<string>().ToList();
+            List<string> whiteList = WhiteList_TextBox.Text.Split(',').ToList();
+            List<string> blackList = BlackList_TextBox.Text.Split(',').ToList();
+            double latitude = double.NaN;
+            double longitude = double.NaN;
+            Predicate<ObjectData> filter = null;
+            try
+            {
+
+                if (mapType == SolarMapperMainForm.MapType.NightSky)
+                {
+                    string coorString = Coordinates_TextBox.Text;
+                    if (coorString == "") throw new NullReferenceException("Please, fill in coordinates. Two numbers, separated by comma.");
+                    string[] coors = coorString.Split(',');
+                    if (coors.Length != 2) throw new ArgumentException("Coordinates must have two components - latitude, followed by longitude.");
+                    bool latitudeSuccess = double.TryParse(coors[0], out latitude);
+                    bool longitudeSuccess = double.TryParse(coors[1], out longitude);
+
+                    if (!latitudeSuccess) throw new ArgumentException("Latitude is not in correct format.");
+                    if (!longitudeSuccess) throw new ArgumentException("Longitude is not in correct format.");
+
+                }
+                filter = this._makeFilter();
+            }
+            catch (NullReferenceException ne)
+            {
+                MessageBox.Show(ne.Message);
+                return;
+            }
+            catch (ArgumentException ae)
+            {
+                MessageBox.Show(ae.Message);
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                throw;
+            }
+
+
+            this.GeneralMapSettings = new GeneralMapSettings(mapType, date, objectTypes, whiteList, blackList, filter, (double.IsNormal(latitude)) ? latitude : null, (double.IsNormal(longitude)) ? longitude : null);
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+
+        }
+
+
+        private Predicate<ObjectData> _makeFilter()
+        {
+
+
+            Dictionary<string, string> rawValues = new Dictionary<string, string>()
+            {
+                {"Min Mass", MinMass_TextBox.Text},
+                {"Max Mass", MaxMass_TextBox.Text},
+                {"Min Radius", MinRadius_TextBox.Text},
+                {"Max Radius", MaxRadius_TextBox.Text},
+                {"Min Orbital Period", MinOrbitalPeriod_TextBox.Text},
+                {"Max Orbital Period", MaxOrbitalPeriod_TextBox.Text},
+                {"Min Density", MinDensity_TextBox.Text},
+                {"Max Density", MaxDensity_TextBox.Text},
+                {"Min Gravity", MinGravity_TextBox.Text},
+                {"Max Gravity", MaxGravity_TextBox.Text},
+                {"Min Speed", MinSpeed_TextBox.Text},
+                {"Max Speed", MaxSpeed_TextBox.Text}
+            };
+
+            Dictionary<string, double> parsedValues = new Dictionary<string, double>();
+
+            foreach (var pair in rawValues)
+            {
+                double value;
+                bool parseSuccess = double.TryParse(pair.Value.Trim(), out value);
+
+                if (!parseSuccess)
+                {
+                    if (pair.Value == "Infinity") value = double.PositiveInfinity;
+                    else if (pair.Value == "-Infinity") value = double.NegativeInfinity;
+                    else throw new ArgumentException($"{pair.Key} value was entered incorrectly. {value}");
+                }
+                parsedValues[pair.Key] = value;
+            }
+            Predicate<ObjectData> massPredicate = x => (x.Mass_kg > parsedValues["Min Mass"] && x.Mass_kg < parsedValues["Max Mass"]) || double.IsNaN(x.Mass_kg);
+
+            Predicate<ObjectData> radiusPredicate = x => (x.Radius_km > parsedValues["Min Radius"] && x.Radius_km < parsedValues["Max Radius"]) || double.IsNaN(x.Radius_km);
+
+            Predicate<ObjectData> densityPredicate = x => (x.Density_gpcm3 > parsedValues["Min Density"] && x.Density_gpcm3 < parsedValues["Max Density"]) || double.IsNaN(x.Density_gpcm3);
+
+            Predicate<ObjectData> gravityPredicate = x => (x.EquatorialGravity_mps2 > parsedValues["Min Gravity"] && x.EquatorialGravity_mps2 < parsedValues["Max Gravity"]) || double.IsNaN(x.EquatorialGravity_mps2);
+
+            Predicate<ObjectData> orbitalPeriodPredicate = x => (x.OrbitalPeriod_y > parsedValues["Min Orbital Period"] && x.OrbitalPeriod_y < parsedValues["Max Orbital Period"]) || double.IsNaN(x.OrbitalPeriod_y);
+            //dodelat speed
+
+
+            Predicate<ObjectData> allObjectDataPredicates = x => massPredicate(x) && radiusPredicate(x) && densityPredicate(x) && gravityPredicate(x) && orbitalPeriodPredicate(x);
+            return allObjectDataPredicates;
+        }
+
+        private void MapType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+
+
+        }
+
+        private void MaxSpeed_TextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
