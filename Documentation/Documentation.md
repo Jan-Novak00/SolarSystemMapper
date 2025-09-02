@@ -55,5 +55,6 @@ Ovládá se stejným způsobem jako mapa sluneční soustavy, s tím rozdílem, 
 Tato mapa lze zobrazit jen pro vybraná tělesa a to: Země, Mars, Jupiter, Saturn, Uran, Neptun, Pluto. Tato tělesa pak jsou umístěna do středu mapy.
 Velikosti těles odpovídají měřítku, ovšem pokud by velikost zobrazovaného tělesa byla příliž malá, je jejich velikost na obrazovce nastavena na na fixní velikost.
 
+Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl referenční body, pro určení polohy. Na okrajích obrazovky se zobrazují šipky udávající, kterým směrem se Slunce a Země nachází. Pokud je měřítko dostatrčné, Země i Slunce jsou vidět jako objekty na Mapě.
 
 # Programátorská část
