@@ -58,3 +58,62 @@ Velikosti těles odpovídají měřítku, ovšem pokud by velikost zobrazovanéh
 Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl referenční body, pro určení polohy. Na okrajích obrazovky se zobrazují šipky udávající, kterým směrem se Slunce a Země nachází. Pokud je měřítko dostatrčné, Země i Slunce jsou vidět jako objekty na Mapě.
 
 # Programátorská část
+
+## Struktura kódu
+
+### Třídy spravující data
+Jelikož NASA Horizons API neposkytuje rozumný seznam kódů spolu s jmény objektů (poskytuje je jen přes telnet), je potřeba tyto informace mít uložené lokálně. V kódu tyto informace uchovává třída ObjectEntry
+
+```c#
+public record ObjectEntry(string Name, int Code, string Type);
+```
+Tato třída se následně používá pře fetchování dat ze serveru a to konkrétně třídou
+```c#
+public class NASAHorizonsDataFetcher
+{
+  public NASAHorizonsDataFetcher(MapMode mode, List<ObjectEntry> ObjectsToFetch, DateTime startDate, DateTime endDate, double observerLatitude = 0, double observerLongitude = -90);
+  public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch();
+}
+```
+Tato třída na základě vstupních parametrů provede fetch na server a naparsuje data do objektů splňujících rozhraní IEphemerisData<IEphemerisTableRow>>.
+První parametr konstruktoru je mód, v jakém chceme fetchovat data. Je typu NASAHorizonsDataFetcher.MapMode
+```c#
+public enum MapMode : int
+{
+    NightSky,
+    SolarSystem,
+    EarthSatelites = 399,
+    MarsSatelites = 499,
+    JupiterSatelites = 599,
+    SaturnSatelites = 699,
+    UranusSatelites = 799,
+    NeptuneSatelites = 899,
+    PlutoSatelites = 999
+}
+```
+Dotaz poslaný na NASA Horizons API obsahuje parametr EPHEM_TYPE, který může mít dvě hodnoty: buď OBSERVER, kdy souřadnice objektu v datech odpovědi jsou udaná tak, jak se jeví na noční obloze, jmenovitě obsahují azimut a výšku objektu, nebo VECTOR, kdy zaslaná data obsahují kartézské souřadnice objektu vzhledem ke zvolenému středu. Je-li vstupem NightSky, pak je dotaz v módu OBSERVER a střed je nastaven na Zemi, je-li vstupem SolarSystem, je dotaz v módu VECTOR a středem je Slunce. U ostatních explicitně zmíněných hodnot je EPHEM_TYPE hodnoty vektor a sředem je těleso, které je udáno v názvu hodnoty (např. pro JupiterSatelites je středem Jupiter). Tyto hodnoty jsou pak použity pro získání o datech měsíců. Explicitně nastavené intové hodnoty jsou přímo kódy středových těles.
+
+Parametry observerLatitude a observerLongitude jsou relevantní jen pro mapu noční oblohy, tedy pokud je mode roven MapMode.NightSky.
+
+Parametry DateTime startDate, DateTime endDate udávají první a pslední datum, pro které se budou získávat data.
+
+Parametr List<ObjectEntry> ObjectsToFetch jsou objekty, pro které provádíme dotazy na server.
+
+Metoda Fetch režíruje fetchování a parsování dat, přičemž samotný fetch je prováděn metodou
+```c#
+private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
+```
+která jako vstupní argument potřebuje maximální množství vláken, na kterých může posílat dotazy. Z vlastní zkušenosti server nezvládá více než dva dotazy najednou.
+
+Parsování dat provádí třídy:
+```c#
+public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
+public class HorizonsVectorResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisVectorData>
+```
+které implementují rozhraní
+```c#
+public interface IHorizonsResponseReader<out TData> where TData : IEphemerisData<IEphemerisTableRow>
+{
+    TData Read();
+}
+```
