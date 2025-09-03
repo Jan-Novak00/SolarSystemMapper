@@ -11,13 +11,17 @@ using System.Diagnostics;
 namespace SolarSystemMapper
 {
 
-
+    /**
+     * Interface for data parsers.
+    */
     public interface IHorizonsResponseReader<out TData> where TData : IEphemerisData<IEphemerisTableRow>
     {
         TData Read();
         
     }
-
+    /**
+     * Extracts data about ephemeris from data sent from the NASA Horizon API. Only extracts object property data in protected method.
+    */
     public abstract class ObjectReader
     {
         protected string? _data { get; set; }
@@ -29,7 +33,9 @@ namespace SolarSystemMapper
 
 
 
-
+        /**
+         * @return Object property infrmation.
+       */
 
         protected ObjectData createObjectInfo()
         {
@@ -112,7 +118,10 @@ namespace SolarSystemMapper
 
         }
 
-
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns orbital period of the object
+        */
         public static double? _findOrbitalPeriod(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
@@ -154,7 +163,10 @@ namespace SolarSystemMapper
             return periodInYears;
         }
 
-
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns surface pressure of the object
+        */
         public static double? _findPressure(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
@@ -174,6 +186,10 @@ namespace SolarSystemMapper
             return null;
         }
 
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns surface temperature of the object
+        */
         public static double? _findTemperature(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
@@ -193,6 +209,10 @@ namespace SolarSystemMapper
             return null;
         }
 
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns gravity of the object
+        */
         public static double? _findGravity(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
@@ -243,7 +263,10 @@ namespace SolarSystemMapper
             return null;
         }
 
-
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns rotational period of the object. Returns -1 if the rotational period is marked as synchronous with the orbital period
+        */
         public static double? _findRotationPeriod(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
@@ -299,6 +322,10 @@ namespace SolarSystemMapper
             return null;
         }
 
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns density of the object
+        */
         public static double? _findDenisity(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
@@ -322,9 +349,13 @@ namespace SolarSystemMapper
 
             return null;
         }
-        public static double? _findMass(string text)
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns mass of the object
+        */
+        public static double? _findMass(string line)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(line))
                 return null;
 
             var culture = System.Globalization.CultureInfo.InvariantCulture;
@@ -333,7 +364,7 @@ namespace SolarSystemMapper
             var massRegex = new System.Text.RegularExpressions.Regex(
                 @"Mass\s*(?:x\s*10\^(\d+)|,\s*10\^(\d+)?)?\s*\(?kg\)?\s*=?\s*~?\s*([-+]?\d*\.?\d+)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            var massMatch = massRegex.Match(text);
+            var massMatch = massRegex.Match(line);
             if (massMatch.Success)
             {
                 double mantissa = double.Parse(massMatch.Groups[3].Value, culture);
@@ -350,7 +381,7 @@ namespace SolarSystemMapper
             var simpleMassRegex = new System.Text.RegularExpressions.Regex(
                 @"mass\s*:\s*([-+]?\d*\.?\d+)\s*kg",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            var simpleMatch = simpleMassRegex.Match(text);
+            var simpleMatch = simpleMassRegex.Match(line);
             if (simpleMatch.Success)
             {
                 return double.Parse(simpleMatch.Groups[1].Value, culture);
@@ -364,8 +395,8 @@ namespace SolarSystemMapper
                 @"Density\s*\(g\s*cm\^-?3\)\s*=\s*([-+]?\d*\.?\d+)|Density\s*\(g/cm\^3\)\s*=\s*([-+]?\d*\.?\d+)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
-            var rMatch = radiusRegex.Match(text);
-            var dMatch = densityRegex.Match(text);
+            var rMatch = radiusRegex.Match(line);
+            var dMatch = densityRegex.Match(line);
             if (rMatch.Success && dMatch.Success)
             {
                 double radiusKm = double.Parse(rMatch.Groups[1].Value, culture);
@@ -377,15 +408,18 @@ namespace SolarSystemMapper
 
             return null;
         }
-
-        public static double? _findRadius(string text)
+        /**
+         * @param line Line in data string.
+         * @return If successful, returns radius of the object
+        */
+        public static double? _findRadius(string line)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(line))
                 return null;
 
             // Regex: hledá varianty radius, pak '=' a číslo, ignoruje mezery, plus/minus
             var pattern = @"(?i)(Vol\.?\s*mean\s*radius|Vol\.?Mean\s*Radius|Mean\s*radius)\s*\(?.*?\)?\s*=\s*([+-]?\d+(\.\d+)?)(\s*[+-]\s*\d+(\.\d+)?)?";
-            var match = Regex.Match(text, pattern);
+            var match = Regex.Match(line, pattern);
 
             if (match.Success && double.TryParse(match.Groups[2].Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double radius))
             {
@@ -398,9 +432,16 @@ namespace SolarSystemMapper
 
     }
 
+    /**
+     * Parses data from NASA Horizons API into EphemerisObserverData.
+    */
     public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
     {
-
+        /**
+         * @param data Data form NASA Horizons API
+         * @param objectName Name of the object
+         * @param objectCode Code of the object
+        */
         public HorizonsObserverResponseReader(string data, string objectName, string objectType, int objectCode)
         {
             this._data = data ?? throw new ArgumentNullException(nameof(data));
@@ -452,11 +493,17 @@ namespace SolarSystemMapper
 
         }
     }
-
+    /**
+     * Parses data from NASA Horizons API into EphemerisVectorData.
+    */
     public class HorizonsVectorResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisVectorData>
     {
-        
 
+        /**
+         * @param data Data form NASA Horizons API
+         * @param objectName Name of the object
+         * @param objectCode Code of the object
+        */
         public HorizonsVectorResponseReader(string data, string objectName, string objectType, int objectCode)
         {
             this._data = data;
@@ -465,7 +512,7 @@ namespace SolarSystemMapper
             this._objectType = objectType;
         }
 
-        public EphemerisVectorData Read() //prozkoumat
+        public EphemerisVectorData Read()
         {
             ObjectData objectData = this.createObjectInfo();
             List<EphemerisTableRowVector> ephemerisTableVector = new List<EphemerisTableRowVector>();
@@ -513,7 +560,7 @@ namespace SolarSystemMapper
                 }
             }
 
-            // Poslední blok po ukončení cyklu
+            
             if (textBuffer.Length > 0)
             {
                 ephemerisTableVector.Add(EphemerisTableRowVector.stringToRow(textBuffer.ToString()));

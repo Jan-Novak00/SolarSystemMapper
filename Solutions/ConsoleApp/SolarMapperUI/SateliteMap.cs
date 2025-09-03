@@ -25,7 +25,7 @@ namespace SolarMapperUI
                                     .Union(DataTables.Planets
                                            .Where(x => x.Name == "Earth" && CenterName != "Earth"));
 
-            this._objectEntries = this._objectEntries.Union(this._directionObjects).ToList();
+            this.ObjectEntries = this.ObjectEntries.Union(this._directionObjects).ToList();
         }
 
 

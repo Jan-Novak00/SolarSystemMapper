@@ -3,35 +3,63 @@
   "WorkspaceRootPath": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\nightskymappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\nightskymappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\nasahorizonsdatafetch\\fetcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|solutionrelative:nasahorizonsdatafetch\\fetcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\nasahorizonsdatafetch\\datareaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|solutionrelative:nasahorizonsdatafetch\\datareaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{594724C2-F49F-44A3-94CC-4B263AC6A5BA}|EphemerisData\\EphemerisData.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\ephemerisdata\\datatables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{594724C2-F49F-44A3-94CC-4B263AC6A5BA}|EphemerisData\\EphemerisData.csproj|solutionrelative:ephemerisdata\\datatables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{594724C2-F49F-44A3-94CC-4B263AC6A5BA}|EphemerisData\\EphemerisData.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\ephemerisdata\\datarecords.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{594724C2-F49F-44A3-94CC-4B263AC6A5BA}|EphemerisData\\EphemerisData.csproj|solutionrelative:ephemerisdata\\datarecords.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|c:\\users\\njan3\\solarmaper\\solarsystemmapper\\solutions\\consoleapp\\solarmapperui\\mainform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mainform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A34C6A90-3AE7-4C44-96F7-40289425E79C}|DataReader_Tests\\DataReader_Tests.csproj|c:\\users\\njan3\\solarmaper\\solarsystemmapper\\solutions\\consoleapp\\datareader_tests\\findmethodstests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A34C6A90-3AE7-4C44-96F7-40289425E79C}|DataReader_Tests\\DataReader_Tests.csproj|solutionrelative:datareader_tests\\findmethodstests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\solarsystemmappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\solarsystemmappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|c:\\users\\njan3\\solarmaper\\solarsystemmapper\\solutions\\consoleapp\\solarmapperui\\typefilterform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|c:\\users\\njan3\\solarmaper\\solarsystemmapper\\solutions\\consoleapp\\solarmapperui\\nightskymappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\nightskymappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\datatranslators.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\datatranslators.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mainform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mainform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\typefilterform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\typefilterform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -39,28 +67,16 @@
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\typefilterform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|c:\\users\\njan3\\solarmaper\\solarsystemmapper\\solutions\\consoleapp\\solarmapperui\\settingsformcontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\settingsformcontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\settingsformcontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mapsettingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\openingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\openingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|c:\\users\\njan3\\solarmaper\\solarsystemmapper\\solutions\\consoleapp\\solarmapperui\\datatranslators.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\datatranslators.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\openingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\openingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\satelitemap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -71,24 +87,8 @@
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\controlpanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\solarsystemmappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\solarsystemmappanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\solarmapperui.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|solutionrelative:solarmapperui\\solarmapperui.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\nasahorizonsdatafetch\\fetcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|solutionrelative:nasahorizonsdatafetch\\fetcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\nasahorizonsdatafetch\\datareaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AD20731C-3E5F-4988-A027-B89FB8B9B1D3}|NASAHorizonsDataFetch\\NASAHorizonsDataFetch.csproj|solutionrelative:nasahorizonsdatafetch\\datareaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D2DCD657-75E2-4F7D-88FB-75CC693E6930}|SolarMapperUI\\SolarMapperUI.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\openingform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -97,10 +97,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{433BDD0C-395C-4D17-8749-9F2395BB6CB7}|SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarsystemmapper\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{433BDD0C-395C-4D17-8749-9F2395BB6CB7}|SolarSystemMapper\\SolarSystemMapper_ConsoleApp.csproj|solutionrelative:solarsystemmapper\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A34C6A90-3AE7-4C44-96F7-40289425E79C}|DataReader_Tests\\DataReader_Tests.csproj|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\datareader_tests\\findmethodstests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A34C6A90-3AE7-4C44-96F7-40289425E79C}|DataReader_Tests\\DataReader_Tests.csproj|solutionrelative:datareader_tests\\findmethodstests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\solarmapperui\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -114,32 +110,58 @@
       "DocumentGroups": [
         {
           "DockedWidth": 163,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MainForm.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.Designer.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\MainForm.Designer.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.Designer.cs",
-              "RelativeToolTip": "SolarMapperUI\\MainForm.Designer.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAXAAAA",
+              "DocumentIndex": 6,
+              "Title": "MapSettingsForm.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MapSettingsForm.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\MapSettingsForm.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MapSettingsForm.cs",
+              "RelativeToolTip": "SolarMapperUI\\MapSettingsForm.cs",
+              "ViewState": "AQIAACMAAAAAAAAAAAAqwDIAAABFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T16:12:12.147Z",
+              "WhenOpened": "2025-09-01T20:31:35.513Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "MapPanel.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MapPanel.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\MapPanel.cs",
               "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MapPanel.cs",
               "RelativeToolTip": "SolarMapperUI\\MapPanel.cs",
-              "ViewState": "AQIAAGkAAAAAAAAAAAD4v3QAAAAjAAAA",
+              "ViewState": "AQIAAGsAAAAAAAAAAAASwIEAAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-18T14:53:02.347Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DataRecords.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\DataRecords.cs",
+              "RelativeDocumentMoniker": "EphemerisData\\DataRecords.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\DataRecords.cs",
+              "RelativeToolTip": "EphemerisData\\DataRecords.cs",
+              "ViewState": "AQIAAJ8AAAAAAAAAAAAAAK0AAABBAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-17T11:08:56.802Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FindMethodsTests.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\DataReader_Tests\\FindMethodsTests.cs",
+              "RelativeDocumentMoniker": "DataReader_Tests\\FindMethodsTests.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\DataReader_Tests\\FindMethodsTests.cs",
+              "RelativeToolTip": "DataReader_Tests\\FindMethodsTests.cs",
+              "ViewState": "AQIAAPIBAAAAAAAAAAAiwLoBAAATAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-03T14:13:13.462Z",
               "EditorCaption": ""
             },
             {
@@ -150,112 +172,75 @@
               "RelativeDocumentMoniker": "EphemerisData\\DataTables.cs",
               "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\DataTables.cs",
               "RelativeToolTip": "EphemerisData\\DataTables.cs",
-              "ViewState": "AQIAAH0AAAAAAAAAAAAcwIoAAAA2AAAA",
+              "ViewState": "AQIAAMcAAAAAAAAAAAAuwNAAAAAyAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-21T13:39:00.99Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MapSettingsForm.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MapSettingsForm.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\MapSettingsForm.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MapSettingsForm.cs",
-              "RelativeToolTip": "SolarMapperUI\\MapSettingsForm.cs",
-              "ViewState": "AQIAAG0AAAAAAAAAAAAuwIcAAAArAAAA",
+              "DocumentIndex": 1,
+              "Title": "DataReaders.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\DataReaders.cs",
+              "RelativeDocumentMoniker": "NASAHorizonsDataFetch\\DataReaders.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\DataReaders.cs",
+              "RelativeToolTip": "NASAHorizonsDataFetch\\DataReaders.cs",
+              "ViewState": "AQIAACoCAAAAAAAAAAAkwDICAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T20:31:35.513Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "DataRecords.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\DataRecords.cs",
-              "RelativeDocumentMoniker": "EphemerisData\\DataRecords.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\EphemerisData\\DataRecords.cs",
-              "RelativeToolTip": "EphemerisData\\DataRecords.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAADIAAAB8AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-17T11:08:56.802Z",
+              "WhenOpened": "2025-08-22T07:57:12.003Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Fetcher.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\Fetcher.cs",
+              "RelativeDocumentMoniker": "NASAHorizonsDataFetch\\Fetcher.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\Fetcher.cs",
+              "RelativeToolTip": "NASAHorizonsDataFetch\\Fetcher.cs",
+              "ViewState": "AQIAAJwAAAAAAAAAAAAQwLQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-30T09:29:22.522Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "NightSkyMapPanel.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\NightSkyMapPanel.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\NightSkyMapPanel.cs",
               "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\NightSkyMapPanel.cs",
               "RelativeToolTip": "SolarMapperUI\\NightSkyMapPanel.cs",
-              "ViewState": "AQIAADMAAAAAAAAAAAASwEgAAAAmAAAA",
+              "ViewState": "AQIAACEAAAAAAAAAAAAYwDMAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-18T14:52:26.127Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
+              "Title": "MainForm.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\MainForm.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.cs",
+              "RelativeToolTip": "SolarMapperUI\\MainForm.cs",
+              "ViewState": "AQIAABgAAAAAAAAAAAAkwCkAAABHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-01T15:27:22.178Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\Program.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\Program.cs",
               "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\Program.cs",
               "RelativeToolTip": "SolarMapperUI\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAaAAAA",
+              "ViewState": "AQIAABMAAAAAAAAAAAAowCUAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-19T14:46:24.587Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "TypeFilterForm.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\TypeFilterForm.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs",
-              "RelativeToolTip": "SolarMapperUI\\TypeFilterForm.cs",
-              "ViewState": "AQIAACEAAAAAAAAAAAAowDEAAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T16:12:50.399Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "TypeFilterForm.cs [N\u00E1vrh]",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\TypeFilterForm.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs [N\u00E1vrh]",
-              "RelativeToolTip": "SolarMapperUI\\TypeFilterForm.cs [N\u00E1vrh]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T12:12:45.707Z",
-              "EditorCaption": " [N\u00E1vrh]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "SettingsFormControl.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SettingsFormControl.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\SettingsFormControl.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SettingsFormControl.cs",
-              "RelativeToolTip": "SolarMapperUI\\SettingsFormControl.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-02T16:04:38.76Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "OpeningForm.cs [N\u00E1vrh]",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\OpeningForm.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\OpeningForm.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\OpeningForm.cs [N\u00E1vrh]",
-              "RelativeToolTip": "SolarMapperUI\\OpeningForm.cs [N\u00E1vrh]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-31T16:04:37.653Z",
-              "EditorCaption": " [N\u00E1vrh]"
             },
             {
               "$type": "Document",
@@ -271,13 +256,26 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "SolarSystemMapPanel.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SolarSystemMapPanel.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\SolarSystemMapPanel.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SolarSystemMapPanel.cs",
+              "RelativeToolTip": "SolarMapperUI\\SolarSystemMapPanel.cs",
+              "ViewState": "AQIAADEAAAAAAAAAAADwv0kAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-20T16:20:15.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 12,
               "Title": "DataTranslators.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\DataTranslators.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\DataTranslators.cs",
               "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\DataTranslators.cs",
               "RelativeToolTip": "SolarMapperUI\\DataTranslators.cs",
-              "ViewState": "AQIAAAEAAAAAAAAAAAAuwAkAAAAAAAAA",
+              "ViewState": "AQIAABAAAAAAAAAAAAAQwKwAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-28T13:49:18.846Z",
               "EditorCaption": ""
@@ -285,6 +283,67 @@
             {
               "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "MainForm.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.Designer.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\MainForm.Designer.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.Designer.cs",
+              "RelativeToolTip": "SolarMapperUI\\MainForm.Designer.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T16:12:12.147Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "TypeFilterForm.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\TypeFilterForm.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs",
+              "RelativeToolTip": "SolarMapperUI\\TypeFilterForm.cs",
+              "ViewState": "AQIAACEAAAAAAAAAAAAowDEAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T16:12:50.399Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "TypeFilterForm.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\TypeFilterForm.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\TypeFilterForm.cs [Design]",
+              "RelativeToolTip": "SolarMapperUI\\TypeFilterForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-01T12:12:45.707Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "SettingsFormControl.cs",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SettingsFormControl.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\SettingsFormControl.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SettingsFormControl.cs",
+              "RelativeToolTip": "SolarMapperUI\\SettingsFormControl.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-02T16:04:38.76Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "OpeningForm.cs [N\u00E1vrh]",
+              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\OpeningForm.cs",
+              "RelativeDocumentMoniker": "SolarMapperUI\\OpeningForm.cs",
+              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\OpeningForm.cs [N\u00E1vrh]",
+              "RelativeToolTip": "SolarMapperUI\\OpeningForm.cs [N\u00E1vrh]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-31T16:04:37.653Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
               "Title": "OpeningForm.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\OpeningForm.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\OpeningForm.cs",
@@ -292,12 +351,11 @@
               "RelativeToolTip": "SolarMapperUI\\OpeningForm.cs",
               "ViewState": "AQIAABYAAAAAAAAAAAAiwCUAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-31T16:05:53.443Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-31T16:05:53.443Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 19,
               "Title": "SateliteMap.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SateliteMap.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\SateliteMap.cs",
@@ -310,20 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "MainForm.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\MainForm.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.cs",
-              "RelativeToolTip": "SolarMapperUI\\MainForm.cs",
-              "ViewState": "AQIAAAsAAAAAAAAAAAAAwB4AAAAMAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T15:27:22.178Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "ControlPanel.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\ControlPanel.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\ControlPanel.cs",
@@ -331,37 +376,11 @@
               "RelativeToolTip": "SolarMapperUI\\ControlPanel.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAXAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T10:36:10.787Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-30T10:36:10.787Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "SolarSystemMapPanel.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SolarSystemMapPanel.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\SolarSystemMapPanel.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SolarSystemMapPanel.cs",
-              "RelativeToolTip": "SolarMapperUI\\SolarSystemMapPanel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAXAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-20T16:20:15.618Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "MainForm.cs [N\u00E1vrh]",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.cs",
-              "RelativeDocumentMoniker": "SolarMapperUI\\MainForm.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\MainForm.cs [N\u00E1vrh]",
-              "RelativeToolTip": "SolarMapperUI\\MainForm.cs [N\u00E1vrh]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T15:26:51.235Z",
-              "EditorCaption": " [N\u00E1vrh]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "SolarMapperUI.csproj",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\SolarMapperUI.csproj",
               "RelativeDocumentMoniker": "SolarMapperUI\\SolarMapperUI.csproj",
@@ -369,36 +388,11 @@
               "RelativeToolTip": "SolarMapperUI\\SolarMapperUI.csproj",
               "ViewState": "AQIAAAYAAAAAAAAAAAAAAAoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-08-30T10:38:02.484Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-30T10:38:02.484Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "Fetcher.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\Fetcher.cs",
-              "RelativeDocumentMoniker": "NASAHorizonsDataFetch\\Fetcher.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\Fetcher.cs",
-              "RelativeToolTip": "NASAHorizonsDataFetch\\Fetcher.cs",
-              "ViewState": "AQIAAIcAAAAAAAAAAAAgwLQAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T09:29:22.522Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "DataReaders.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\DataReaders.cs",
-              "RelativeDocumentMoniker": "NASAHorizonsDataFetch\\DataReaders.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\NASAHorizonsDataFetch\\DataReaders.cs",
-              "RelativeToolTip": "NASAHorizonsDataFetch\\DataReaders.cs",
-              "ViewState": "AQIAAJcBAAAAAAAAAADwv7YBAABDAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-22T07:57:12.003Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 24,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\SolarMapperUI\\Form1.cs",
               "RelativeDocumentMoniker": "SolarMapperUI\\Form1.cs",
@@ -430,20 +424,7 @@
               "RelativeToolTip": "SolarMapperUI\\OpeningForm.Designer.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-31T16:07:12.665Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "FindMethodsTests.cs",
-              "DocumentMoniker": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\DataReader_Tests\\FindMethodsTests.cs",
-              "RelativeDocumentMoniker": "DataReader_Tests\\FindMethodsTests.cs",
-              "ToolTip": "C:\\Users\\njan3\\SolarMaper\\SolarSystemMapper\\Solutions\\ConsoleApp\\DataReader_Tests\\FindMethodsTests.cs",
-              "RelativeToolTip": "DataReader_Tests\\FindMethodsTests.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAG4CAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-27T17:58:54.571Z"
+              "WhenOpened": "2025-08-31T16:07:12.665Z"
             }
           ]
         }

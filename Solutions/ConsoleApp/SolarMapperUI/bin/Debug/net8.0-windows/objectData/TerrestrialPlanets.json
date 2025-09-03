@@ -1,0 +1,6 @@
+[
+  { "Name": "Mercury", "Code": 199, "Type": "Terrestrial Planet" },
+  { "Name": "Venus",   "Code": 299, "Type": "Terrestrial Planet" },
+  { "Name": "Earth",   "Code": 399, "Type": "Terrestrial Planet" },
+  { "Name": "Mars",    "Code": 499, "Type": "Terrestrial Planet" }
+]

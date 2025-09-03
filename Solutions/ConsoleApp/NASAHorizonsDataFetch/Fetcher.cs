@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace SolarSystemMapper
 {
+    /**
+     * Fetches data in paralell form NASA Horizons API
+    */
     public class NASAHorizonsDataFetcher
     {
+        /**
+         * Tells NASAHorizonsDataFetcher what purpose do the data serve. With this information NASAHorizonsDataFetcher can adjust querries
+        */
         public enum MapMode : int
         {
             NightSky,
@@ -21,7 +27,9 @@ namespace SolarSystemMapper
             NeptuneSatelites = 899,
             PlutoSatelites = 999
         }
-
+        /**
+         * Translates planet names into planet satelite mode.
+        */
         public static MapMode ObjectToMapMode(string objectName)
         {
             switch (objectName)
@@ -53,8 +61,15 @@ namespace SolarSystemMapper
         private readonly double _observerLongitude;
 
         private const string NASAHorizonsURL = "https://ssd.jpl.nasa.gov/api/horizons.api";
-
-        public NASAHorizonsDataFetcher(MapMode mode, List<ObjectEntry> ObjectsToFetch, DateTime startDate, DateTime endDate, double observerLatitude = 0, double observerLongitude = -90)
+        /**
+         * @param mode Mode of the fetch.
+         * @param ObjectsToFetch Objects to fetch
+         * @param startDate First date for which to fetch the data.
+         * @param endDate Last date for which to fetch the data.
+         * @param observerLatitude Latitude of the observer, relevant only if mode = MapMode.NightSky
+         * @param observerLongitude Longitude of the observer, relecant only if mode = MapMode.NightSky
+        */
+        public NASAHorizonsDataFetcher(MapMode mode, List<ObjectEntry> ObjectsToFetch, DateTime startDate, DateTime endDate, double observerLatitude = 0, double observerLongitude = 0)
         {
             Mode = mode;
             _objectsToFetch = ObjectsToFetch;
@@ -63,11 +78,15 @@ namespace SolarSystemMapper
             this._observerLatitude = observerLatitude;
             this._observerLongitude = observerLongitude;
         }
-
+        /**
+         * Generates querry for NASA Horizons API.
+         * @param objectCode NASA Horizon API code for the object to fetch
+         * @return URL with querry
+        */
         private string _generateURl(int objectCode)
         {
 
-            using var client = new HttpClient();
+            
             string center = this.Mode switch
             {
                 MapMode.NightSky => "coord@399",
@@ -94,29 +113,10 @@ namespace SolarSystemMapper
 
 
         }
-        [Obsolete]
-        private IEnumerable<TData> _readData<TReader, TData>(string[] rawData)
-            where TReader : IHorizonsResponseReader<TData>
-            where TData : IEphemerisData<IEphemerisTableRow>
-        {
-            var result = new List<TData>();
 
-            for (int i = 0; i < rawData.Length; i++)
-            {
-                var answer = rawData[i];
-                var name = _objectsToFetch[i].Name;
-                var code = _objectsToFetch[i].Code;
-
-                IHorizonsResponseReader<TData> dataReader = (Mode == MapMode.NightSky)
-                                                            ? (IHorizonsResponseReader<TData>)new HorizonsObserverResponseReader(answer, name, _objectsToFetch[i].Type, code)
-                                                            : (IHorizonsResponseReader<TData>)new HorizonsVectorResponseReader(answer, name, _objectsToFetch[i].Type, code);
-
-                result.Add(dataReader.Read());
-            }
-
-            return result;
-        }
-
+        /**
+         * Fetches data in parallel form NASA Horizons API and parses them.
+        */
         public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch()
         {
 
@@ -127,6 +127,10 @@ namespace SolarSystemMapper
                 : _readDataParallel<HorizonsVectorResponseReader, EphemerisVectorData>(answers);
 
         }
+        /**
+         * Fetches data from NASA Horizons API i paralell.
+         * @param maxParallelism Maximal number of parralel threads.
+        */
         private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
         {
             using var semaphore = new SemaphoreSlim(maxParallelism);
@@ -153,7 +157,7 @@ namespace SolarSystemMapper
         }
 
 
-
+        [Obsolete]
         private IEnumerable<TData> _readDataParallel<TReader, TData>(string[] rawData)
             where TReader : IHorizonsResponseReader<TData>
             where TData : IEphemerisData<IEphemerisTableRow>

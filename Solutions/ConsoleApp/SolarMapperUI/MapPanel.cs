@@ -33,7 +33,7 @@ namespace SolarMapperUI
         public DateTime CurrentPictureDate { get; }
 
         public event EventHandler<SwitchViewRequestedEvent> MapSwitch;
-
+        public List<ObjectEntry> ObjectEntries { get; }
         public void CleanAndDispose();
 
 
@@ -46,7 +46,7 @@ namespace SolarMapperUI
 
         protected List<FormBody<TData>> _data;
 
-        protected List<ObjectEntry> _objectEntries;
+        public List<ObjectEntry> ObjectEntries { get; protected set; }
 
         public event EventHandler<SwitchViewRequestedEvent> MapSwitch;
 
@@ -79,23 +79,6 @@ namespace SolarMapperUI
             }
         }
 
-
-        protected virtual void _updateNameVisibilityBasedOnLocation() 
-        {
-            foreach (var body in this._data)
-            {
-                foreach (var pixelInfo in body.PixelInfos)
-                {
-                    if (body.BodyData.objectData.Type != "Star") 
-                    { 
-                        if (Math.Sqrt(Math.Pow(pixelInfo.CenterCoordinates.X - pixelInfo.BodyCoordinates.X, 2) + Math.Pow(pixelInfo.CenterCoordinates.Y - pixelInfo.BodyCoordinates.Y, 2)) < 10) pixelInfo.ShowName = false; 
-                        else if (Math.Sqrt(Math.Pow(pixelInfo.CenterCoordinates.X - pixelInfo.BodyCoordinates.X, 2) + Math.Pow(pixelInfo.CenterCoordinates.Y - pixelInfo.BodyCoordinates.Y, 2)) >= 10 && this._objectsWithVisibleName.Contains(body.BodyData.objectData.Name)) pixelInfo.ShowName = true;
-                    }
-
-                }
-            }
-        }
-
         protected readonly int _numberOfDaysToPrefetch = 30;
         protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
         {
@@ -110,7 +93,7 @@ namespace SolarMapperUI
             else
             {
                 _registerVisibleObjects();
-                _filter();
+                if (_doFilter) _filter();
             }
         }
 
@@ -118,7 +101,7 @@ namespace SolarMapperUI
         {
             _loadingLabel.Location = new Point(this.ClientRectangle.Width/2, this.ClientRectangle.Height /2);
             _loadingLabel.Visible = true;
-            _originalData = (await GetHorizonsData(_objectEntries)).ToList();
+            _originalData = (await GetHorizonsData(ObjectEntries)).ToList();
             SetData();
             _initialFetchDone = true;
             _loadingLabel.Visible = false;
@@ -135,21 +118,19 @@ namespace SolarMapperUI
 
         protected void _filter()
         {
+            Debug.WriteLine("filtering...");
+            Debug.WriteLine("Black list");
+            foreach (var name in _blackList) Debug.WriteLine(name);
             if (_data == null) return;
             var filteredData = _data.Where(x => _generalFilter(x.BodyData.objectData)); //uses general filter
             //typove filtrovani
             //....
-            _data = filteredData.Union(from x in _data
-                               where this._whiteList.Any(name => name == x.BodyData.objectData.Name) // _objectEntries which are on whitelist
-                               && !this._blackList.Any(name => name == x.BodyData.objectData.Name) // _objectEntries which are not on blackList
-                               select x).ToList();
-            _objectEntries = (from entry in _objectEntries                                                        // no filtering required in future fetches
-                      where _data.Any(x => x.BodyData.objectData.Name == entry.Name)
-                      || _data.Any(x => x.BodyData.objectData.Code == entry.Code)
-                      select entry).ToList();
+            _data = filteredData.Where(x => !this._blackList.Any(name => name == x.BodyData.objectData.Name))
+                .Union(_data.Where(x=> this._whiteList.Any(name => name == x.BodyData.objectData.Name)))
+                .ToList();
 
         }
-
+        protected bool _doFilter;
         protected Predicate<ObjectData> _generalFilter { get; set; }
         protected List<string> _whiteList {  get; set; }
         protected List<string> _blackList { get; set; }
@@ -159,13 +140,15 @@ namespace SolarMapperUI
             _generalFilter = generalMapSettings.GeneralFilter;
             _whiteList = generalMapSettings.WhiteList;
             _blackList = generalMapSettings.BlackList;
+            CurrentPictureDate = generalMapSettings.StartDate;
+            this._doFilter = true;
 
             IEnumerable<ObjectEntry> objectsEnumerable = new List<ObjectEntry>();
             foreach (var typeName in generalMapSettings.ObjectTypes)
             {
-                objectsEnumerable = objectsEnumerable.Union(DataTables.GiveEntries(typeName));
+                objectsEnumerable = objectsEnumerable.Union(DataTables.GiveEntries(typeName.Replace(" ", "")));
             }
-            _objectEntries = objectsEnumerable.ToList();
+            ObjectEntries = objectsEnumerable.ToList();
 
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.Black;
@@ -178,6 +161,7 @@ namespace SolarMapperUI
 
         protected MapPanel()
         {
+            this._doFilter = false;
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.Black;
             this.Controls.Add(_loadingLabel);
@@ -358,7 +342,7 @@ namespace SolarMapperUI
         private void ShowMoonsButtonClick(string planetName)
         {
             var objectEntries = DataTables.GiveSatelitesToPlanet(planetName);
-            var currentObject = this._objectEntries.Where(x => x.Name == planetName);
+            var currentObject = this.ObjectEntries.Where(x => x.Name == planetName);
             objectEntries.UnionWith(currentObject);
             this.InvokeMapSwitch(objectEntries.ToList(),this.CurrentPictureDate, NASAHorizonsDataFetcher.ObjectToMapMode(planetName), planetName);
         }

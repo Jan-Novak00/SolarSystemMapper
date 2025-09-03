@@ -6,16 +6,31 @@ using System.Text.RegularExpressions;
 
 namespace SolarSystemMapper
 {
-
+    /**
+     * Stores data about ephemeris for fetching.
+     * @param Name Name of the ephemeris.
+     * @param Code Code of the ephemeris for fetching.
+     * @param Type Type of ephemeris.
+     */
     public record ObjectEntry(string Name, int Code, string Type);
 
+    /**
+     * Represents one row in coordinate table
+     */
     public interface IEphemerisTableRow
     {
         public DateTime? date { get; }
+        /** Must be implemented in a derived class.
+         * @param data Text representation of one row of coordinate table
+        */
         static TRow stringToRow<TRow>(string data) where TRow : IEphemerisTableRow
         {
             throw new NotImplementedException();
         }
+        /**
+         * @return  If input is "n.a." or if the input can not be parsed into double, then returns null, else returns parsed value to double.
+         * 
+         */
         static double? TryParseNullable(string input)
         {
             if (input == "n.a.") return null;
@@ -30,16 +45,22 @@ namespace SolarSystemMapper
             bool success =
                 double.TryParse(tokens[start], out double a) &
                 double.TryParse(tokens[start + 1], out double b) &
-                double.TryParse(tokens[start + 2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double c);
+                double.TryParse(tokens[start + 2], out double c);
+                //double.TryParse(tokens[start + 2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double c);
 
             return success ? new[] { a, b, c } : null;
         }
     }
-
+    /**
+     * Stores properties of given object.
+    */
     public record ObjectData(string Name, int Code, string Type, double Radius_km = double.NaN, double Density_gpcm3 = double.NaN, double Mass_kg = double.NaN, 
         double RotationPeriod_hr = double.NaN, double EquatorialGravity_mps2 = double.NaN,
         double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN)
     {
+        /**
+         * @return Human readable information about the object. Excludes inofrmation set to double.NaN
+        */
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
@@ -55,13 +76,23 @@ namespace SolarSystemMapper
             return stringBuilder.ToString();
         }
     }
-
+    /**
+     * Stores data about object position and properties
+    */
     public interface IEphemerisData<out TRow> where TRow : IEphemerisTableRow
     {
+        /**
+         * Object position data.
+        */
         public IReadOnlyList<TRow> ephemerisTable { get; }
+        /**
+         * Object properties data
+        */
         public ObjectData objectData { get; }
     }
-
+    /**
+     * Stores positional information for Night Sky map.
+    */
     public record EphemerisTableRowObserver(DateTime? date, double[]? RA, double[]? DEC, double? dRA_dt, double? dDEC_dt, double? Azi, double? Elev) : IEphemerisTableRow
     {
         public static EphemerisTableRowObserver stringToRow(string data)
@@ -92,6 +123,9 @@ namespace SolarSystemMapper
 
 
     }
+    /**
+     * Stores data abou ephemeris for Night Sky map.
+    */
     public record EphemerisObserverData(IReadOnlyList<EphemerisTableRowObserver> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowObserver>
     {
         public override string ToString()
@@ -101,7 +135,9 @@ namespace SolarSystemMapper
         
 
     }
-
+    /**
+     * Stores positional data for carthesian coordinate system
+    */
     public record EphemerisTableRowVector(DateTime? date = null, double? X = null, double? Y = null, double? Z = null, double? VX = null, double? VY = null, double? VZ = null, double? LightTime = null, double? Range = null, double? RangeRate = null) : IEphemerisTableRow
     {
         public static EphemerisTableRowVector stringToRow(string data)
@@ -134,6 +170,9 @@ namespace SolarSystemMapper
 
 
     }
+    /**
+     * Stores data about object for Solar System map or Moon view
+    */
     public record EphemerisVectorData(IReadOnlyList<EphemerisTableRowVector> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowVector>
     {
 

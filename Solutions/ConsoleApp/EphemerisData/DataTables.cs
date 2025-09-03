@@ -9,10 +9,35 @@ using System.Text.Json;
 
 namespace SolarSystemMapper
 {
-
+    /**
+     * Interface for accesing ObjectEntry instances
+    */
     public static class DataTables
     {
         private static readonly string _objectDataFolder = "objectData/";
+
+        private static HashSet<ObjectEntry>? _TerrestrialPlanets_BackingField = null;
+        public static HashSet<ObjectEntry> TerrestrialPlanets
+        {
+            get
+            {
+                if (_TerrestrialPlanets_BackingField == null) _TerrestrialPlanets_BackingField = _loadObjectEntries(_objectDataFolder + "TerrestrialPlanets.json");
+                return _TerrestrialPlanets_BackingField;
+
+            }
+        }
+
+        private static HashSet<ObjectEntry>? _GasGiants_BackingField = null;
+        public static HashSet<ObjectEntry> GasGiants
+        {
+            get
+            {
+                if (_GasGiants_BackingField == null) _GasGiants_BackingField = _loadObjectEntries(_objectDataFolder + "GasGiants.json");
+                return _GasGiants_BackingField;
+
+            }
+        }
+
 
         private static HashSet<ObjectEntry>? _Planets_BackingField = null;
         public static HashSet<ObjectEntry> Planets 
@@ -129,12 +154,23 @@ namespace SolarSystemMapper
             "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
         };
 
+        /**
+         * @return Returns set of entries based on the input string
+        */
         public static HashSet<ObjectEntry> GiveEntries(string typeName)
         {
             switch (typeName)
             {
                 case "Stars":
                     return Stars;
+                case "TerrestrialPlanets":
+                    return TerrestrialPlanets;
+                case "GasGiants":
+                    return GasGiants;
+                case "DwarfPlanets":
+                    return DwarfPlanets;
+                case "Spacecrafts":
+                    return Spacecrafts;
                 default:
                     return new HashSet<ObjectEntry>();
             }
@@ -143,7 +179,9 @@ namespace SolarSystemMapper
         }
 
 
-
+        /**
+         * @return For given object name, returns set of its satelites.
+        */
         public static HashSet<ObjectEntry> GiveSatelitesToPlanet(string planetName)
         {
             switch (planetName)
@@ -167,6 +205,9 @@ namespace SolarSystemMapper
             }
         }
 
+        /**
+         * @return Deserializes HasSet<ObjectEntry> from external json.
+        */
         private static HashSet<ObjectEntry> _loadObjectEntries(string file)
         {
             string dataString = File.ReadAllText(file);

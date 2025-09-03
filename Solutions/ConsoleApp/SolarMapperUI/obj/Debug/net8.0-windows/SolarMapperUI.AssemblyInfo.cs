@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("SolarMapperMainForm")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("SolarMapperUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9189f8e6b47d406bdee0a1eb5fd01ca7e9f8d50c")]
-[assembly: System.Reflection.AssemblyProductAttribute("SolarMapperMainForm")]
-[assembly: System.Reflection.AssemblyTitleAttribute("SolarMapperMainForm")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7fc8241dbc7db39ca545b95414e9513904f792f8")]
+[assembly: System.Reflection.AssemblyProductAttribute("SolarMapperUI")]
+[assembly: System.Reflection.AssemblyTitleAttribute("SolarMapperUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]

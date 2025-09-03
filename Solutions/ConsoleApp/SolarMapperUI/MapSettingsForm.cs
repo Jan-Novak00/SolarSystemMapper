@@ -34,7 +34,7 @@ namespace SolarMapperUI
                                                     );
             if (result == DialogResult.Cancel) return;
 
-            SolarMapperMainForm.MapType mapType = (MapType_ComboBox.SelectedValue == "Night Sky") ? SolarMapperMainForm.MapType.NightSky : SolarMapperMainForm.MapType.SolarSystem;
+            SolarMapperMainForm.MapType mapType = (MapType_ComboBox.SelectedItem?.ToString() == "Night Sky") ? SolarMapperMainForm.MapType.NightSky : SolarMapperMainForm.MapType.SolarSystem;
             DateTime date = Date_TimePicker.Value;
             List<string> objectTypes = ObjectTypes_CheckedListBox.CheckedItems.Cast<string>().ToList();
             List<string> whiteList = WhiteList_TextBox.Text.Split(',').ToList();
@@ -48,7 +48,7 @@ namespace SolarMapperUI
                 if (mapType == SolarMapperMainForm.MapType.NightSky)
                 {
                     string coorString = Coordinates_TextBox.Text;
-                    if (coorString == "") throw new NullReferenceException("Please, fill in coordinates. Two numbers, separated by comma.");
+                    if (coorString == "") throw new ArgumentException("Please, fill in coordinates. Two numbers, separated by comma.");
                     string[] coors = coorString.Split(',');
                     if (coors.Length != 2) throw new ArgumentException("Coordinates must have two components - latitude, followed by longitude.");
                     bool latitudeSuccess = double.TryParse(coors[0], out latitude);
@@ -59,11 +59,6 @@ namespace SolarMapperUI
 
                 }
                 filter = this._makeFilter();
-            }
-            catch (NullReferenceException ne)
-            {
-                MessageBox.Show(ne.Message);
-                return;
             }
             catch (ArgumentException ae)
             {

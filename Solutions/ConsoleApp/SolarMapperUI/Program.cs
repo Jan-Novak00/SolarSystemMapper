@@ -34,6 +34,8 @@ namespace SolarMapperUI
                     return;
                 typeSettingsDictionary[typeName] = typeForm.TypeSettings!;
             }
+            var mainForm = new SolarMapperMainForm(generalSettings);
+            mainForm.ShowDialog();
 
         }
     }

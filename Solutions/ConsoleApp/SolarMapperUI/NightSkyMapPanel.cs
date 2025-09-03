@@ -49,7 +49,7 @@ namespace SolarMapperUI
 
         public NightSkyMapPanel(List<ObjectEntry> objects, DateTime mapStartDate)
         {
-            this._objectEntries = objects;
+            this.ObjectEntries = objects.Where(x => x.Name != "Earth").ToList();
             this._pictureIndex = 0;
             this.CurrentPictureDate = mapStartDate;
             this._originalData = null;

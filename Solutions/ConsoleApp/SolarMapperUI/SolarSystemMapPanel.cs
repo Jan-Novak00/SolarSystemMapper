@@ -57,7 +57,7 @@ namespace SolarMapperUI
         public SolarSystemMapPanel(List<ObjectEntry> objects, DateTime mapStartDate, float scale_km = 1_000_000)
         {
             this.Scale_km = scale_km;
-            this._objectEntries = objects;
+            this.ObjectEntries = objects;
             this._pictureIndex = 0;
             this.CurrentPictureDate = mapStartDate;
             this._originalData = null;
@@ -67,7 +67,20 @@ namespace SolarMapperUI
             this.ScaleChange += OnChangeScale;
 
         }
-        
+
+        public SolarSystemMapPanel(GeneralMapSettings generalMapSettings, float scale_km = 1_000_000) : base(generalMapSettings)
+        {
+            this.Scale_km = scale_km;
+            this._pictureIndex = 0;
+            this._originalData = null;
+            this._data = null;
+            this.BackColor = Color.Black;
+            this.Paint += PrintObjects;
+            this.ScaleChange += OnChangeScale;
+
+        }
+
+
 
         protected override void OnHandleCreated(EventArgs e)
         {
