@@ -61,13 +61,17 @@ Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl ref
 
 ## Struktura kódu
 
-### Třídy spravující data
-Jelikož NASA Horizons API neposkytuje rozumný seznam kódů spolu s jmény objektů (poskytuje je jen přes telnet), je potřeba tyto informace mít uložené lokálně. V kódu tyto informace uchovává třída ObjectEntry
+### Reprezentace dat
+
+### Fetchování dat
+Dotaz na API musí obsahovat číselný kód tělesa, který nás zajímá, a číselný kód tělesa ve středu souřadné soustavy.
+Jelikož NASA Horizons API neposkytuje rozumný seznam kódů spolu s jmény objektů (poskytuje je jen přes telnet), je potřeba tyto informace mít uložené lokálně. V kódu tyto informace uchovává record ObjectEntry
 
 ```c#
 public record ObjectEntry(string Name, int Code, string Type);
 ```
-Tato třída se následně používá pře fetchování dat ze serveru a to konkrétně třídou
+kde položka Name a Type jsou přítomny jen pro zjednudušení zpracování dat aplikací a nejsou třeba pro komunikaci s API.
+Zmíněný record se následně používá pro fetchování dat ze serveru a to konkrétně třídou
 ```c#
 public class NASAHorizonsDataFetcher
 {
@@ -91,13 +95,20 @@ public enum MapMode : int
     PlutoSatelites = 999
 }
 ```
-Dotaz poslaný na NASA Horizons API obsahuje parametr EPHEM_TYPE, který může mít dvě hodnoty: buď OBSERVER, kdy souřadnice objektu v datech odpovědi jsou udaná tak, jak se jeví na noční obloze, jmenovitě obsahují azimut a výšku objektu, nebo VECTOR, kdy zaslaná data obsahují kartézské souřadnice objektu vzhledem ke zvolenému středu. Je-li vstupem NightSky, pak je dotaz v módu OBSERVER a střed je nastaven na Zemi, je-li vstupem SolarSystem, je dotaz v módu VECTOR a středem je Slunce. U ostatních explicitně zmíněných hodnot je EPHEM_TYPE hodnoty vektor a sředem je těleso, které je udáno v názvu hodnoty (např. pro JupiterSatelites je středem Jupiter). Tyto hodnoty jsou pak použity pro získání o datech měsíců. Explicitně nastavené intové hodnoty jsou přímo kódy středových těles.
+Dotaz poslaný na NASA Horizons API obsahuje parametr EPHEM_TYPE, který může mít dvě hodnoty: buď OBSERVER, kdy jsou udány polární souřadnice objektu na obloze, jmenovitě obsahují azimut a výšku objektu, nebo VECTOR, kdy zaslaná data obsahují kartézské souřadnice objektu vzhledem ke zvolenému středu. Střed souřadné soustavy je má v querry části URL název CENTER, těleso, klteré nás zajímá se udává pod názvem COMMAND.
+Je-li vstupem NightSky, pak je dotaz v módu OBSERVER a střed je nastaven na Zemi, je-li vstupem SolarSystem, je dotaz v módu VECTOR a středem je Slunce. U ostatních explicitně zmíněných hodnot je EPHEM_TYPE hodnoty VECTOR a středem je těleso, které je udáno v názvu hodnoty (např. pro JupiterSatelites je středem Jupiter). Tyto hodnoty jsou pak použity pro získání dat měsíců. Explicitně nastavené intové hodnoty jsou přímo kódy středových těles.
 
-Parametry observerLatitude a observerLongitude jsou relevantní jen pro mapu noční oblohy, tedy pokud je mode roven MapMode.NightSky.
+Parametry observerLatitude a observerLongitude jsou relevantní jen pro mapu noční oblohy, tedy pokud je mode roven MapMode.NightSky. V dotazu jsou tyto hodnoty dosazeny do parametru SITE_COORD.
 
-Parametry DateTime startDate, DateTime endDate udávají první a pslední datum, pro které se budou získávat data.
+Parametry DateTime startDate, DateTime endDate udávají první a pslední datum, pro které se budou získávat data. V Dotazu jsou uložena do parametrů START_TIME a STOP_TIME.
 
 Parametr List<ObjectEntry> ObjectsToFetch jsou objekty, pro které provádíme dotazy na server.
+
+Generování dotazového URL řídí privátní metoda
+```c#
+private string _generateURl(int objectCode)
+```
+Součástí URL je též parametr STEP_SIZE, který udává časové rozdíly mezi zaslanými daty. V aplikaci je vždy tento parametr nastaven na jeden den ("1 d").
 
 Metoda Fetch režíruje fetchování a parsování dat, přičemž samotný fetch je prováděn metodou
 ```c#
@@ -114,6 +125,20 @@ které implementují rozhraní
 ```c#
 public interface IHorizonsResponseReader<out TData> where TData : IEphemerisData<IEphemerisTableRow>
 {
-    TData Read();
+    TData Read();    
 }
 ```
+Metoda Read vrací naparsovaný objekt implementující třídu IEphemerisData.
+
+Zmíněné třídy pro parsování též dědí od abstraktní třídy
+```c#
+public abstract class ObjectReader
+```
+Tato třída se hlavně stará o čtení vlastností těles, které se netýkají polohy (např. jejich hmotnost, teplotu apod.).
+NASA Horizons API neposílá data ve strojově čitelném formátu, a značení jednotlivých vlastností těles není konzistentní, např. gravitační zrychlení je u Slunce udáno ve tvaru "Surface gravity       =  274.0 m/s^2", u Země jako "g_e, m/s^2  (equatorial) = 9.7803267715" a u Venuše jako "Equ. gravity m/ s ^ 2 = 8.870". Proto má metoda ObjectReader pro každou vlastnost tělesa zvláštní třídu, které používají různé reglární výrazy pro nalezení těchto vlastností. Tyto třídy mají názvy ve tvaru "_findNázevVlastnosti".
+Tyto metody jsou používány metodou
+```c#
+protected ObjectData createObjectInfo()
+```
+která vrací instanci ObjectData. Tato metoda je dále využívána v implementacích metody IHorizonsResponseReader<out TData>.Read().
+
