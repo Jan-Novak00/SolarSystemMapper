@@ -55,5 +55,212 @@ Ovládá se stejným způsobem jako mapa sluneční soustavy, s tím rozdílem, 
 Tato mapa lze zobrazit jen pro vybraná tělesa a to: Země, Mars, Jupiter, Saturn, Uran, Neptun, Pluto. Tato tělesa pak jsou umístěna do středu mapy.
 Velikosti těles odpovídají měřítku, ovšem pokud by velikost zobrazovaného tělesa byla příliž malá, je jejich velikost na obrazovce nastavena na na fixní velikost.
 
+Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl referenční body, pro určení polohy. Na okrajích obrazovky se zobrazují šipky udávající, kterým směrem se Slunce a Země nachází. Pokud je měřítko dostatrčné, Země i Slunce jsou vidět jako objekty na Mapě.
 
 # Programátorská část
+
+## Struktura kódu
+
+### Reprezentace dat
+Data posílaná od API pro konkrétní nebezké těleso mají následující tvar: nejprve jsou udány vlastnosti tělesa (hmotnost, poloměr, název, gravitační zrychlení apod. - konkrétní vlastnosti jsou různé mezi různými typy těles), po kterém následuje tabulka souřadnic - nebezkých nebo kartézských. Každý řádek tabulky udává souřadnice pro konkrétní čas. Jednotlivé časy se liší o předem daný časový rozdíl (náš program fixně vyžaduje rozdíl jednoho dne).
+Data leze buď získat jako plain text, nebo jako json. Ovšem, textová a jsonové podoby dat jsou prakticky identické, json jen odděluje číslo verze API, a zbytek dat udává jako jeden řetězec. Navíc, pouze tabulka poloh je udávána v konzistentním formátu.
+
+Následující třídy jsou součástí namespace SolarSystemMapper.
+
+První část dat, která obsahuje vlastnosti objektu, je v kódu reprezenována recordem
+
+```c#
+public record ObjectData(string Name, int Code, string Type, double Radius_km = double.NaN, double Density_gpcm3 = double.NaN, double Mass_kg = double.NaN, 
+    double RotationPeriod_hr = double.NaN, double EquatorialGravity_mps2 = double.NaN,
+    double Temperature_K = double.NaN, double Pressure_bar = double.NaN, double OrbitalPeriod_y = double.NaN)
+```
+Tento record přepisuje metodu ToString - výsledný string je pro uživatele čitelnější a neobsahuje NaN hodnoty.
+
+Dále uveďme interface
+```c#
+public interface IEphemerisTableRow
+{
+  public DateTime? date { get; }
+  static TRow stringToRow<TRow>(string data) where TRow : IEphemerisTableRow
+  static double? TryParseNullable(string input)
+  static double[]? TryParseTriple(string[] tokens, int start)
+}
+```
+jehož implementace představují řádky tabulky souřadnic. Metoda stringToRow slouží k převodu řetězců na danou implementaci. Metody TryParseNullable a TryParseTriple slouží pouze k zjednodušení převodu řetězce na řádek tabulky.
+
+Program používá dvě implementace tohoto interface:
+```c#
+public record EphemerisTableRowObserver(DateTime? date, double[]? RA, double[]? DEC, double? dRA_dt, double? dDEC_dt, double? Azi, double? Elev) : IEphemerisTableRow
+```
+- slouží pro data o pozici objektu na noční obloze
+
+```c#
+public record EphemerisTableRowVector(DateTime? date = null, double? X = null, double? Y = null, double? Z = null, double? VX = null, double? VY = null, double? VZ = null, double? LightTime = null, double? Range = null, double? RangeRate = null) : IEphemerisTableRow  
+```
+- slouží pro data o kartézských souřadnicích objektu
+
+Dalším důležitým interface je
+```c#
+public interface IEphemerisData<out TRow> where TRow : IEphemerisTableRow
+{
+    public IReadOnlyList<TRow> ephemerisTable { get; }
+    public ObjectData objectData { get; }
+}
+```
+V tomto interface ephemerisTable reprezentuje tabulku poloh tělesa a objectData vlastnosti tělesa.
+
+Toto interface implementují třídy
+```c#
+public record EphemerisObserverData(IReadOnlyList<EphemerisTableRowObserver> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowObserver>
+public record EphemerisVectorData(IReadOnlyList<EphemerisTableRowVector> ephemerisTable, ObjectData objectData) : IEphemerisData<EphemerisTableRowVector>
+```
+První třída slouží pro zobrazení noční oblohy, druhá pro zobrazení mapy sluneční soustavy a měsíců.
+
+#### Reprezentace dat v UI
+Následující třídy jsou součástí namespace SolarMapperUI.
+
+Pozici těles na obrazovce v daný okamžik
+```c#
+internal class PixelBodyInfo
+{ 
+    public PixelBodyInfo(Point bodyCoordinates, Point centerCoordinates, bool visible, int diameter, Color color, bool showName)
+    {
+        BodyCoordinates = bodyCoordinates;
+        CenterCoordinates = centerCoordinates;
+        Visible = visible;
+        Diameter = diameter;
+        Color = color;
+        ShowName = showName;
+    }
+
+    public Point BodyCoordinates { get; }
+    public Point CenterCoordinates { get; }
+    public bool Visible { get; set; }
+    public int Diameter { get; set; }
+    public Color Color { get; set; }
+    public bool ShowName { get; set; }
+}
+```
+K datům o objektech je v UI přistupováno přes třídu
+```c#
+internal class FormBody<TData> where TData : IEphemerisData<IEphemerisTableRow>
+{
+    public TData BodyData { get; init; }
+    public List<PixelBodyInfo> PixelInfos { get; private set; }
+
+    public FormBody(TData bodyData, List<PixelBodyInfo> pixelInfo)
+    {
+        BodyData = bodyData;
+        PixelInfos = pixelInfo;
+    }
+    public string BodyReport(DateTime date);
+    public void SetNameVisibility(bool visibility);
+    public void ChangePixelInfos(List<PixelBodyInfo> pixelInfos);
+}
+```
+Následující metody jsou metody statické třídy
+```c#
+internal static class Translation
+```
+
+Instance tříd EphemerisVectorData a EphemerisObserverData lze převést do instancí třídy FormBody pomocí extenčních metod
+```c#
+internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,int mapRadius)
+internal static FormBody<EphemerisVectorData> ToFormBody(this EphemerisVectorData vectorData, Point center, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
+```
+Parametr center představuje souřadnice středového pixelu obrazovky, mapRadius určuje poloměr mapy noční oblohy, scale_Km určuje, kolik kilometrů na mapě sluneční soustavy/mapě měsíců představuje jeden pixel, mapHeight představuje výšku mapy, mapWidth představuje šířku mapy a respectScale udává, zda velikosti těles mají na mapě respektovat měřítko.
+
+Tyto metody využívají pro převod instancí tříd EphemerisVectorData a EphemerisObserverData na PixelBodyInfo metody
+```c#
+internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowObserver row, Point center, int mapRadius, string bodyType, string bodyName);
+internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowVector row, Point center, float scale_Km, string bodyType, string bodyName);
+```
+Barva obejektu na mapách je určena metodou
+```c#
+private static Color _getColor(string name)
+```
+která určuje barvu podle názvu objektu.
+Poloměr tělesa na mapě je určen metodou
+```c#
+private static int _getDiameter(string type);
+```
+
+### Fetchování dat
+Dotaz na API musí obsahovat číselný kód tělesa, který nás zajímá, a číselný kód tělesa ve středu souřadné soustavy.
+Jelikož NASA Horizons API neposkytuje rozumný seznam kódů spolu s jmény objektů (poskytuje je jen přes telnet), je potřeba tyto informace mít uložené lokálně. V kódu tyto informace uchovává record ObjectEntry
+
+```c#
+public record ObjectEntry(string Name, int Code, string Type);
+```
+kde položka Name a Type jsou přítomny jen pro zjednudušení zpracování dat aplikací a nejsou třeba pro komunikaci s API.
+Zmíněný record se následně používá pro fetchování dat ze serveru a to konkrétně třídou
+```c#
+public class NASAHorizonsDataFetcher
+{
+  public NASAHorizonsDataFetcher(MapMode mode, List<ObjectEntry> ObjectsToFetch, DateTime startDate, DateTime endDate, double observerLatitude = 0, double observerLongitude = -90);
+  public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch();
+}
+```
+Tato třída na základě vstupních parametrů provede fetch na server a naparsuje data do objektů splňujících rozhraní IEphemerisData<IEphemerisTableRow>>.
+První parametr konstruktoru je mód, v jakém chceme fetchovat data. Je typu NASAHorizonsDataFetcher.MapMode
+```c#
+public enum MapMode : int
+{
+    NightSky,
+    SolarSystem,
+    EarthSatelites = 399,
+    MarsSatelites = 499,
+    JupiterSatelites = 599,
+    SaturnSatelites = 699,
+    UranusSatelites = 799,
+    NeptuneSatelites = 899,
+    PlutoSatelites = 999
+}
+```
+Dotaz poslaný na NASA Horizons API obsahuje parametr EPHEM_TYPE, který může mít dvě hodnoty: buď OBSERVER, kdy jsou udány polární souřadnice objektu na obloze, jmenovitě obsahují azimut a výšku objektu, nebo VECTOR, kdy zaslaná data obsahují kartézské souřadnice objektu vzhledem ke zvolenému středu. Střed souřadné soustavy je má v querry části URL název CENTER, těleso, klteré nás zajímá se udává pod názvem COMMAND.
+Je-li vstupem NightSky, pak je dotaz v módu OBSERVER a střed je nastaven na Zemi, je-li vstupem SolarSystem, je dotaz v módu VECTOR a středem je Slunce. U ostatních explicitně zmíněných hodnot je EPHEM_TYPE hodnoty VECTOR a středem je těleso, které je udáno v názvu hodnoty (např. pro JupiterSatelites je středem Jupiter). Tyto hodnoty jsou pak použity pro získání dat měsíců. Explicitně nastavené intové hodnoty jsou přímo kódy středových těles.
+
+Parametry observerLatitude a observerLongitude jsou relevantní jen pro mapu noční oblohy, tedy pokud je mode roven MapMode.NightSky. V dotazu jsou tyto hodnoty dosazeny do parametru SITE_COORD.
+
+Parametry DateTime startDate, DateTime endDate udávají první a pslední datum, pro které se budou získávat data. V Dotazu jsou uložena do parametrů START_TIME a STOP_TIME.
+
+Parametr List<ObjectEntry> ObjectsToFetch jsou objekty, pro které provádíme dotazy na server.
+
+Generování dotazového URL řídí privátní metoda
+```c#
+private string _generateURl(int objectCode)
+```
+Součástí URL je též parametr STEP_SIZE, který udává časové rozdíly mezi zaslanými daty. V aplikaci je vždy tento parametr nastaven na jeden den ("1 d").
+
+Metoda Fetch režíruje fetchování a parsování dat, přičemž samotný fetch je prováděn metodou
+```c#
+private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
+```
+která jako vstupní argument potřebuje maximální množství vláken, na kterých může posílat dotazy. Z vlastní zkušenosti server nezvládá více než dva dotazy najednou.
+
+Parsování dat provádí třídy:
+```c#
+public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
+public class HorizonsVectorResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisVectorData>
+```
+které implementují rozhraní
+```c#
+public interface IHorizonsResponseReader<out TData> where TData : IEphemerisData<IEphemerisTableRow>
+{
+    TData Read();    
+}
+```
+Metoda Read vrací naparsovaný objekt implementující třídu IEphemerisData.
+
+Zmíněné třídy pro parsování též dědí od abstraktní třídy
+```c#
+public abstract class ObjectReader
+```
+Tato třída se hlavně stará o čtení vlastností těles, které se netýkají polohy (např. jejich hmotnost, teplotu apod.).
+NASA Horizons API neposílá data ve strojově čitelném formátu, a značení jednotlivých vlastností těles není konzistentní, např. gravitační zrychlení je u Slunce udáno ve tvaru "Surface gravity       =  274.0 m/s^2", u Země jako "g_e, m/s^2  (equatorial) = 9.7803267715" a u Venuše jako "Equ. gravity m/ s ^ 2 = 8.870". Proto má metoda ObjectReader pro každou vlastnost tělesa zvláštní třídu, které používají různé reglární výrazy pro nalezení těchto vlastností. Tyto třídy mají názvy ve tvaru "_findNázevVlastnosti".
+Tyto metody jsou používány metodou
+```c#
+protected ObjectData createObjectInfo()
+```
+která vrací instanci ObjectData. Tato metoda je dále využívána v implementacích metody IHorizonsResponseReader<out TData>.Read().
+
