@@ -13,7 +13,9 @@ Dále uživatel může vybrat, které typy těles chce zobrazit.
 Stisknutím tlačítka "Next page" se uživatel přesune na další okno pro nastavení mapy. Po přesunutí se nelze vrátit zpět.
 
 ### Obecné filtry
-Uživatel může zadat obecné filtry pro tělesa, resp. maximální a minimální hodnoty pro hmotnost, poloměr, periodu oběhu, tíhové zrychlení a hustotu. Minima jsou v základu nastavena na 0 a maxima na "Infinity", tedy maximální hodnota je neomezená. Vstup musí být převoditelný na double.
+Uživatel může zadat obecné filtry pro tělesa, resp. maximální a minimální hodnoty pro hmotnost, poloměr, periodu oběhu, tíhové zrychlení a hustotu. Navíc též může nastavit filtr na vzdálenost od středu a rychlost tělesa, ale to jen pro mapu slunečního systému. Minima jsou v základu nastavena na 0 a maxima na "Infinity", tedy maximální hodnota je neomezená. Vstup musí být převoditelný na double.
+
+Filtry se neaplikují na měsíční mapy.
 
 Poznámka: tíhové zrychlení a gravitační zrychlení jsou v této aplikaci zaměňovány, jelikož API je udává souhrně jako "Gravity" (v angličtině neexitují pro tyto koncepty oddělené termíny). Obecně platí, že u větších těles byl vybírán parametr "Equatorial gravity", u menších těles byl vybírán parametr "Gravity", či byl tento parametr vypočten z hmotnosti tělesa.
 
@@ -22,6 +24,7 @@ V neposlední řadě uživatel může nastavit tzv. white list, kam může napsa
 Pokud pro nějaký parametr se nepodařilo získat hodnotu, dané těleso filtr automaticky splní.
 
 ### Filtry pro jednotlivé typy
+
 
 ## Mapy
 ### Společné ovládací prvky
