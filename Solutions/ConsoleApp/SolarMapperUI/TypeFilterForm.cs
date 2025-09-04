@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 namespace SolarMapperUI
 {
 
-    internal record TypeSettings(string TypeName, Func<IEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>> linqFilter);
+    internal record TypeSettings(string TypeName, Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> linqFilter);
 
     public partial class TypeFilterForm : Form
     {
@@ -28,7 +29,7 @@ namespace SolarMapperUI
 
 
 
-        private Predicate<FormBody<IEphemerisData<IEphemerisTableRow>>> _makeRangeFilter()
+        private Predicate<IFormBody<IEphemerisData<IEphemerisTableRow>>> _makeRangeFilter()
         {
             Dictionary<string, string> rawValues = new Dictionary<string, string>()
             {
@@ -59,7 +60,7 @@ namespace SolarMapperUI
                 parsedValues[pair.Key] = value;
             }
 
-            bool allowNaN = FilterNaN_CheckBox.Checked;
+            bool allowNaN = !FilterNaN_CheckBox.Checked;
 
             Predicate<ObjectData> massPredicate = x => (x.Mass_kg > parsedValues["Min Mass"] && x.Mass_kg < parsedValues["Max Mass"]) || (double.IsNaN(x.Mass_kg) && allowNaN);
 
@@ -71,33 +72,42 @@ namespace SolarMapperUI
 
             Predicate<ObjectData> orbitalPeriodPredicate = x => (x.OrbitalPeriod_y > parsedValues["Min Orbital Period"] && x.OrbitalPeriod_y < parsedValues["Max Orbital Period"]) || (double.IsNaN(x.OrbitalPeriod_y) && allowNaN);
 
-            Predicate<ObjectData> allObjectDataPredicates = x => (x.Type == this.TypeName) && (massPredicate(x) && radiusPredicate(x) && densityPredicate(x) && gravityPredicate(x) && orbitalPeriodPredicate(x));
+
+            Predicate<ObjectData> allObjectDataPredicates = x =>
+            {
+               
+
+                return (x.Type == this.TypeName.Trim()) && (massPredicate(x) && radiusPredicate(x) && densityPredicate(x) && gravityPredicate(x) && orbitalPeriodPredicate(x));
+            }
+            ;
 
             return x => allObjectDataPredicates(x.BodyData.objectData);
         }
 
-        private Func<IEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>> _makeLINQQuerry()
+        private Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> _makeLINQQuerry()
         {
 
             var rangeFilter = _makeRangeFilter();
             bool sortByCategory = TopCategory_ComboBox.SelectedItem != null && AscendingDescending_ComboBox.SelectedItem != null;
             int numberOfTopItems = (int)TopNumber_NumericUpDown.Value;
-            string sortDirection = AscendingDescending_ComboBox.SelectedItem?.ToString() ?? "";
-            string sortCategory = TopCategory_ComboBox.SelectedItem?.ToString() ?? "";
+            string sortDirection = AscendingDescending_ComboBox.Text;
+            string sortCategory = TopCategory_ComboBox.Text;
 
             double averageSpan = 0;
             bool averageSpanParseSuccess = double.TryParse(AvarageSpan_TextBox.Text, out averageSpan);
-            string averageCategory = Avarage_Category.SelectedItem?.ToString() ?? "";
+            string averageCategory = Avarage_Category.Text;
+            Debug.WriteLine(averageSpan);
+            Debug.WriteLine(averageCategory);
 
-            bool aroundAverage = Avarage_Category.SelectedItem != null && averageSpanParseSuccess;
-            bool allowNaN = FilterNaN_CheckBox.Checked;
+            bool aroundAverage = Avarage_Category.Text != "" && averageSpanParseSuccess;
+            bool allowNaN = !FilterNaN_CheckBox.Checked;
 
-            Func<IEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>> result = x =>
+            Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> result = x =>
             {
                 var collection = from formBody in x
                                  where rangeFilter(formBody)
                                  select formBody;
-                Dictionary<string, Func<FormBody<IEphemerisData<IEphemerisTableRow>>, double>> fieldDictionary = new Dictionary<string, Func<FormBody<IEphemerisData<IEphemerisTableRow>>, double>>()
+                Dictionary<string, Func<IFormBody<IEphemerisData<IEphemerisTableRow>>, double>> fieldDictionary = new Dictionary<string, Func<IFormBody<IEphemerisData<IEphemerisTableRow>>, double>>()
                     {
                         {"Mass", x=>x.BodyData.objectData.Mass_kg },
                         {"Radius", x=>x.BodyData.objectData.Radius_km },
@@ -111,9 +121,9 @@ namespace SolarMapperUI
                 {
 
 
-                    Func<IEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>,
-                    Func<FormBody<IEphemerisData<IEphemerisTableRow>>, double>,
-                    IOrderedEnumerable<FormBody<IEphemerisData<IEphemerisTableRow>>>> orderMethod = (sortDirection == "Ascending") ? Enumerable.OrderBy : Enumerable.OrderByDescending;
+                    Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>,
+                    Func<IFormBody<IEphemerisData<IEphemerisTableRow>>, double>,
+                    IOrderedEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> orderMethod = (sortDirection == "Ascending") ? Enumerable.OrderBy : Enumerable.OrderByDescending;
 
                     collection = orderMethod(collection, fieldDictionary[sortCategory]).Take(numberOfTopItems);
                 }
@@ -127,6 +137,7 @@ namespace SolarMapperUI
                                  select item;
 
                 }
+
 
 
                 return collection;
@@ -166,9 +177,14 @@ namespace SolarMapperUI
                 MessageBox.Show(ex.Message);
                 throw;
             }
-            
+
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void TopCategory_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -176,6 +176,7 @@
             // Coordinates_Label
             // 
             Coordinates_Label.AutoSize = true;
+            Coordinates_Label.Enabled = false;
             Coordinates_Label.Font = new Font("Segoe UI", 12F);
             Coordinates_Label.ForeColor = Color.IndianRed;
             Coordinates_Label.Location = new Point(3, 374);
@@ -186,10 +187,13 @@
             // 
             // Coordinates_TextBox
             // 
+            Coordinates_TextBox.Enabled = false;
             Coordinates_TextBox.Location = new Point(334, 377);
             Coordinates_TextBox.Name = "Coordinates_TextBox";
             Coordinates_TextBox.Size = new Size(326, 39);
             Coordinates_TextBox.TabIndex = 5;
+            Coordinates_TextBox.Text = "0,0";
+            Coordinates_TextBox.TextChanged += Coordinates_TextBox_TextChanged;
             // 
             // tableLayoutPanel3
             // 
@@ -226,7 +230,7 @@
             // 
             ObjectTypes_CheckedListBox.Dock = DockStyle.Fill;
             ObjectTypes_CheckedListBox.FormattingEnabled = true;
-            ObjectTypes_CheckedListBox.Items.AddRange(new object[] { "Stars", "Terrestrial Planets", "Gas Giants", "Dwarf Planets", "Asteroids", "Comets", "Spacecraft" });
+            ObjectTypes_CheckedListBox.Items.AddRange(new object[] { "Star", "Terrestrial Planet", "Gas Giant", "Dwarf Planet", "Asteroid", "Comet", "Spacecraft" });
             ObjectTypes_CheckedListBox.Location = new Point(3, 83);
             ObjectTypes_CheckedListBox.Name = "ObjectTypes_CheckedListBox";
             ObjectTypes_CheckedListBox.Size = new Size(990, 476);

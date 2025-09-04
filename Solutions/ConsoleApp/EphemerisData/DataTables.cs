@@ -149,6 +149,25 @@ namespace SolarSystemMapper
             }
         }
 
+        private static HashSet<ObjectEntry>? _Comets_BackingField = null;
+        public static HashSet<ObjectEntry> Comets
+        {
+            get
+            {
+                if (_Comets_BackingField == null) _Comets_BackingField = _loadObjectEntries(_objectDataFolder + "Comets.json");
+                return _Comets_BackingField;
+            }
+        }
+        private static HashSet<ObjectEntry>? _Asteroids_BackingField = null;
+        public static HashSet<ObjectEntry> Asteroids
+        {
+            get
+            {
+                if (_Asteroids_BackingField == null) _Asteroids_BackingField = _loadObjectEntries(_objectDataFolder + "Asteroids.json");
+                return _Asteroids_BackingField;
+            }
+        }
+
         public static readonly HashSet<string> ObjectsWithSatelites = new HashSet<string>()
         {
             "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
@@ -161,18 +180,22 @@ namespace SolarSystemMapper
         {
             switch (typeName)
             {
-                case "Stars":
+                case "Star":
                     return Stars;
-                case "TerrestrialPlanets":
+                case "Terrestrial Planet":
                     return TerrestrialPlanets;
-                case "GasGiants":
+                case "Gas Giant":
                     return GasGiants;
-                case "DwarfPlanets":
+                case "Dwarf Planet":
                     return DwarfPlanets;
-                case "Spacecrafts":
+                case "Spacecraft":
                     return Spacecrafts;
+                case "Comet":
+                    return Comets;
+                case "Asteroid":
+                    return Asteroids;
                 default:
-                    return new HashSet<ObjectEntry>();
+                    throw new NotImplementedException();
             }
 
 

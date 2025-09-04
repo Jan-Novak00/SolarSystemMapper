@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SolarMapperUI
@@ -22,13 +23,14 @@ namespace SolarMapperUI
             NightSky, SolarSystem
         }
 
-        private MapType mainMapType;
+        private MapType mainMapType = MapType.SolarSystem;
 
         private ControlForm _controlForm;
 
-        private GeneralMapSettings MapSettings;
+        private GeneralMapSettings _mapSettings;
 
-        internal SolarMapperMainForm(GeneralMapSettings generalMapSettings)
+        private IEnumerable<Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>>> _typeFilters;
+        internal SolarMapperMainForm(GeneralMapSettings generalMapSettings, IEnumerable<TypeSettings> typeSettings)
         {
             InitializeComponent();
 
@@ -39,10 +41,10 @@ namespace SolarMapperUI
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
             this.mainMapType = generalMapSettings.MapType;
-            Debug.WriteLine($"MainMenuStrip map type: {this.mainMapType}");
             
-            MapSettings = generalMapSettings;
-            _setUpMainPanel(MapSettings);
+            _mapSettings = generalMapSettings;
+            _typeFilters = typeSettings.Select(x=>x.linqFilter);
+            _setUpMainPanel(_mapSettings);
             this.Load += this.SolarSystemMap_Load;
             this.KeyPreview = true; // pøeposílá klávesy na form
             this.KeyDown += this.SolarMapperUI_KeyDown;
@@ -61,10 +63,9 @@ namespace SolarMapperUI
             this.TopMost = true;
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
-
+            ObjectEntries = DataTables.TerrestrialPlanets.ToList();
             ObjectEntries = ObjectEntries.Union(DataTables.Stars).ToList();
             ObjectEntries = ObjectEntries.Union(DataTables.DwarfPlanets).ToList();
-            foreach (ObjectEntry entry in ObjectEntries) Debug.WriteLine(entry);
 
 
             this._setUpMainMapPanel(ObjectEntries.ToList(), DateTime.Today);
@@ -91,7 +92,26 @@ namespace SolarMapperUI
 
         private void _setUpMainPanel(GeneralMapSettings mapSettings)
         {
-            _mainMapPanel = (this.mainMapType == MapType.NightSky) ? new NightSkyMapPanel(mapSettings) : new SolarSystemMapPanel(mapSettings);
+            _mainMapPanel = (this.mainMapType == MapType.NightSky)
+                            ? new NightSkyMapPanel(
+                                mapSettings,
+                                _typeFilters.Select(f => new Func<IEnumerable<IFormBody<EphemerisObserverData>>,
+                                                              IEnumerable<IFormBody<EphemerisObserverData>>>(data =>
+                                    f(data.Cast<IFormBody<IEphemerisData<IEphemerisTableRow>>>())
+                                     .Cast<IFormBody<EphemerisObserverData>>()
+                                ))
+                            )
+                            : new SolarSystemMapPanel(
+                                mapSettings,
+                                _typeFilters.Select(f => new Func<IEnumerable<IFormBody<EphemerisVectorData>>,
+                                                              IEnumerable<IFormBody<EphemerisVectorData>>>(data =>
+                                    f(data.Cast<IFormBody<IEphemerisData<IEphemerisTableRow>>>())
+                                     .Cast<IFormBody<EphemerisVectorData>>()
+                                ))
+                            );
+
+
+
             if (_mainMapPanel is IMap map)
             {
                 this._controlForm = new ControlForm(map);

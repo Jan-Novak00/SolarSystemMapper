@@ -563,6 +563,7 @@
             // 
             // AscendingDescending_ComboBox
             // 
+            AscendingDescending_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             AscendingDescending_ComboBox.FormattingEnabled = true;
             AscendingDescending_ComboBox.Items.AddRange(new object[] { "Descending", "Ascending" });
             AscendingDescending_ComboBox.Location = new Point(3, 73);
@@ -615,12 +616,14 @@
             // 
             // TopCategory_ComboBox
             // 
+            TopCategory_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             TopCategory_ComboBox.FormattingEnabled = true;
             TopCategory_ComboBox.Items.AddRange(new object[] { "Mass", "Radius", "Orbital Period", "Gravity", "Density" });
             TopCategory_ComboBox.Location = new Point(3, 73);
             TopCategory_ComboBox.Name = "TopCategory_ComboBox";
             TopCategory_ComboBox.Size = new Size(242, 40);
             TopCategory_ComboBox.TabIndex = 17;
+            TopCategory_ComboBox.SelectedIndexChanged += TopCategory_ComboBox_SelectedIndexChanged;
             // 
             // FilterNaN_CheckBox
             // 
@@ -660,6 +663,7 @@
             // Avarage_Category
             // 
             Avarage_Category.Dock = DockStyle.Fill;
+            Avarage_Category.DropDownStyle = ComboBoxStyle.DropDownList;
             Avarage_Category.FormattingEnabled = true;
             Avarage_Category.Items.AddRange(new object[] { "Mass", "Radius", "Orbital Period", "Gravity", "Density" });
             Avarage_Category.Location = new Point(3, 73);

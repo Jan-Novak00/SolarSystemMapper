@@ -18,9 +18,9 @@ namespace SolarMapperUI
         protected override  NASAHorizonsDataFetcher.MapMode _mode { get; init; } = MapMode.NightSky;
 
 
-        protected override List<FormBody<EphemerisObserverData>> _prepareBodyData(List<EphemerisObserverData> data)
+        protected override List<IFormBody<EphemerisObserverData>> _prepareBodyData(List<EphemerisObserverData> data)
         {
-            List<FormBody<EphemerisObserverData>> result = new List<FormBody<EphemerisObserverData>>();
+            List<IFormBody<EphemerisObserverData>> result = new List<IFormBody<EphemerisObserverData>>();
             Point center = new Point(this.DisplayRectangle.Width / 2, this.Height / 2);
             object lockObj = new object();
             Parallel.ForEach(data, info =>
@@ -36,7 +36,7 @@ namespace SolarMapperUI
 
 
         }
-        public NightSkyMapPanel(GeneralMapSettings generalMapSettings): base(generalMapSettings)
+        public NightSkyMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisObserverData>>, IEnumerable<IFormBody<EphemerisObserverData>>>> typeFilters) : base(generalMapSettings, typeFilters)
         {
             
             this._pictureIndex = 0;

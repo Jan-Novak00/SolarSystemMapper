@@ -19,6 +19,8 @@ namespace SolarMapperUI
 
             private System.Windows.Forms.Button _autoButton { get; set; } = new Button();
 
+            private System.Windows.Forms.Label _scaleLabel { get; set; } = new Label();
+
 
             private void PreventDisposeOnClose()
             {
@@ -81,20 +83,38 @@ namespace SolarMapperUI
                 }
 
                 if (_map is SolarSystemMapPanel systemMap)
-                {
+                {   
+
+                
                     Button zoomInButton = new Button();
                     zoomInButton.Text = "Zoom out";
                     zoomInButton.AutoSize = true;
                     zoomInButton.Location = new Point(10, 120);
-                    zoomInButton.Click += (s, e) => systemMap.InvokeScaleSwitchEvent(systemMap.Scale_km * 2);
+                    zoomInButton.Click += (s, e) =>
+                    {
+                        systemMap.InvokeScaleSwitchEvent(systemMap.Scale_km * 2);
+                        this._scaleLabel.Text = $"Scale: 1px = {systemMap.Scale_km.ToString()} km";
+                    };
                     this.Controls.Add(zoomInButton);
 
                     Button zoomOutButton = new Button();
                     zoomOutButton.Text = "Zoom in";
                     zoomOutButton.AutoSize = true;
                     zoomOutButton.Location = new Point(5 + zoomInButton.Right, 120);
-                    zoomOutButton.Click += (s, e) => systemMap.InvokeScaleSwitchEvent(systemMap.Scale_km / 2);
+                    zoomOutButton.Click += (s, e) =>
+                    {
+                        systemMap.InvokeScaleSwitchEvent(systemMap.Scale_km / 2);
+                        this._scaleLabel.Text = $"Scale: 1px = {systemMap.Scale_km.ToString()} km";
+                    };
+
                     this.Controls.Add(zoomOutButton);
+                    
+                    this._scaleLabel.AutoSize = true;
+                    this._scaleLabel.Location = new Point(10,160);
+                    this._scaleLabel.Text = $"Scale: 1px = {systemMap.Scale_km.ToString()} km";
+                    this.Controls.Add(_scaleLabel);
+                    
+                    
                 }
 
                 PreventDisposeOnClose();

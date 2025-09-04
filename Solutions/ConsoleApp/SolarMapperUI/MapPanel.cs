@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SolarMapperUI
@@ -44,7 +45,7 @@ namespace SolarMapperUI
     {
         protected List<TData> _originalData;
 
-        protected List<FormBody<TData>> _data;
+        protected List<IFormBody<TData>> _data;
 
         public List<ObjectEntry> ObjectEntries { get; protected set; }
 
@@ -59,23 +60,23 @@ namespace SolarMapperUI
 
 
         private Label _loadingLabel = new Label
-            {
-                Text = "Loading...",
-                ForeColor = Color.LimeGreen,
-                AutoSize = true,
-                Visible = false,
-            };
+        {
+            Text = "Loading...",
+            ForeColor = Color.LimeGreen,
+            AutoSize = true,
+            Visible = false,
+        };
 
-        protected abstract List<FormBody<TData>> _prepareBodyData(List<TData> data);
+        protected abstract List<IFormBody<TData>> _prepareBodyData(List<TData> data);
 
         private bool _initialFetchDone = false;
 
         protected virtual void _updateNameVisibilityBaseOnUserInteraction()
         {
             if (this._data == null) return;
-            foreach (var body in this._data) 
+            foreach (var body in this._data)
             {
-               body.SetNameVisibility(_objectsWithVisibleName.Contains(body.BodyData.objectData.Name));
+                body.SetNameVisibility(_objectsWithVisibleName.Contains(body.BodyData.objectData.Name));
             }
         }
 
@@ -84,7 +85,7 @@ namespace SolarMapperUI
         {
             var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(this._numberOfDaysToPrefetch));
             var result = await fetcher.Fetch();
-            return result.Cast<TData>().Where(x => x.ephemerisTable.Count == this._numberOfDaysToPrefetch+1).ToList().AsReadOnly();
+            return result.Cast<TData>().Where(x => x.ephemerisTable.Count == this._numberOfDaysToPrefetch + 1).ToList().AsReadOnly();
         }
         private void SetData()
         {
@@ -99,7 +100,7 @@ namespace SolarMapperUI
 
         protected async Task SettingDataAsync()
         {
-            _loadingLabel.Location = new Point(this.ClientRectangle.Width/2, this.ClientRectangle.Height /2);
+            _loadingLabel.Location = new Point(this.ClientRectangle.Width / 2, this.ClientRectangle.Height / 2);
             _loadingLabel.Visible = true;
             _originalData = (await GetHorizonsData(ObjectEntries)).ToList();
             SetData();
@@ -108,35 +109,38 @@ namespace SolarMapperUI
 
             this.Invalidate();
         }
-        //GeneralMapSettings(SolarMapperMainForm.MapType MapType,
-        //DateTime StartDate,
-        //List<string> ObjectTypes, List<string> WhiteList,
-        //List<string> BlackList, Predicate<FormBody<IEphemerisData<IEphemerisTableRow>>> GeneralFilter,
-        //double? latitude = null,
-        //double? longitude = null);
-        
+
+        protected IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> _typeFilters;
 
         protected void _filter()
         {
-            Debug.WriteLine("filtering...");
-            Debug.WriteLine("Black list");
-            foreach (var name in _blackList) Debug.WriteLine(name);
+            
             if (_data == null) return;
-            var filteredData = _data.Where(x => _generalFilter(x.BodyData.objectData)); //uses general filter
-            //typove filtrovani
-            //....
-            _data = filteredData.Where(x => !this._blackList.Any(name => name == x.BodyData.objectData.Name))
+            var generallyFilteredData = _data.Where(x => _generalFilter(x.BodyData.objectData)); //uses general filter
+
+            IEnumerable<IFormBody<TData>> typeFilteredData = new List<IFormBody<TData>>();
+
+            foreach (var filter in _typeFilters)
+            {
+                var filteredForThisType = filter(generallyFilteredData);
+                typeFilteredData = typeFilteredData.Union(filteredForThisType);
+            }
+
+            _data = typeFilteredData.Where(x => !this._blackList.Any(name => name == x.BodyData.objectData.Name))
                 .Union(_data.Where(x=> this._whiteList.Any(name => name == x.BodyData.objectData.Name)))
                 .ToList();
+           
+
+            ObjectEntries = ObjectEntries.Where(x=> _data.Any(formBody => formBody.BodyData.objectData.Name == x.Name)).ToList();
 
         }
         protected bool _doFilter;
         protected Predicate<ObjectData> _generalFilter { get; set; }
         protected List<string> _whiteList {  get; set; }
         protected List<string> _blackList { get; set; }
-        public MapPanel(GeneralMapSettings generalMapSettings)
+        public MapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> typeFilters)
         {
-            
+            _typeFilters = typeFilters;
             _generalFilter = generalMapSettings.GeneralFilter;
             _whiteList = generalMapSettings.WhiteList;
             _blackList = generalMapSettings.BlackList;
@@ -146,7 +150,7 @@ namespace SolarMapperUI
             IEnumerable<ObjectEntry> objectsEnumerable = new List<ObjectEntry>();
             foreach (var typeName in generalMapSettings.ObjectTypes)
             {
-                objectsEnumerable = objectsEnumerable.Union(DataTables.GiveEntries(typeName.Replace(" ", "")));
+                objectsEnumerable = objectsEnumerable.Union(DataTables.GiveEntries(typeName));
             }
             ObjectEntries = objectsEnumerable.ToList();
 
@@ -177,6 +181,8 @@ namespace SolarMapperUI
 
             this.MouseClick += BodyClick;
             this.Paint += PrintObjects;
+            this.MouseMove += MapPanel_MouseMove;
+            this.MouseLeave += MapPanel_MouseLeave;
         }
 
         protected void _registerVisibleObjects()
@@ -192,7 +198,6 @@ namespace SolarMapperUI
             if (this._pictureIndex + 1 == _data[0].BodyData.ephemerisTable.Count)
             {
                 _registerVisibleObjects();
-                foreach (var obj in _objectsWithVisibleName) Debug.WriteLine(obj);
                 this._data = null;
                 this._pictureIndex = 0;
                 this.CurrentPictureDate = this.CurrentPictureDate.AddDays(1);
@@ -253,7 +258,7 @@ namespace SolarMapperUI
             e.Graphics.DrawString(name, DefaultFont, Brushes.White, textX, textY);
         }
 
-        protected void ShowBodyReport(FormBody<TData> formBody)
+        protected void ShowBodyReport(IFormBody<TData> formBody)
         {
 
             string report = formBody.BodyReport(this.CurrentPictureDate);
@@ -361,7 +366,44 @@ namespace SolarMapperUI
         protected virtual bool _visibleNameInThisLocation(Point center, Point location, string Name) => true;
 
 
+        private System.Windows.Forms.ToolTip _toolTip = new System.Windows.Forms.ToolTip();
+        private IFormBody<TData>? _currentHoveredBody = null;
+        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_data == null) return;
 
+            IFormBody<TData>? hovered = null;
+            foreach (var formBody in _data)
+            {
+                var pixel = formBody.PixelInfos[this._pictureIndex];
+                var centerX = pixel.BodyCoordinates.X + pixel.Diameter / 2;
+                var centerY = pixel.BodyCoordinates.Y + pixel.Diameter / 2;
+                var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
+                if (distance < pixel.Diameter / 2)
+                {
+                    hovered = formBody;
+                    break;
+                }
+            }
+
+            if (hovered != _currentHoveredBody)
+            {
+                _currentHoveredBody = hovered;
+                if (hovered != null)
+                {
+                    _toolTip.Show(hovered.BodyData.objectData.Name, this, e.Location.X + 10, e.Location.Y + 10, 2000);
+                }
+                else
+                {
+                    _toolTip.Hide(this);
+                }
+            }
+        }
+        private void MapPanel_MouseLeave(object sender, EventArgs e)
+        {
+            _currentHoveredBody = null;
+            _toolTip.Hide(this);
+        }
 
     }
 }

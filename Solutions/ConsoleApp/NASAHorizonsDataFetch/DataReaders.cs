@@ -484,9 +484,7 @@ namespace SolarSystemMapper
                 }
 
             }
-            Debug.WriteLine(objectData.Name);
-            foreach (var row in ephemerisTableObservers) Debug.WriteLine(row);
-            Debug.WriteLine("_____________________-");
+            
             return new EphemerisObserverData(ephemerisTableObservers, objectData);
 
             
@@ -565,9 +563,7 @@ namespace SolarSystemMapper
             {
                 ephemerisTableVector.Add(EphemerisTableRowVector.stringToRow(textBuffer.ToString()));
             }
-            Debug.WriteLine(objectData.Name);
-            foreach (var row in ephemerisTableVector) Debug.WriteLine(row);
-            Debug.WriteLine("_____________________-");
+           
 
             return new EphemerisVectorData(ephemerisTableVector, objectData);
         }

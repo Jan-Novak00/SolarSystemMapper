@@ -29,7 +29,19 @@ namespace SolarMapperUI
         public Color Color { get; set; }
         public bool ShowName { get; set; }
     }
-    internal class FormBody<TData> where TData : IEphemerisData<IEphemerisTableRow>
+
+    internal interface IFormBody<out TData> where TData : IEphemerisData<IEphemerisTableRow>
+    {
+        TData BodyData { get; }
+        public List<PixelBodyInfo> PixelInfos { get; }
+        void SetNameVisibility(bool visibility);
+        string BodyReport(DateTime date);
+        void SwitchNameVisibility();
+        void ChangePixelInfos(List<PixelBodyInfo> pixelInfos);
+
+    }
+    internal class FormBody<TData> : IFormBody<TData>
+        where TData : IEphemerisData<IEphemerisTableRow>
     {
         public TData BodyData { get; init; }
         public List<PixelBodyInfo> PixelInfos { get; private set; }
@@ -183,12 +195,6 @@ namespace SolarMapperUI
         internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,int mapRadius)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
-            if (observerData.objectData.Name == "Sun")
-            {
-                
-                foreach (var row in observerData.ephemerisTable) Debug.WriteLine(row);
-                Debug.WriteLine("_____________________");
-            }
 
             foreach (var row in observerData.ephemerisTable)
             {
@@ -226,7 +232,7 @@ namespace SolarMapperUI
             return new FormBody<EphemerisVectorData>(vectorData, pixelBodyInfos);
         }
 
-        internal static void ChangeScale(this FormBody<EphemerisVectorData> formBody, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
+        internal static void ChangeScale(this IFormBody<EphemerisVectorData> formBody, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
             for (int i = 0; i<formBody.PixelInfos.Count; i++)

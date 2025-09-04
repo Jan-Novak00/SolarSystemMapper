@@ -35,9 +35,9 @@ namespace SolarMapperUI
 
         public virtual string CenterName { get; protected init; } = "Sun";
 
-        protected override List<FormBody<EphemerisVectorData>> _prepareBodyData(List<EphemerisVectorData> data)
+        protected override List<IFormBody<EphemerisVectorData>> _prepareBodyData(List<EphemerisVectorData> data)
         {
-            List<FormBody<EphemerisVectorData>> result = new List<FormBody<EphemerisVectorData>>();
+            List<IFormBody<EphemerisVectorData>> result = new List<IFormBody<EphemerisVectorData>>();
             Point center = new Point(this.Width / 2, this.Height / 2);
             object lockObj = new object();
             Parallel.ForEach(data, info =>
@@ -57,6 +57,7 @@ namespace SolarMapperUI
         public SolarSystemMapPanel(List<ObjectEntry> objects, DateTime mapStartDate, float scale_km = 1_000_000)
         {
             this.Scale_km = scale_km;
+            this.Scale_km = scale_km;
             this.ObjectEntries = objects;
             this._pictureIndex = 0;
             this.CurrentPictureDate = mapStartDate;
@@ -68,7 +69,8 @@ namespace SolarMapperUI
 
         }
 
-        public SolarSystemMapPanel(GeneralMapSettings generalMapSettings, float scale_km = 1_000_000) : base(generalMapSettings)
+        public SolarSystemMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisVectorData>>, IEnumerable<IFormBody<EphemerisVectorData>>>> typeFilters,
+            float scale_km = 1_000_000) : base(generalMapSettings, typeFilters)
         {
             this.Scale_km = scale_km;
             this._pictureIndex = 0;

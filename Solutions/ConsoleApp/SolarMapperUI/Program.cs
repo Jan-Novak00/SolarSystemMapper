@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace SolarMapperUI
 {
 
@@ -25,16 +27,19 @@ namespace SolarMapperUI
                 return;
             var generalSettings = mapSettingsForm.GeneralMapSettings;
 
-            Dictionary<string,TypeSettings> typeSettingsDictionary = new Dictionary<string,TypeSettings>();
+            List<TypeSettings> typeSettings = new List<TypeSettings>();
 
-            foreach ( var typeName in generalSettings.ObjectTypes)
+            
+
+            foreach (var typeName in generalSettings.ObjectTypes)
             {
                 var typeForm = new TypeFilterForm(typeName);
                 if (typeForm.ShowDialog() != DialogResult.OK)
                     return;
-                typeSettingsDictionary[typeName] = typeForm.TypeSettings!;
+                typeSettings.Add(typeForm.TypeSettings!);
             }
-            var mainForm = new SolarMapperMainForm(generalSettings);
+            
+            var mainForm = new SolarMapperMainForm(generalSettings, typeSettings);
             mainForm.ShowDialog();
 
         }

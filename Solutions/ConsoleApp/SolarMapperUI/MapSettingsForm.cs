@@ -13,7 +13,8 @@ using System.Windows.Forms;
 namespace SolarMapperUI
 {
 
-    internal record GeneralMapSettings(SolarMapperMainForm.MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, double? latitude = null, double? longitude = null);
+    internal record GeneralMapSettings(SolarMapperMainForm.MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
+        double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double? latitude = null, double? longitude = null);
 
 
     public partial class MapSettingsForm : Form
@@ -23,7 +24,7 @@ namespace SolarMapperUI
         {
             InitializeComponent();
             MapType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            MapType_ComboBox.SelectedIndex = 0;
+            MapType_ComboBox.SelectedIndex = 1;
         }
 
         private void NextPage_Button_Click(object sender, EventArgs e)
@@ -41,9 +42,24 @@ namespace SolarMapperUI
             List<string> blackList = BlackList_TextBox.Text.Split(',').ToList();
             double latitude = double.NaN;
             double longitude = double.NaN;
+            double minSpeed = double.NaN;
+            double maxSpeed = double.NaN;
             Predicate<ObjectData> filter = null;
             try
             {
+                bool minSpeedSuccess = double.TryParse(MinSpeed_TextBox.Text, out minSpeed);
+                bool maxSpeedSuccess = double.TryParse(MaxSpeed_TextBox.Text, out maxSpeed);
+
+                if (!minSpeedSuccess)
+                {
+                    if (MinSpeed_TextBox.Text.Trim() == "-Infinity") minSpeed = double.NegativeInfinity;
+                    else throw new ArgumentException("Min speed value was entered incorrectly.");
+                }
+                if (!maxSpeedSuccess)
+                {
+                    if (MaxSpeed_TextBox.Text.Trim() == "Infinity") maxSpeed = double.NegativeInfinity;
+                    else throw new ArgumentException("Max speed value was entered incorrectly.");
+                }
 
                 if (mapType == SolarMapperMainForm.MapType.NightSky)
                 {
@@ -72,7 +88,7 @@ namespace SolarMapperUI
             }
 
 
-            this.GeneralMapSettings = new GeneralMapSettings(mapType, date, objectTypes, whiteList, blackList, filter, (double.IsNormal(latitude)) ? latitude : null, (double.IsNormal(longitude)) ? longitude : null);
+            this.GeneralMapSettings = new GeneralMapSettings(mapType, date, objectTypes, whiteList, blackList, filter, minSpeed, maxSpeed, (double.IsNormal(latitude)) ? latitude : null, (double.IsNormal(longitude)) ? longitude : null);
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -111,7 +127,7 @@ namespace SolarMapperUI
                 {
                     if (pair.Value == "Infinity") value = double.PositiveInfinity;
                     else if (pair.Value == "-Infinity") value = double.NegativeInfinity;
-                    else throw new ArgumentException($"{pair.Key} value was entered incorrectly. {value}");
+                    else throw new ArgumentException($"{pair.Key} value was entered incorrectly.");
                 }
                 parsedValues[pair.Key] = value;
             }
@@ -133,12 +149,30 @@ namespace SolarMapperUI
 
         private void MapType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (MapType_ComboBox.SelectedIndex == 0)
+            {
+                Coordinates_Label.Enabled = true;
+                Coordinates_TextBox.Enabled = true;
+                MinSpeed_TextBox.Enabled = false;
+                MaxSpeed_TextBox.Enabled = false;
+                Speed_Label.Enabled = false;
+                return;
+            }
+            Coordinates_Label.Enabled = false;
+            Coordinates_TextBox.Enabled = false;
+            MinSpeed_TextBox.Enabled = true;
+            MaxSpeed_TextBox.Enabled = true;
+            Speed_Label.Enabled = true;
 
 
         }
 
         private void MaxSpeed_TextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Coordinates_TextBox_TextChanged(object sender, EventArgs e)
         {
 
         }
