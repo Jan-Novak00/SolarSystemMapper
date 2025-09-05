@@ -378,6 +378,12 @@ protected void _filter()
 ```
 - filtrování
 
+```c#
+private void _mouseMoveAcrossBody(object sender, MouseEventArgs e)
+private void _mouseMoveOutOfBody(object sender, EventArgs e)
+```
+- zobrazovájí jména při přejetí myši na těleso, změna kurzoru
+
 Konstruktor vypadá takto: 
 ```c#
 public MapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> typeFilters)
@@ -450,3 +456,101 @@ private void _printDirections(PaintEventArgs e)
 private void _drawArrowAtTheEdge(Graphics graphics, PointF location, Color color, string name)
 ```
 které slouží pro zobrazování směru Země a Slunce.
+
+### Hlavní formulář
+Hlavním formulářek, který provádí řežii zobrazování map je
+```c#
+public partial class SolarMapperMainForm<TData> : Form
+    where TData : IEphemerisData<IEphemerisTableRow>
+```
+Tento formulář má následující fieldy:
+
+```c#
+private Panel _mainMapPanel;
+```
+- zde jsou uloženy jednotlivé mapy
+- field je sice třídy Panel, ale jsou vněm obsaženy pouze potomci třídy MapPanel, ke kterým je buď přistupováno jako k instanci Panel nebo jako k implementaci IMap. Je tomu tak z několika důvodů, hlavním z nich je generika samotné třídy.
+```c#
+private SateliteMapPanel _sateliteMap = null;
+```
+- pro mapu měsíců
+```c#
+private MapType mainMapType;
+```
+- uchovává informaci o hlavním typu mapy, aby šlo snáze opakovaně dávat instance do _mainMapPanel.
+```c#
+private ControlForm _controlForm;
+```
+- kontrolní formulář
+```c#
+private GeneralMapSettings _mapSettings;
+```
+- nastavení map
+```c#
+private IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> _typeFilters;
+```
+- filtry pro jednotlivá tělesa
+```c#
+private List<ObjectEntry> ObjectEntries;
+```
+- pro uchování dat o objektech, aby nebylo třeba je znova filtrovat
+
+Mezi nejdůležitější třídy patří:
+```c#
+private void _setUpMainMapPanel(List<ObjectEntry> entries, DateTime date)
+```
+- slouží k opakovanému vytváření map.
+```c#
+private void _destroyMainMapPanel()
+```
+- zničí hlavní mapu (dispose) a provede dispose _controlForm
+```c#
+private void _setUpMoonMapPanel(List<ObjectEntry> entries, DateTime date, NASAHorizonsDataFetcher.MapMode mode, string centerName);
+```
+- nastavení mapy měsíců
+```c#
+private void _destroyMoonPanel();
+```
+- zničení mapy měsíců a dispose _controlForm
+```c#
+private void SolarMapperUI_KeyDown(object sender, KeyEventArgs e);
+```
+- pro zobrazení kontrolního panelu
+```c#
+private void ShowMoonPanel(object sender, SwitchViewRequestedEvent e);
+```
+- zničení hlavní mapy a zobrazení mapy měsíců
+```c#
+private void ShowMainPanel(object sender, SwitchViewRequestedEvent e)
+```
+- zničení mapy měsíců a zobrazení hlavní mapy
+Konstruktorem je 
+```c#
+internal SolarMapperMainForm(GeneralMapSettings generalMapSettings, IEnumerable<TypeSettings<TData>> typeSettings, Panel panel);
+```
+#### Kontrolní formulář
+```c#
+internal class ControlForm : Form
+```
+Tato třída slouží k ovládání mapy. Jde o formluář s tlačítky. Většina kódu slouží pouze k vytváření tlačítek, které vyvolávají události.
+```c#
+public ControlForm(IMap mapPanel)
+```
+V konstruktoru bere třída instanci implementace IMap a podle typu implementace vybírá tlačítka, která se na kontrolním panelu zobrazí.
+```c#
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
