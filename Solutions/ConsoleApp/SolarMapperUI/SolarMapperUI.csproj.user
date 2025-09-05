@@ -16,7 +16,7 @@
     <Compile Update="OpeningForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="SateliteMap.cs">
+    <Compile Update="SateliteMapPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="SettingsFormControl.cs">

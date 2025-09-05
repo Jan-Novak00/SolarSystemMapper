@@ -226,6 +226,7 @@ namespace SolarMapperUI
                 if (respectScale) pixelBodyInfo.Diameter = (int)(Math.Ceiling((vectorData.objectData.Radius_km == double.NaN) ? 1 : vectorData.objectData.Radius_km) / scale_Km);
 
                 pixelBodyInfo.Visible = !((pixelBodyInfo.BodyCoordinates.X > mapWidth) || (pixelBodyInfo.BodyCoordinates.X < 0) || (pixelBodyInfo.BodyCoordinates.Y > mapHeight) || (pixelBodyInfo.BodyCoordinates.Y < 0));
+                if (pixelBodyInfo.Diameter < 8) pixelBodyInfo.Diameter = 8;
                 pixelBodyInfos.Add(pixelBodyInfo);
             }
 
@@ -241,6 +242,7 @@ namespace SolarMapperUI
                 var pixelInfo = formBody.BodyData.ephemerisTable[i].ToPixelBodyInfo(currentPixelInfo.CenterCoordinates, scale_Km, formBody.BodyData.objectData.Type, formBody.BodyData.objectData.Name);
                 pixelInfo.Visible = !((pixelInfo.BodyCoordinates.X > mapWidth) || (pixelInfo.BodyCoordinates.X < 0) || (pixelInfo.BodyCoordinates.Y > mapHeight) || (pixelInfo.BodyCoordinates.Y < 0));
                 if (respectScale) pixelInfo.Diameter = (int)(Math.Ceiling((formBody.BodyData.objectData.Radius_km == double.NaN) ? 1 : formBody.BodyData.objectData.Radius_km) / scale_Km);
+                if (pixelInfo.Diameter < 8) pixelInfo.Diameter = 8;
                 pixelInfo.ShowName = currentPixelInfo.ShowName;
                 pixelBodyInfos.Add((pixelInfo));
             }
@@ -257,14 +259,13 @@ namespace SolarMapperUI
 
         public static Point _degreesToPixels(double azimuthDeg, double elevationDeg, double mapRadius)
         {
-            // převod na radiány
+
             double az = azimuthDeg * Math.PI / 180.0;
             double el = elevationDeg * Math.PI / 180.0;
 
-            // vzdálenost od středu (zenitu) – čím menší elevace, tím dál od středu
             double r = (Math.PI / 2.0 - el) / (Math.PI / 2.0) * mapRadius;
 
-            // souřadnice
+         
             double x = r * Math.Sin(az);
             double y = - r * Math.Cos(az);
 

@@ -14,11 +14,8 @@ namespace SolarMapperUI
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            //Application.Run(new OpeningForm());
-            //Application.Run(new SolarMapperMainForm());
+            
             var openingForm = new OpeningForm();
             if (openingForm.ShowDialog() != DialogResult.OK)
                 return;

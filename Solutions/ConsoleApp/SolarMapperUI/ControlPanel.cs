@@ -71,7 +71,7 @@ namespace SolarMapperUI
                 this.Controls.Add(_autoButton);
 
 
-                if (_map is SateliteMap sateliteMap)
+                if (_map is SateliteMapPanel sateliteMap)
                 {
                     Button backButton = new Button();
 

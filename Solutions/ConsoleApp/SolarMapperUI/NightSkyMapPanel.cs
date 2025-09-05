@@ -61,11 +61,7 @@ namespace SolarMapperUI
 
         
 
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            _ = SettingDataAsync();
-        }
+        
 
         protected override void InitializeHandlers()
         {

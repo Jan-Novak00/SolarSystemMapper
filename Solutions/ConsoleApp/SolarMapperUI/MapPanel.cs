@@ -162,7 +162,7 @@ namespace SolarMapperUI
 
 
         }
-
+        
         protected MapPanel()
         {
             this._doFilter = false;
@@ -183,6 +183,11 @@ namespace SolarMapperUI
             this.Paint += PrintObjects;
             this.MouseMove += _mouseMoveAcrossBody;
             this.MouseLeave += _mouseMoveOutOfBody;
+        }
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            _ = SettingDataAsync();
         }
 
         protected void _registerVisibleObjects()
@@ -239,10 +244,12 @@ namespace SolarMapperUI
             foreach (var formBody in _data)
             {
                 if (!_otherVisibilityConditions(formBody) || !formBody.PixelInfos[_pictureIndex].Visible) continue;
-                var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
-                var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
+                Debug.WriteLine(formBody.BodyData.objectData.Name);
+                var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X;
+                var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5 + ((formBody.PixelInfos[this._pictureIndex].Diameter < 5) ? 10 : 0)) ShowBodyReport(formBody);
+                Debug.WriteLine($"Click = {(distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5 + ((formBody.PixelInfos[this._pictureIndex].Diameter <= 5) ? 10 : 0))}");
+                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5 + ((formBody.PixelInfos[this._pictureIndex].Diameter <= 5) ? 10 : 0)) ShowBodyReport(formBody);
             }
         }
 
@@ -253,10 +260,10 @@ namespace SolarMapperUI
             var leftCornerY = pixelInfo.BodyCoordinates.Y;
             var diameter = pixelInfo.Diameter;
             if (diameter < 4) diameter = 4;
-                e.Graphics.FillEllipse(brush, leftCornerX, leftCornerY, diameter, diameter);
+                e.Graphics.FillEllipse(brush, leftCornerX - diameter/2, leftCornerY - diameter / 2, diameter, diameter);
             var textSize = e.Graphics.MeasureString(name, DefaultFont);
-            float textX = leftCornerX - textSize.Width / 2 + diameter / 2;
-            float textY = leftCornerY + diameter / 2 + 10;
+            float textX = leftCornerX - textSize.Width / 2 - diameter / 2;
+            float textY = leftCornerY - diameter / 2 + 10;
             e.Graphics.DrawString(name, DefaultFont, Brushes.White, textX, textY);
         }
 
@@ -292,7 +299,7 @@ namespace SolarMapperUI
 
 
             System.Windows.Forms.Button? viewMoonsButton = null;
-            if (DataTables.ObjectsWithSatelites.Contains(bodyName))
+            if (DataTables.ObjectsWithSatelites.Contains(bodyName) && this.GetType() != typeof(SateliteMapPanel))
             {
                 viewMoonsButton = new System.Windows.Forms.Button();
                 viewMoonsButton.Text = "Moon view";
@@ -380,8 +387,8 @@ namespace SolarMapperUI
             {
                 if (!_otherVisibilityConditions(formBody) || !formBody.PixelInfos[_pictureIndex].Visible) continue;
                 var pixel = formBody.PixelInfos[this._pictureIndex];
-                var centerX = pixel.BodyCoordinates.X + pixel.Diameter / 2;
-                var centerY = pixel.BodyCoordinates.Y + pixel.Diameter / 2;
+                var centerX = pixel.BodyCoordinates.X;
+                var centerY = pixel.BodyCoordinates.Y;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
                 if (distance < pixel.Diameter / 2 + 5 + ((pixel.Diameter < 5) ? 10 : 0))
                 {

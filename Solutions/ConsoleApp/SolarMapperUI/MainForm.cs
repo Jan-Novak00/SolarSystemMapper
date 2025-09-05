@@ -21,7 +21,7 @@ namespace SolarMapperUI
 
         private Panel _mainMapPanel;
 
-        private SateliteMap _sateliteMap = null;
+        private SateliteMapPanel _sateliteMap = null;
         private List<ObjectEntry> ObjectEntries;
         
 
@@ -53,14 +53,14 @@ namespace SolarMapperUI
                 map.MapSwitch += ShowMoonPanel;
             }
             this.Controls.Add(_mainMapPanel);
-            this.Load += this.SolarSystemMap_Load;
+            this.Load += this.MainMap_Load;
             this.KeyPreview = true; // pøeposílá klávesy na form
             this.KeyDown += this.SolarMapperUI_KeyDown;
 
 
         }
 
-
+        [Obsolete]
         public SolarMapperMainForm()
         {
             InitializeComponent();
@@ -79,7 +79,7 @@ namespace SolarMapperUI
 
             this._setUpMainMapPanel(ObjectEntries.ToList(), DateTime.Today);
 
-            this.Load += this.SolarSystemMap_Load;
+            this.Load += this.MainMap_Load;
             this.KeyPreview = true; // pøeposílá klávesy na form
             this.KeyDown += this.SolarMapperUI_KeyDown;
 
@@ -99,7 +99,6 @@ namespace SolarMapperUI
             this.Controls.Add(_mainMapPanel);
         }
 
-        
        
 
         private void _destroyMainMapPanel()
@@ -115,9 +114,9 @@ namespace SolarMapperUI
 
         }
 
-        private void setUpMoonMapPanel(List<ObjectEntry> entries, DateTime date, NASAHorizonsDataFetcher.MapMode mode, string centerName)
+        private void _setUpMoonMapPanel(List<ObjectEntry> entries, DateTime date, NASAHorizonsDataFetcher.MapMode mode, string centerName)
         {
-            this._sateliteMap = new SateliteMap(entries, date, mode, centerName);
+            this._sateliteMap = new SateliteMapPanel(entries, date, mode, centerName);
             _controlForm = new ControlForm(_sateliteMap);
             this.Controls.Add( _sateliteMap);
             _sateliteMap.MapSwitch += ShowMainPanel;
@@ -171,7 +170,7 @@ namespace SolarMapperUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void SolarSystemMap_Load(object sender, EventArgs e)
+        private void MainMap_Load(object sender, EventArgs e)
         {
             this._showClosingMessage();
         }
@@ -196,7 +195,7 @@ namespace SolarMapperUI
         private void ShowMoonPanel(object sender, SwitchViewRequestedEvent e)
         {
             this._destroyMainMapPanel();
-            this.setUpMoonMapPanel(e.ObjectEntries, e.Date, e.MapMode, e.CenterName);
+            this._setUpMoonMapPanel(e.ObjectEntries, e.Date, e.MapMode, e.CenterName);
         }
 
         private void ShowMainPanel(object sender, SwitchViewRequestedEvent e)

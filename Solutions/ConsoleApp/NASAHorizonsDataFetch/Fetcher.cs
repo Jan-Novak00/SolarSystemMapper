@@ -133,6 +133,7 @@ namespace SolarSystemMapper
          * Fetches data from NASA Horizons API i paralell.
          * @param maxParallelism Maximal number of parralel threads.
         */
+        [Obsolete]
         private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
         {
             using var semaphore = new SemaphoreSlim(maxParallelism);
@@ -303,9 +304,9 @@ namespace SolarSystemMapper
             }
 
             public HttpClient Client { get; init; }
-            public ObjectEntry Entry { get; set; }
+            public ObjectEntry Entry { get; init; }
             public int NumberOfAttempts { get; private set; } = 0;
-            public string URL { get; set; }
+            public string URL { get; init; }
 
             public async Task<HttpResponseMessage> Work()
             {

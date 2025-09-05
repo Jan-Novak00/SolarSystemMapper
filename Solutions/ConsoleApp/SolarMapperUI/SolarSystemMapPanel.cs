@@ -98,13 +98,8 @@ namespace SolarMapperUI
         }
 
 
+        
 
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            
-            _ = SettingDataAsync();
-        }
 
         protected void OnChangeScale(object sender, ChangeScaleEvent e)
         {
@@ -112,9 +107,11 @@ namespace SolarMapperUI
             this.Scale_km = e.Scale_Km;
             Parallel.ForEach(_data, formBody =>
             {
-                formBody.ChangeScale(this.Scale_km, this.ClientRectangle.Height, this.ClientRectangle.Height, this._respectScaleForBodySize);
+                formBody.ChangeScale(this.Scale_km, this.ClientRectangle.Height, this.ClientRectangle.Width, this._respectScaleForBodySize);
             });
             this.Invalidate();
+
+            //foreach (var formBody in this._data) Debug.WriteLine(formBody.BodyReport(this.CurrentPictureDate));
 
         }
 
