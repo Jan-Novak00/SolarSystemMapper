@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SolarMapperUI
 {
-    
+        /**
+         * Used to control map.
+         */
         internal class ControlForm : Form
         {
             private IMap _map { get; init; }
@@ -22,17 +24,20 @@ namespace SolarMapperUI
             private System.Windows.Forms.Label _scaleLabel { get; set; } = new Label();
 
 
+            /**
+             * This method ensures automatic map advance won't break when control form is closed
+             */
             private void PreventDisposeOnClose()
-            {
-                this.FormClosing += (s, e) =>
                 {
-                    if (e.CloseReason == CloseReason.UserClosing)
+                    this.FormClosing += (s, e) =>
                     {
-                        e.Cancel = true;
-                        this.Hide();
-                    }
-                };
-            }
+                        if (e.CloseReason == CloseReason.UserClosing)
+                        {
+                            e.Cancel = true;
+                            this.Hide();
+                        }
+                    };
+                }
 
             public ControlForm(IMap mapPanel)
             {
@@ -71,7 +76,7 @@ namespace SolarMapperUI
                 this.Controls.Add(_autoButton);
 
 
-                if (_map is SateliteMapPanel sateliteMap)
+                if (_map is SateliteMapPanel sateliteMap) //back button for moon map
                 {
                     Button backButton = new Button();
 
@@ -82,7 +87,7 @@ namespace SolarMapperUI
                     this.Controls.Add(backButton);
                 }
 
-                if (_map is SolarSystemMapPanel systemMap)
+                if (_map is SolarSystemMapPanel systemMap) // zoom buttons
                 {   
 
                 

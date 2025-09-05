@@ -13,6 +13,9 @@ using System.Windows.Forms;
 namespace SolarMapperUI
 {
 
+    /**
+     * Stores data about user preferences
+     */
     internal record GeneralMapSettings(MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
         double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double minDistance = 0, double maxDistance = double.PositiveInfinity, double? latitude = null, double? longitude = null);
 
@@ -30,6 +33,9 @@ namespace SolarMapperUI
             MapType_ComboBox.SelectedIndex = 1;
         }
 
+        /**
+         * Bundles up collected info
+         */
         private void NextPage_Button_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Do you wish to continue? You can not return to this window afterward.",
@@ -114,7 +120,9 @@ namespace SolarMapperUI
 
         }
 
-
+        /**
+         * Maeks filter for Where method 
+         */
         private Predicate<ObjectData> _makeFilter()
         {
 

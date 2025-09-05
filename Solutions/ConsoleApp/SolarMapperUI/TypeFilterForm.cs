@@ -13,7 +13,9 @@ using System.Windows.Forms;
 
 namespace SolarMapperUI
 {
-
+    /**
+     * Stores data baout filters
+     */
     internal record TypeSettings<TData>(string TypeName, Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> linqFilter) 
         where TData : IEphemerisData<IEphemerisTableRow>;
 
@@ -79,14 +81,16 @@ namespace SolarMapperUI
             {
 
 
-                return (x.Type == this.TypeName.Trim()) && (massPredicate(x) && radiusPredicate(x) && densityPredicate(x) && gravityPredicate(x) && orbitalPeriodPredicate(x));
+                return (x.Type == this.TypeName.Trim()) && (massPredicate(x) && radiusPredicate(x) && densityPredicate(x) && gravityPredicate(x) && orbitalPeriodPredicate(x)); //filteres out bodies of different type
             }
             ;
 
             return x => allObjectDataPredicates(x.BodyData.objectData);
         }
-
-        private Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> _makeLINQQuerry()
+        /**
+         * Enumerable filtering
+         */
+        private Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> _makeLINQQuerry() 
         {
 
             var rangeFilter = _makeRangeFilter();
@@ -106,7 +110,7 @@ namespace SolarMapperUI
 
             Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> result = x =>
             {
-                var collection = from formBody in x
+                var collection = from formBody in x //filteres based on predicate from _makeRangeFilter
                                  where rangeFilter(formBody)
                                  select formBody;
                 Dictionary<string, Func<IFormBody<TData>, double>> fieldDictionary = new Dictionary<string, Func<IFormBody<TData>, double>>()
@@ -119,7 +123,7 @@ namespace SolarMapperUI
                     };
 
 
-                if (sortByCategory)
+                if (sortByCategory) //sorting and taking top x
                 {
 
 
@@ -130,7 +134,7 @@ namespace SolarMapperUI
                     collection = orderMethod(collection, fieldDictionary[sortCategory]).Take(numberOfTopItems);
                 }
 
-                if (aroundAverage)
+                if (aroundAverage) // taking only objects around average
                 {
                     double average = collection.Average(fieldDictionary[averageCategory]);
                     collection = from item in collection
@@ -157,7 +161,9 @@ namespace SolarMapperUI
         {
 
         }
-
+        /**
+         * Stores collected data
+         */
         private void NextPage_Button_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Do you wish to continue? You can not return to this window afterward.",

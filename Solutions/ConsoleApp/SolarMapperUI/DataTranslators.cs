@@ -10,6 +10,9 @@ using SolarSystemMapper;
 
 namespace SolarMapperUI
 {
+    /**
+     * Stores information for body display.
+     */
     internal class PixelBodyInfo
     { 
         public PixelBodyInfo(Point bodyCoordinates, Point centerCoordinates, bool visible, int diameter, Color color, bool showName)
@@ -30,6 +33,9 @@ namespace SolarMapperUI
         public bool ShowName { get; set; }
     }
 
+    /**
+     * Stores information about physical information about the body and corresponding information for its display.
+     */
     internal interface IFormBody<out TData> where TData : IEphemerisData<IEphemerisTableRow>
     {
         TData BodyData { get; }
@@ -51,7 +57,9 @@ namespace SolarMapperUI
             BodyData = bodyData;
             PixelInfos = pixelInfo;
         }
-
+        /**
+         * @return String containing information about the body.
+         */
         public string BodyReport(DateTime date)
         {
             var strBuilder = new StringBuilder();
@@ -81,8 +89,7 @@ namespace SolarMapperUI
             }
             else if (this.BodyData is EphemerisObserverData odata)
             {
-                double rad = 0;
-                double dec = 0;
+        
                 double azi = 0;
                 double elev = 0;
                 foreach (var row in odata.ephemerisTable)
@@ -91,8 +98,7 @@ namespace SolarMapperUI
                     if (row.date.Value.Date == date.Date)
                     {
                         
-                        rad = (!(row.RA is null)) ? row.RA[0] + row.RA[1] / 60 + row.RA[2] / 3600 : double.NaN;
-                        dec = (!(row.DEC is null)) ? row.DEC[0] + row.DEC[1] / 60 + row.DEC[2] / 3600 : double.NaN;
+                        
                         azi = row.Azi ?? double.NaN;
                         elev = row.Elev ?? double.NaN;
 
@@ -100,7 +106,7 @@ namespace SolarMapperUI
                     }
 
                 }
-                strBuilder.AppendLine($"Right Ascention: {rad} h    Declination: {dec}°");
+               
                 strBuilder.AppendLine($"Azimuth: {azi}°    Elevation: {elev}°");
 
             }
@@ -173,7 +179,9 @@ namespace SolarMapperUI
                     return 8;
             }
         }
-
+        /**
+         * Transforms EphemerisTableRowObserver into PixelBodyInfo
+         */
         internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowObserver row, Point center, int mapRadius, string bodyType, string bodyName)
         {
             
@@ -183,6 +191,9 @@ namespace SolarMapperUI
             return new PixelBodyInfo(finalCoordinates, center, row.Elev >= 0, diameter, _getColor(bodyName), bodyType == "Terrestrial Planet" || bodyType == "Gas Giant" || bodyType == "Star");
 
         }
+        /**
+         * Transforms EphemerisTableRowVector into PixelBodyInfo
+         */
 
         internal static PixelBodyInfo ToPixelBodyInfo(this EphemerisTableRowVector row, Point center, float scale_Km, string bodyType, string bodyName)
         {
@@ -191,7 +202,9 @@ namespace SolarMapperUI
             Point finalCoordinates = new Point(pixelCoordiantes.X + center.X - diameter/2, pixelCoordiantes.Y+center.Y - diameter / 2);
             return new PixelBodyInfo(finalCoordinates, center, false, diameter, _getColor(bodyName), bodyType == "Terrestrial Planet" || bodyType == "Gas Giant" || bodyType == "Star");
         }
-
+        /**
+         * Transforms EphemerisObserverData to FormBody for UI.
+         */
         internal static FormBody<EphemerisObserverData> ToFormBody(this EphemerisObserverData observerData,Point center,int mapRadius)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
@@ -216,7 +229,9 @@ namespace SolarMapperUI
         }
 
 
-
+        /**
+         * Transforms EphemerisVectorData to FormBody for UI.
+         */
         internal static FormBody<EphemerisVectorData> ToFormBody(this EphemerisVectorData vectorData, Point center, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();
@@ -232,7 +247,9 @@ namespace SolarMapperUI
 
             return new FormBody<EphemerisVectorData>(vectorData, pixelBodyInfos);
         }
-
+        /**
+         * Changes IFormBody<EphemerisVectorData>.PixelBodyInfos when scale changes
+         */
         internal static void ChangeScale(this IFormBody<EphemerisVectorData> formBody, float scale_Km, int mapHeight, int mapWidth, bool respectScale = false)
         {
             List<PixelBodyInfo> pixelBodyInfos = new List<PixelBodyInfo>();

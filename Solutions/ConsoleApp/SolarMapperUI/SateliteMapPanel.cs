@@ -65,6 +65,9 @@ namespace SolarMapperUI
 
         }
 
+        /**
+         * Printing sun and earth directions
+         */
         private void _printDirections(PaintEventArgs e)
         {
             var objectsForArrows = this._data.Where(x => _directionObjects.Any( y => x.BodyData.objectData.Name == y.Name) && !x.PixelInfos[this._pictureIndex].Visible);
@@ -87,6 +90,9 @@ namespace SolarMapperUI
             _printDirections(e);
         }
 
+        /**
+         * Returning back to main map
+         */
         public void ReturnBack()
         {
             this.InvokeMapSwitch(null,this.CurrentPictureDate,0, "");

@@ -27,7 +27,9 @@ namespace SolarMapperUI
         }
     }
 
-
+    /**
+     * Represents a map
+     */
     internal interface IMap : IDisposable
     {
         public void AdvanceMap();
@@ -39,7 +41,9 @@ namespace SolarMapperUI
 
 
     }
-
+    /**
+     * Collection of common map methods
+     */
     internal abstract class MapPanel<TData> : Panel, IMap
         where TData : IEphemerisData<IEphemerisTableRow>
     {
@@ -48,11 +52,15 @@ namespace SolarMapperUI
         protected List<IFormBody<TData>> _data;
 
         public List<ObjectEntry> ObjectEntries { get; protected set; }
-
+        /**
+         * For switching to moon map
+         */
         public event EventHandler<SwitchViewRequestedEvent> MapSwitch;
 
         protected virtual NASAHorizonsDataFetcher.MapMode _mode { get; init; }
-
+        /**
+         * Fro toggling object names display
+         */
         private HashSet<string> _objectsWithVisibleName = new HashSet<string>();
 
         protected int _pictureIndex { get; set; } = 0;
@@ -67,10 +75,16 @@ namespace SolarMapperUI
             Visible = false,
         };
 
+        /**
+         * Transforms physical data information into UI information
+         */
         protected abstract List<IFormBody<TData>> _prepareBodyData(List<TData> data);
 
         private bool _initialFetchDone = false;
 
+        /**
+         * Setting users name dispaly preferences.
+         */
         protected virtual void _updateNameVisibilityBaseOnUserInteraction()
         {
             if (this._data == null) return;
@@ -81,6 +95,9 @@ namespace SolarMapperUI
         }
 
         protected readonly int _numberOfDaysToPrefetch = 30;
+        /**
+         * Data fetch
+         */
         protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
         {
             var fetcher = new NASAHorizonsDataFetcher(_mode, objects, this.CurrentPictureDate, this.CurrentPictureDate.AddDays(this._numberOfDaysToPrefetch));
@@ -112,6 +129,9 @@ namespace SolarMapperUI
 
         protected IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> _typeFilters;
 
+        /**
+         * Data filtering
+         */
         protected void _filter()
         {
             
@@ -120,13 +140,13 @@ namespace SolarMapperUI
 
             IEnumerable<IFormBody<TData>> typeFilteredData = new List<IFormBody<TData>>();
 
-            foreach (var filter in _typeFilters)
+            foreach (var filter in _typeFilters) // uses type filters
             {
                 var filteredForThisType = filter(generallyFilteredData);
                 typeFilteredData = typeFilteredData.Union(filteredForThisType);
             }
 
-            _data = typeFilteredData.Where(x => !this._blackList.Any(name => name == x.BodyData.objectData.Name))
+            _data = typeFilteredData.Where(x => !this._blackList.Any(name => name == x.BodyData.objectData.Name)) //white list and black list
                 .Union(_data.Where(x=> this._whiteList.Any(name => name == x.BodyData.objectData.Name)))
                 .ToList();
 
@@ -138,6 +158,9 @@ namespace SolarMapperUI
         protected Predicate<ObjectData> _generalFilter { get; set; }
         protected List<string> _whiteList {  get; set; }
         protected List<string> _blackList { get; set; }
+        /**
+         * If this constructor is called, data will be filtered
+         */
         public MapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> typeFilters)
         {
             _typeFilters = typeFilters;
@@ -162,7 +185,9 @@ namespace SolarMapperUI
 
 
         }
-        
+        /**
+         * Data are not filtered
+         */
         protected MapPanel()
         {
             this._doFilter = false;
@@ -195,7 +220,9 @@ namespace SolarMapperUI
             IEnumerable<string> visibleObjects = this._data.Where(formBody => formBody.PixelInfos[this._pictureIndex].ShowName).Select(x => x.BodyData.objectData.Name);
             _objectsWithVisibleName = visibleObjects.ToHashSet();
         }
-
+        /**
+         * Shows the next day. Fetches data if necessery
+         */
         public virtual async void AdvanceMap()
         {
             if (this._data == null || this._data.Count == 0) return;
@@ -220,6 +247,9 @@ namespace SolarMapperUI
 
         protected virtual bool _otherVisibilityConditions(IFormBody<TData> body) => true;
 
+        /**
+         * Drawing objects on the map
+         */
         protected virtual void PrintObjects(object sender, PaintEventArgs e)
         {
             if (_data == null) return;
@@ -238,17 +268,20 @@ namespace SolarMapperUI
                                                             : null);
             }
         }
+        /**
+         * ¨Detecting click on the body
+         */
         protected virtual void BodyClick(object sender, MouseEventArgs e)
         {
             if (_data == null) return;
             foreach (var formBody in _data)
             {
                 if (!_otherVisibilityConditions(formBody) || !formBody.PixelInfos[_pictureIndex].Visible) continue;
-                Debug.WriteLine(formBody.BodyData.objectData.Name);
+               
                 var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X;
                 var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                Debug.WriteLine($"Click = {(distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5 + ((formBody.PixelInfos[this._pictureIndex].Diameter <= 5) ? 10 : 0))}");
+               
                 if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5 + ((formBody.PixelInfos[this._pictureIndex].Diameter <= 5) ? 10 : 0)) ShowBodyReport(formBody);
             }
         }
@@ -266,7 +299,9 @@ namespace SolarMapperUI
             float textY = leftCornerY - diameter / 2 + 10;
             e.Graphics.DrawString(name, DefaultFont, Brushes.White, textX, textY);
         }
-
+        /**
+         * Showing body data panal
+         */
         protected void ShowBodyReport(IFormBody<TData> formBody)
         {
 
@@ -360,7 +395,9 @@ namespace SolarMapperUI
             objectEntries.UnionWith(currentObject);
             this.InvokeMapSwitch(objectEntries.ToList(),this.CurrentPictureDate, NASAHorizonsDataFetcher.ObjectToMapMode(planetName), planetName);
         }
-
+        /**
+         * Unregister listeners and dispose
+         */
         public virtual void CleanAndDispose()
         {
             this.MapSwitch = null;
@@ -378,6 +415,9 @@ namespace SolarMapperUI
         private System.Windows.Forms.ToolTip _toolTip = new System.Windows.Forms.ToolTip();
         private IFormBody<TData>? _currentHoveredBody = null;
 
+        /**
+         * Detecting when cursor moves into the body
+         */
         private void _mouseMoveAcrossBody(object sender, MouseEventArgs e)
         {
             if (_data == null) return;

@@ -1,0 +1,6 @@
+[
+  { "Name": "Jupiter", "Code": 599, "Type": "Gas Giant" },
+  { "Name": "Saturn",  "Code": 699, "Type": "Gas Giant" },
+  { "Name": "Uranus",  "Code": 799, "Type": "Gas Giant" },
+  { "Name": "Neptune", "Code": 899, "Type": "Gas Giant" }
+]

@@ -1,0 +1,12 @@
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\bin\Release\net8.0\EphemerisData.deps.json
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\bin\Release\net8.0\EphemerisData.dll
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\bin\Release\net8.0\EphemerisData.pdb
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\EphemerisData.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\EphemerisData.AssemblyInfoInputs.cache
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\EphemerisData.AssemblyInfo.cs
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\EphemerisData.csproj.CoreCompileInputs.cache
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\EphemerisData.sourcelink.json
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\EphemerisData.dll
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\refint\EphemerisData.dll
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\EphemerisData.pdb
+C:\Users\njan3\SolarMaper\SolarSystemMapper\Solutions\ConsoleApp\EphemerisData\obj\Release\net8.0\ref\EphemerisData.dll

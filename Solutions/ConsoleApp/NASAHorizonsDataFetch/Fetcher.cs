@@ -115,71 +115,8 @@ namespace SolarSystemMapper
 
         }
 
-        /**
-         * Fetches data in parallel form NASA Horizons API and parses them.
-        */
-        [Obsolete]
-        public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch2()
-        {
-
-            var answers = await _fetchAnswersWithLimit(2);
-
-            return (Mode == MapMode.NightSky)
-                ? _readDataParallel<HorizonsObserverResponseReader, EphemerisObserverData>(answers)
-                : _readDataParallel<HorizonsVectorResponseReader, EphemerisVectorData>(answers);
-
-        }
-        /**
-         * Fetches data from NASA Horizons API i paralell.
-         * @param maxParallelism Maximal number of parralel threads.
-        */
-        [Obsolete]
-        private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
-        {
-            using var semaphore = new SemaphoreSlim(maxParallelism);
-            using var client = new HttpClient();
-
-            IEnumerable<Task<string>> tasks = _objectsToFetch.Select(async obj =>
-            {
-                await semaphore.WaitAsync();
-                try
-                {
-                    string answer = await client.GetStringAsync(_generateURl(obj.Code));
-                    Debug.WriteLine(answer);
-                    return answer;
-                }
-                finally
-                {
-                    semaphore.Release();
-                }
-
-            });
-
-            return await Task.WhenAll(tasks);
-        }
-
-
-        [Obsolete]
-        private IEnumerable<TData> _readDataParallel<TReader, TData>(string[] rawData)
-            where TReader : IHorizonsResponseReader<TData>
-            where TData : IEphemerisData<IEphemerisTableRow>
-        {
-            var results = new TData[rawData.Length];
-
-            Parallel.ForEach(
-                Enumerable.Range(0, rawData.Length),
-                i =>
-                {
-                    var obj = _objectsToFetch[i];
-                    IHorizonsResponseReader<TData> reader = (Mode == MapMode.NightSky)
-                                                            ? (IHorizonsResponseReader<TData>) new HorizonsObserverResponseReader(rawData[i], obj.Name, obj.Type, obj.Code)
-                                                            : (IHorizonsResponseReader<TData>) new HorizonsVectorResponseReader(rawData[i], obj.Name, obj.Type, obj.Code);
-
-                    results[i] = reader.Read();
-                });
-
-            return results;
-        }
+        
+        
         
 
         private IEnumerable<TData> _readDataParallel<TReader, TData>(List<Tuple<ObjectEntry, string>> rawData)
@@ -202,6 +139,10 @@ namespace SolarSystemMapper
 
             return results;
         }
+
+        /**
+         * Fetches data in parallel from NASA Horizons API and parses them.
+        */
         public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch()
         {
 
@@ -217,6 +158,10 @@ namespace SolarSystemMapper
 
         private int _maxParallelism = 3;
 
+        /**
+         * Fetches data from NASA Horizons API in paralell. Adjusts number of threads
+         * @return Task<List<Tuple<ObjectEntry,string>>> - tuples of object entry with coresponding response
+        */
         private async Task<List<Tuple<ObjectEntry,string>>> _fetchAnswersWithLimit()
         {
            
@@ -291,7 +236,9 @@ namespace SolarSystemMapper
 
 
 
-
+        /**
+        * Fetches data from NASA Horizons API. Used for parallel fetching
+        */
 
         private class HttpWorker
         {

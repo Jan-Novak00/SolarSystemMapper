@@ -1,0 +1,10 @@
+[
+  { "Name": "Mercury", "Code": 199, "Type": "Terrestrial Planet" },
+  { "Name": "Venus",   "Code": 299, "Type": "Terrestrial Planet" },
+  { "Name": "Earth",   "Code": 399, "Type": "Terrestrial Planet" },
+  { "Name": "Mars",    "Code": 499, "Type": "Terrestrial Planet" },
+  { "Name": "Jupiter", "Code": 599, "Type": "Gas Giant" },
+  { "Name": "Saturn",  "Code": 699, "Type": "Gas Giant" },
+  { "Name": "Uranus",  "Code": 799, "Type": "Gas Giant" },
+  { "Name": "Neptune", "Code": 899, "Type": "Gas Giant" }
+]

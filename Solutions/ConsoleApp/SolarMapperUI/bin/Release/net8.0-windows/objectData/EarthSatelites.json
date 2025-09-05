@@ -1,0 +1,5 @@
+[
+  { "Name": "Luna", "Code": 301, "Type": "Moon" },
+  { "Name": "Hubble Space Telescope", "Code": -48, "Type": "Spacecraft" },
+  { "Name": "James Webb Space Telescope", "Code": -170, "Type": "Spacecraft" }
+]

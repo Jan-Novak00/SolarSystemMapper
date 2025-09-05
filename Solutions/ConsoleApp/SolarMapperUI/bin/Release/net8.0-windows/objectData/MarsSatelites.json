@@ -1,0 +1,5 @@
+[
+  { "Name": "Phobos", "Code": 401, "Type": "Moon" },
+  { "Name": "Deimos", "Code": 402, "Type": "Moon" },
+  { "Name": "Mars Orbiter Mission", "Code": -3, "Type": "Spacecraft" }
+]

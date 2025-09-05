@@ -1,0 +1,23 @@
+[
+    {"Name":"Itokawa","Code":25143,"Type":"Asteroid"},
+    {"Name":"Apophis","Code":99942,"Type":"Asteroid"},
+    {"Name":"Ryugu","Code":162173,"Type":"Asteroid"},
+    {"Name":"Bennu","Code":101955,"Type":"Asteroid"},
+    {"Name":"Toutatis","Code":4179,"Type":"Asteroid"},
+    {"Name":"Phaethon","Code":3200,"Type":"Asteroid"},
+    {"Name":"Icarus","Code":1566,"Type":"Asteroid"},
+    {"Name":"Don Quixote","Code":3552,"Type":"Asteroid"},
+    {"Name":"Ra-Shalom","Code":2100,"Type":"Asteroid"},
+    {"Name":"Golevka","Code":6489,"Type":"Asteroid"},
+    {"Name":"Betulia","Code":1580,"Type":"Asteroid"},
+    {"Name":"Toro","Code":1685,"Type":"Asteroid"},
+    {"Name":"Alinda","Code":887,"Type":"Asteroid"},
+    {"Name":"Mattparker","Code":314159,"Type":"Asteroid"},
+    {"Name":"Vitoria","Code":12,"Type":"Asteroid"},
+    {"Name":"Eunomia","Code":15,"Type":"Asteroid"},
+    {"Name":"Psyche","Code":16,"Type":"Asteroid"},
+    {"Name":"Didymos","Code":20065803,"Type":"Asteroid"},
+    {"Name":"Chaos","Code":19521,"Type":"Asteroid"},
+    {"Name":"Arawn","Code":15810,"Type":"Asteroid"},
+    {"Name":"2018 AG37 (Farfarout)","Code":50376576,"Type":"Asteroid"}
+]

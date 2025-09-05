@@ -11,6 +11,10 @@ using static SolarSystemMapper.NASAHorizonsDataFetcher;
 namespace SolarMapperUI
 {
 
+    /**
+     * Used for scale change
+     */
+
     internal class ChangeScaleEvent : EventArgs
     {
         public ChangeScaleEvent(float scale_Km)
@@ -98,9 +102,11 @@ namespace SolarMapperUI
         }
 
 
-        
 
 
+        /**
+         * Changing scale
+         */
         protected void OnChangeScale(object sender, ChangeScaleEvent e)
         {
             if (this._data == null) return;
@@ -111,7 +117,7 @@ namespace SolarMapperUI
             });
             this.Invalidate();
 
-            //foreach (var formBody in this._data) Debug.WriteLine(formBody.BodyReport(this.CurrentPictureDate));
+            
 
         }
 

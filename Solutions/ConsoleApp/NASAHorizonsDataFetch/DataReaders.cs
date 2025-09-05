@@ -127,7 +127,6 @@ namespace SolarSystemMapper
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
 
             
             var pattern = @"(?i)(?:Sidereal\s+orbit\s+period|Sidereal\s+orb\.?\s*per\.?|Mean\s+sidereal\s+orb\s*per|Orbital\s+period)[^0-9\-+]*([-+]?\d*\.?\d+)\s*(y|d)?";
@@ -141,19 +140,19 @@ namespace SolarSystemMapper
             {
                 if (match.Success)
                 {
-                    double value = double.Parse(match.Groups[1].Value, culture);
+                    double value = double.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
                     string unit = match.Groups[2].Value?.ToLower() ?? "";
 
-                    if (unit == "y" || string.IsNullOrEmpty(unit))
+                    if (unit == "y" || string.IsNullOrEmpty(unit)) //if inuput is in years
                     {
-                        // preferujeme roky
+                        
                         periodInYears = value;
-                        break; // rovnou končíme, našli jsme vhodnou hodnotu
+                        break; 
                     }
 
-                    if (unit == "d")
+                    if (unit == "d") // if input is in days
                     {
-                        // převedeme dny na roky, ale jen pokud ještě nemáme hodnotu v rocích
+                        
                         if (!periodInYears.HasValue)
                             periodInYears = value / 365.25;
                     }
@@ -172,15 +171,14 @@ namespace SolarSystemMapper
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
 
-            // Regex pro různé varianty zápisu tlaku
+            
             var pattern = @"(?i)(?:Atmos\.?\s*pressure|Atm\.?\s*pressure|Atmos\.?\s*press)\s*(?:\(?bar\)?)?\s*=?\s*([-+]?\d*\.?\d+)";
 
             var match = System.Text.RegularExpressions.Regex.Match(line, pattern);
             if (match.Success)
             {
-                return double.Parse(match.Groups[1].Value, culture);
+                return double.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
             }
 
             return null;
@@ -195,15 +193,14 @@ namespace SolarSystemMapper
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
 
-            // Regex zachytí různé varianty názvu a jednotky K
+            
             var pattern = @"(?i)(?:Mean\s+Temperature|Mean\s+surface\s+temp|Effective\s+temp|Atmos\.?\s*temp).*?=\s*([-+]?\d*\.?\d+)";
 
             var match = System.Text.RegularExpressions.Regex.Match(line, pattern);
             if (match.Success)
             {
-                return double.Parse(match.Groups[1].Value, culture);
+                return double.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
             }
 
             return null;
@@ -218,10 +215,9 @@ namespace SolarSystemMapper
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
 
-            // 1) Přímá hodnota gravitačního zrychlení v m/s^2
-            var gravityRegexes = new[]
+            
+            var gravityRegexes = new[] // many different patterns
             {
                 @"Equ\.?\s*gravity\s*m\s*/\s*s\^2\s*=\s*([-+]?\d*\.?\d+)",
                 @"g_e\s*,?\s*m\s*/\s*s\^2\s*\(equatorial\)\s*=\s*([-+]?\d*\.?\d+)",
@@ -234,10 +230,11 @@ namespace SolarSystemMapper
             {
                 var match = System.Text.RegularExpressions.Regex.Match(line, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                 if (match.Success)
-                    return double.Parse(match.Groups[1].Value, culture);
+                    return double.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
             }
 
-            // 2) Krajní případ: radius + density na stejném řádku
+            // if gravity not present, we calculate the gravity form density
+            
             var radiusDensityMatch = new System.Text.RegularExpressions.Regex(
                 @"Mean\s+radius\s*\(km\)\s*=\s*([-+]?\d*\.?\d+).+Density\s*\(g\s*cm\^-3\)\s*=\s*([-+]?\d*\.?\d+)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase
@@ -245,16 +242,16 @@ namespace SolarSystemMapper
 
             if (radiusDensityMatch.Success)
             {
-                double radiusKm = double.Parse(radiusDensityMatch.Groups[1].Value, culture);
-                double densityGcm3 = double.Parse(radiusDensityMatch.Groups[2].Value, culture);
+                double radiusKm = double.Parse(radiusDensityMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+                double densityGcm3 = double.Parse(radiusDensityMatch.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture);
 
                 double radiusM = radiusKm * 1000.0;
-                double density = densityGcm3 * 1000.0; // g/cm³ → kg/m³
+                double density = densityGcm3 * 1000.0; // g/cm3 -> kg/m3
 
                 double volume = (4.0 / 3.0) * Math.PI * Math.Pow(radiusM, 3);
                 double mass = density * volume;
 
-                const double G = 6.67430e-11; // m³ kg⁻¹ s⁻²
+                const double G = 6.67430e-11; // m2 kg-1 s-1
                 double g = G * mass / Math.Pow(radiusM, 2);
 
                 return g;
@@ -272,41 +269,41 @@ namespace SolarSystemMapper
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
+  
 
-            // 1) Synchronous
+            // synchronous orbit - return -1
             if (line.IndexOf("Synchronous", StringComparison.OrdinalIgnoreCase) >= 0)
                 return -1;
 
-            // 2) Formát h m s
+            // h m s format
             var hmsRegex = new System.Text.RegularExpressions.Regex(
                 @"(?:Adopted\s+sid\.?\s+rot\.?\s*per\.?|Sidereal\s+rot(?:\.|ation)?\s+period|Sid\.?\s+rot\.?\s+period\s*\(III\)|Mean\s+sidereal\s+day,?\s*hr|Rotational\s+period)\s*=\s*([\d\.]+)h\s*([\d\.]+)m\s*([\d\.]+)s",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             var hmsMatch = hmsRegex.Match(line);
             if (hmsMatch.Success)
             {
-                double h = double.Parse(hmsMatch.Groups[1].Value, culture);
-                double m = double.Parse(hmsMatch.Groups[2].Value, culture);
-                double s = double.Parse(hmsMatch.Groups[3].Value, culture);
+                double h = double.Parse(hmsMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+                double m = double.Parse(hmsMatch.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture);
+                double s = double.Parse(hmsMatch.Groups[3].Value, System.Globalization.CultureInfo.InvariantCulture);
                 return (h + m / 60.0 + s / 3600.0) / 24.0;
             }
 
-            // 3) Číslo s jednotkou nebo jednotka v názvu
+            // unit after or before the number
             var numberRegex = new System.Text.RegularExpressions.Regex(
                 @"(?:Adopted\s+sid\.?\s+rot\.?\s*per\.?|Sidereal\s+rot(?:\.|ation)?\s+period|Sid\.?\s+rot\.?\s+period\s*\(III\)|Mean\s+sidereal\s+day,?\s*(?:hr)?|Rotational\s+period)\s*=?\s*([-+]?\d*\.?\d+)\s*(d|h|hr)?",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             var numberMatch = numberRegex.Match(line);
             if (numberMatch.Success)
             {
-                double value = double.Parse(numberMatch.Groups[1].Value, culture);
+                double value = double.Parse(numberMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
                 string unit = "";
 
-                // 3a) jednotka explicitně za číslem
+                // behind value
                 if (numberMatch.Groups[2].Success)
                     unit = numberMatch.Groups[2].Value.ToLower();
                 else
                 {
-                    // 3b) jednotka v názvu, ale pouze pokud za číslem není žádná jednotka
+                    // in front of value
                     var namePart = numberMatch.Groups[0].Value;
                     if (namePart.IndexOf("hr", StringComparison.OrdinalIgnoreCase) >= 0 ||
                         namePart.IndexOf("h", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -314,7 +311,7 @@ namespace SolarSystemMapper
                 }
 
                 if (unit.StartsWith("h"))
-                    value /= 24.0; // převod hodin na dny
+                    value /= 24.0; 
 
                 return value;
             }
@@ -331,10 +328,7 @@ namespace SolarSystemMapper
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
-
-            // Regex zachytí různé varianty zápisu:
-            // Density (g/cm^3), Density(g / cm ^ 3), Mean density, g/cm^3, Density (g cm^-3)
+ 
             var densityRegex = new System.Text.RegularExpressions.Regex(
                 @"Density\s*(?:\(|,)?\s*g\s*[/]?\s*cm\s*\^?-?\s*3\s*(?:\))?\s*=\s*([-+]?\d*\.?\d+)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
@@ -344,7 +338,7 @@ namespace SolarSystemMapper
             {
                 string value = match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value;
                 if (!string.IsNullOrEmpty(value))
-                    return double.Parse(value, culture);
+                    return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
             }
 
             return null;
@@ -358,16 +352,16 @@ namespace SolarSystemMapper
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
+            
 
-            // 1) Přímá hmotnost: Mass x10^XX (kg)
+            // Mass x10^XX 
             var massRegex = new System.Text.RegularExpressions.Regex(
-                @"Mass\s*(?:x\s*10\^(\d+)|,\s*10\^(\d+)?)?\s*\(?kg\)?\s*=?\s*~?\s*([-+]?\d*\.?\d+)",
+                @"Mass\s*(?:x\s*10\^(\d+)|,\s*10\^(\d+)?)?\s*\(?kg\)?\s*=?\s*~?\s*([-+]?\d*\.?\d+)(?:\+\-\d*\.?\d+)?",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             var massMatch = massRegex.Match(line);
             if (massMatch.Success)
             {
-                double mantissa = double.Parse(massMatch.Groups[3].Value, culture);
+                double mantissa = double.Parse(massMatch.Groups[3].Value, System.Globalization.CultureInfo.InvariantCulture);
                 int exponent = 0;
                 if (!string.IsNullOrEmpty(massMatch.Groups[1].Value))
                     exponent = int.Parse(massMatch.Groups[1].Value);
@@ -377,17 +371,17 @@ namespace SolarSystemMapper
                 return mantissa * Math.Pow(10, exponent);
             }
 
-            // 2) Přímá hmotnost v základních jednotkách (např. "mass : 705 kg")
+            // only mass and unit, no exponent
             var simpleMassRegex = new System.Text.RegularExpressions.Regex(
                 @"mass\s*:\s*([-+]?\d*\.?\d+)\s*kg",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             var simpleMatch = simpleMassRegex.Match(line);
             if (simpleMatch.Success)
             {
-                return double.Parse(simpleMatch.Groups[1].Value, culture);
+                return double.Parse(simpleMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
             }
 
-            // 3) Odvozená hmotnost: pokud máme radius a density na stejném řádku
+            // mass derived from density
             var radiusRegex = new System.Text.RegularExpressions.Regex(
                 @"Mean radius \(km\)\s*=\s*([-+]?\d*\.?\d+)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
@@ -399,8 +393,8 @@ namespace SolarSystemMapper
             var dMatch = densityRegex.Match(line);
             if (rMatch.Success && dMatch.Success)
             {
-                double radiusKm = double.Parse(rMatch.Groups[1].Value, culture);
-                double density = double.Parse(dMatch.Groups[1].Value, culture); // g/cm3
+                double radiusKm = double.Parse(rMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+                double density = double.Parse(dMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture); // g/cm3
                 double volumeM3 = 4.0 / 3.0 * Math.PI * Math.Pow(radiusKm * 1000, 3); // m3
                 double massKg = density * 1000 * volumeM3; // density g/cm3 -> kg/m3
                 return massKg;
@@ -417,7 +411,7 @@ namespace SolarSystemMapper
             if (string.IsNullOrEmpty(line))
                 return null;
 
-            // Regex: hledá varianty radius, pak '=' a číslo, ignoruje mezery, plus/minus
+           
             var pattern = @"(?i)(Vol\.?\s*mean\s*radius|Vol\.?Mean\s*Radius|Mean\s*radius)\s*\(?.*?\)?\s*=\s*([+-]?\d+(\.\d+)?)(\s*[+-]\s*\d+(\.\d+)?)?";
             var match = Regex.Match(line, pattern);
 
@@ -426,7 +420,7 @@ namespace SolarSystemMapper
                 return radius;
             }
 
-            return null; // nenalezeno
+            return null;
         }
 
 
@@ -458,6 +452,8 @@ namespace SolarSystemMapper
 
             var dataReader = new StringReader(this._data!);
             bool isReadingTable = false;
+            Regex regexStartOfTable = new Regex(_StartOfTableRegex, RegexOptions.Compiled);
+            Regex regexEndOfTable = new Regex(_EndOfTableRegex, RegexOptions.Compiled);
 
 
 
@@ -468,13 +464,13 @@ namespace SolarSystemMapper
 
                 if (!isReadingTable)
                 {
-                    var match = Regex.Match(line, _StartOfTableRegex);
-                    isReadingTable = match.Success;
+                    var match = regexStartOfTable.IsMatch(line);
+                    isReadingTable = match;
                 }
                 else
                 {
-                    var match = Regex.Match(line, _EndOfTableRegex);
-                    if (match.Success) break;
+                    
+                    if (regexEndOfTable.IsMatch(line)) break;
                     else
                     {
                         var newRow = EphemerisTableRowObserver.stringToRow(line);
@@ -524,7 +520,7 @@ namespace SolarSystemMapper
             Regex regexEndOfTable = new Regex(_EndOfTableRegex, RegexOptions.Compiled);
             Regex dateLineRegex = new Regex(@"\s*A\.D\.\s+\d{4}-[A-Za-z]{3}-\d{2}", RegexOptions.Compiled);
 
-
+            //each row in the table concists of several lines
             while ((line = dataReader.ReadLine()) != null)
             {
                 if (!isReadingTable)
@@ -543,8 +539,6 @@ namespace SolarSystemMapper
                         }
                         break;
                     }
-
-                    // Pokud řádek začíná novým datovým blokem (např. "A.D. 2000-Jul-08"), znamená to začátek nového záznamu
                     if (dateLineRegex.IsMatch(line))
                     {
                         if (textBuffer.Length > 0)

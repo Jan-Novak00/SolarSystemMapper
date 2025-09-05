@@ -38,6 +38,8 @@ namespace SolarSystemMapper
                 return value;
             return null;
         }
+
+        [Obsolete]
         static double[]? TryParseTriple(string[] tokens, int start)
         {
             if (tokens.Length <= start + 2) return null;
@@ -93,13 +95,13 @@ namespace SolarSystemMapper
     /**
      * Stores positional information for Night Sky map.
     */
-    public record EphemerisTableRowObserver(DateTime? date, double[]? RA, double[]? DEC, double? dRA_dt, double? dDEC_dt, double? Azi, double? Elev) : IEphemerisTableRow
+    public record EphemerisTableRowObserver(DateTime? date, double? Azi, double? Elev) : IEphemerisTableRow
     {
         public static EphemerisTableRowObserver stringToRow(string data)
         {
             var tokens = data.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            // Datum a čas
+            
             DateTime? date = null;
             if (tokens.Length >= 2 &&
                 DateTime.TryParseExact($"{tokens[0]} {tokens[1]}", "yyyy-MMM-dd HH:mm",
@@ -107,18 +109,13 @@ namespace SolarSystemMapper
                     System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                 date = parsedDate;
 
-            // RA: hh mm ss.ss
-            // RA, DEC, dRA_dt, dDEC_dt budou vždy null
-            double[]? RA = null;
-            double[]? DEC = null;
-            double? dRA_dt = null;
-            double? dDEC_dt = null;
-
+           
+           
             // AZI a ELEV
             double? azi = tokens.Length > 2 ? IEphemerisTableRow.TryParseNullable(tokens[tokens.Length - 2]) : null;
             double? elev = tokens.Length > 1 ? IEphemerisTableRow.TryParseNullable(tokens[tokens.Length - 1]) : null;
 
-            return new EphemerisTableRowObserver(date, RA, DEC, dRA_dt, dDEC_dt, azi, elev);
+            return new EphemerisTableRowObserver(date, azi, elev);
         }
 
 
@@ -147,7 +144,6 @@ namespace SolarSystemMapper
             string? dateString = (dateMatch.Success) ? dateMatch.Groups[1].Value : null;
             DateTime? parsedDate = (dateString != null) ? DateTime.ParseExact(dateString, "yyyy-MMM-dd HH:mm:ss.ffff", CultureInfo.InvariantCulture) : null;
 
-            // 2. Parsování číselných hodnot
             double? x = GetDouble(data, @"X\s*=\s*([-+Ee\d\.]+)");
             double? y = GetDouble(data, @"Y\s*=\s*([-+Ee\d\.]+)");
             double? z = GetDouble(data, @"Z\s*=\s*([-+Ee\d\.]+)");
