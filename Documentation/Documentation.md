@@ -65,6 +65,9 @@ Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl ref
 
 # Programátorská část
 
+Není-li uvedeno jinak, "typem tělesa" se myslí sémantický typ vesmírného tělesa (hvězda, kamenná planeta etc.). Tyto typy jsou, kvůli rozšiřitelnosti a snadnému manipulování s řetězci, reprezentovány řetězcem. Tyto řetězce mohou mít následující tvary: "Star", "Terrestrial Planet", "Gas Giant", "Asteroid", "Comet", "Moon", "Spacecraft".
+
+
 ## Struktura kódu
 Kód je rozdělen do dvou namespace - SolarSystemMapper, který obsahuje hlavně třídy pro datovou reprezentaci a fetch dat, a SolarMapperUI - který je vstupním bodem programu a který se stará o UI stránku aplikace.
 
@@ -254,10 +257,23 @@ Součástí URL je též parametr STEP_SIZE, který udává časové rozdíly me
 
 Metoda Fetch režíruje fetchování a parsování dat, přičemž samotný fetch je prováděn metodou
 ```c#
-private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
+private async Task<List<Tuple<ObjectEntry,string>>> _fetchAnswersWithLimit()
 ```
-která jako vstupní argument potřebuje maximální množství vláken, na kterých může posílat dotazy. Z vlastní zkušenosti server nezvládá více než dva dotazy najednou.
+která režíruje paralelní dotazování na server.
+Pro režii dotazů se používá třída
+```c#
+private class HttpWorker
+{
+public HttpClient Client { get; init; }
+public ObjectEntry Entry { get; init; }
+public int NumberOfAttempts { get; private set; } = 0;
+public string URL { get; init; }
 
+public async Task<HttpResponseMessage> Work();
+}
+```
+která v metodě Work provádí samotný dotaz na server. Pole NumberOfAttempts slouží pro debugování. 
+Pro každé ObjectEntry pro které chceme provést dotaz probíhá uvnitř _fetchAnswerWithLimit následující algoritmus: Por každou instanci ObjectEntry se vytvoří instance HttpWorker a dá se do fronty. Počet souběžně běžících vláken se zvyšuje a snižuje  podle toho, jak se daří fetchovat data. Pokud je kód http odpovědi typu 4xx, pak se dotaz zahodí. Pokud je kód odpovědi typu 5xx, sníží se počet povolených souběžně běžících vláken a dotaz je vrácen do fronty. Pokud dotaz uspěje, počet povolených vláken se zvýší a odpověď se uloží.
 Parsování dat provádí třídy:
 ```c#
 public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
@@ -315,7 +331,8 @@ internal class SwitchViewRequestedEvent : EventArgs
 která ukládá a sdílí vnitřní stav mapy.
 ObjectEntries obsahuje informace pro fetchování dat o tělesech a CenterName značí jméno středového tělesa.
 
-Dále všechny mapy dědí od abstraktní generické třídy
+#### Třída MapPanel
+Všechny mapy dědí od abstraktní generické třídy
 ```c#
 internal abstract class MapPanel<TData> : Panel, IMap
     where TData : IEphemerisData<IEphemerisTableRow>
@@ -345,6 +362,7 @@ private void _mouseMoveOutOfBody(object sender, EventArgs e)
 protected abstract List<IFormBody<TData>> _prepareBodyData(List<TData> data);
 ```
 - vytvoření instancí FormBody pro zobrazení na mapě
+- v odvozených třídách provádí tuto činost paralelně, ovšem není deklarována jako async -> proto je volána metodě SetData která je sama volána v asynchroní metodě SettingDataAsync
 ```c#
 protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
 ```
@@ -353,6 +371,7 @@ protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEn
 protected async Task SettingDataAsync()
 ```
 - fetch a parosvání dat
+- volána v metodě AdvanceMap a v přepsané metodě OnHandleCreated
 ```c#
 private void SetData()
 ```
@@ -361,3 +380,232 @@ private void SetData()
 protected void _filter()
 ```
 - filtrování
+
+```c#
+private void _mouseMoveAcrossBody(object sender, MouseEventArgs e)
+private void _mouseMoveOutOfBody(object sender, EventArgs e)
+```
+- zobrazovájí jména při přejetí myši na těleso, změna kurzoru
+
+Konstruktor vypadá takto: 
+```c#
+public MapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> typeFilters)
+```
+Parametr typeFilters obsahuje delegáty, které jsou určeny pro filtrování dat jednotlivých typů těles. K třídě GeneralMapSettings se dostaneme později - obsahuje informace důležité pro nastavení mapy, včetně predikátu pro filtrování všech těles, názvy typů těles pro zobrazení, bílou a černou listinu etc. Viz. GeneralMapSettings.
+K dispozici je i bezparametrický konstruktor, který slouží pro opakované spouštění panelu a přeskakuje filtrování objektů.
+
+#### NightSkyMapPanel
+Třída
+```c#
+internal class NightSkyMapPanel : MapPanel<EphemerisObserverData>
+{
+public NightSkyMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisObserverData>>, IEnumerable<IFormBody<EphemerisObserverData>>>> typeFilters);
+public NightSkyMapPanel(List<ObjectEntry> objects, DateTime mapStartDate)
+}
+```
+slouží pro zobrazení mapy noční oblohy. Druhý konstruktor bere přímo objekty pro zobrazení a přeskakuje filtrování - tento konstruktor se používá při opakovaném spouštění panelu.
+Kromě metody třídy MapPanel obsahuje i metodu
+```c#
+private void PrintMapBackground(object sender, PaintEventArgs e)
+```
+pro nakreslení podkladu mapy.
+
+#### SolarSystemMapPanel
+Třída
+```c#
+internal class SolarSystemMapPanel : MapPanel<EphemerisVectorData>
+{
+public SolarSystemMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisVectorData>>, IEnumerable<IFormBody<EphemerisVectorData>>>> typeFilters,
+    float scale_km = 1_000_000);
+public SolarSystemMapPanel(List<ObjectEntry> objects, DateTime mapStartDate, float scale_km = 1_000_000);
+}
+```
+slouží pro zobrazení mapy sluneční soustavy. V konstruktoru navíc bere parametr scale_km, který říká, jaké měřítko má mapa použít. 
+Druhý konstruktor bere přímo objekty pro zobrazení a přeskakuje filtrování - tento konstruktor se používá při opakovaném spouštění panelu.
+Měřítko je dostupné přes pole
+```c#
+public float Scale_km { get; private set; }
+```
+Dále má navíc event handler
+```c#
+public event EventHandler<ChangeScaleEvent> ScaleChange;
+```
+a k němu má navíc dvě metody
+```c#
+protected void OnChangeScale(object sender, ChangeScaleEvent e);
+
+public void InvokeScaleSwitchEvent(float scale_km)
+{
+    ScaleChange?.Invoke(this, new ChangeScaleEvent(scale_km));
+}
+```
+kde OnChangeScale se stará o změnu měřítka mapy, zatímco InvokeScaleSwitchEvent, pouze vytváří event, který změnu měřítka provádí. Změna měřítka je prováděna přes události, jelikož je spouštěna stisknutím tlačítka v ControlPanel (viz ControlPanel), což je jiný formulář.
+
+Také má navíc pole
+```c#
+protected virtual bool _respectScaleForBodySize { get; } = false;
+```
+které říká, zda se při vykreslování objektů má respektovat jejich velikost.
+
+#### SateliteMapPanel
+Třída
+```c#
+internal class SateliteMapPanel : SolarSystemMapPanel
+```
+slouží pro zobrazování mapy měsíců.
+Na rozdíl od svého předka má _respectScaleForBodySize nastaveno na true. Dále obsahuje metody
+```c#
+private void _printDirections(PaintEventArgs e)
+private void _drawArrowAtTheEdge(Graphics graphics, PointF location, Color color, string name)
+```
+které slouží pro zobrazování směru Země a Slunce.
+
+### Hlavní formulář
+Hlavním formulářem, který provádí řežii zobrazování map je
+```c#
+public class SolarMapperMainForm<TData> : Form
+    where TData : IEphemerisData<IEphemerisTableRow>
+```
+Tento formulář má následující fieldy:
+
+```c#
+private Panel _mainMapPanel;
+```
+- zde jsou uloženy jednotlivé mapy
+- field je sice třídy Panel, ale jsou vněm obsaženy pouze potomci třídy MapPanel, ke kterým je buď přistupováno jako k instanci Panel nebo jako k implementaci IMap. Je tomu tak z několika důvodů, hlavním z nich je generika samotné třídy.
+```c#
+private SateliteMapPanel _sateliteMap = null;
+```
+- pro mapu měsíců
+```c#
+private MapType mainMapType;
+```
+- uchovává informaci o hlavním typu mapy, aby šlo snáze opakovaně dávat instance do _mainMapPanel.
+```c#
+private ControlForm _controlForm;
+```
+- kontrolní formulář
+```c#
+private GeneralMapSettings _mapSettings;
+```
+- nastavení map
+```c#
+private IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> _typeFilters;
+```
+- filtry pro jednotlivá tělesa
+```c#
+private List<ObjectEntry> ObjectEntries;
+```
+- pro uchování dat o objektech, aby nebylo třeba je znova filtrovat
+
+Mezi nejdůležitější třídy patří:
+```c#
+private void _setUpMainMapPanel(List<ObjectEntry> entries, DateTime date)
+```
+- slouží k opakovanému vytváření map.
+```c#
+private void _destroyMainMapPanel()
+```
+- zničí hlavní mapu (dispose) a provede dispose _controlForm
+```c#
+private void _setUpMoonMapPanel(List<ObjectEntry> entries, DateTime date, NASAHorizonsDataFetcher.MapMode mode, string centerName);
+```
+- nastavení mapy měsíců
+```c#
+private void _destroyMoonPanel();
+```
+- zničení mapy měsíců a dispose _controlForm
+```c#
+private void SolarMapperUI_KeyDown(object sender, KeyEventArgs e);
+```
+- pro zobrazení kontrolního panelu
+```c#
+private void ShowMoonPanel(object sender, SwitchViewRequestedEvent e);
+```
+- zničení hlavní mapy a zobrazení mapy měsíců
+```c#
+private void ShowMainPanel(object sender, SwitchViewRequestedEvent e)
+```
+- zničení mapy měsíců a zobrazení hlavní mapy
+Konstruktorem je 
+```c#
+internal SolarMapperMainForm(GeneralMapSettings generalMapSettings, IEnumerable<TypeSettings<TData>> typeSettings, Panel panel);
+```
+#### Kontrolní formulář
+```c#
+internal class ControlForm : Form
+```
+Tato třída slouží k ovládání mapy. Jde o formluář s tlačítky. Většina kódu slouží pouze k vytváření tlačítek, které vyvolávají události.
+```c#
+public ControlForm(IMap mapPanel)
+```
+V konstruktoru bere třída instanci implementace IMap a podle typu implementace vybírá tlačítka, která se na kontrolním panelu zobrazí.
+
+### Ostatní formuláře
+První formulář, který se uživateli zobrazí je formulář
+```c#
+public partial class OpeningForm : Form
+```
+
+#### MapSettingsForm
+Formulář
+```c#
+public partial class MapSettingsForm : Form
+```
+slouží pro to aby uživatel mohl nastavit typ mapy pro zobrazení, typ těles, které chce zobrazi a nastavení obecných filtrů těles. Výsledkem vyplnění formuláře je instance recordu
+```c#
+internal record GeneralMapSettings(MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
+    double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double minDistance = 0, double maxDistance = double.PositiveInfinity, double? latitude = null, double? longitude = null);
+```
+Predikát GenralFilter je vytvářen metodou 
+```c#
+private Predicate<ObjectData> _makeFilter();
+```
+a slouží k tomu aby byl použit v LINQ v metodě Where.
+
+V třídě MapSettingsForm je instance recordu GeneralMapSettings vytvořena při stisknutí tlačítka s nápisem "Next Page" a je vystavena v poli
+```c#
+internal GeneralMapSettings GeneralMapSettings { get; private set; }
+```
+
+#### TypeFilterForm
+
+Pro každý uživatelem vybraný typ tělesa se zobrazí následující formulář
+```c#
+public partial class TypeFilterForm<TData> : Form
+    where TData : IEphemerisData<IEphemerisTableRow>
+```
+Ten, obdobně jako předchozí formulář, vytvoří při stisknutí tlačítka "Next Page" instanci recordu 
+```c#
+internal record TypeSettings<TData>(string TypeName, Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> linqFilter) 
+    where TData : IEphemerisData<IEphemerisTableRow>;
+```
+kde linqFilter je delegát, který sám zvládne filtrovat kolekce obahující IFormBody. Instace tohotorecordu je následně vyrvena v poli
+```c#
+internal TypeSettings<TData>? TypeSettings { get; private set; }
+```
+
+Delegát je vytvářen metodou
+```c#
+private Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> _makeLINQQuerry();
+```
+která podle zadaných parametrů ve formuláři vytvoří daný delegát. Delegát nejprve vyfiltruje kolekci pomoccí predikátu z třídy
+```c#
+private Predicate<IFormBody<TData>> _makeRangeFilter()
+```
+Ten v kolekci nechá pouze instace daného typu tělesa a ty, které splňují zadané podmínky.
+
+### Vstupní bod aplikace
+Vstupním bodem aplikace je metoda Main ve třídě Program, nacházející se v souboru SolarMapperUI/Program.cs. Metoda main představuje staovový automat který postupně spouští formuláře. Využívá metodu
+```c#
+internal static void SetUpMainForm<TData>(GeneralMapSettings settings)
+    where TData : IEphemerisData<IEphemerisTableRow>
+```
+která podle zvoleného typu mapy zobrazuje instance TypeFilterForm a SolarMapperMainForm.
+
+
+
+
+
+
+
