@@ -75,7 +75,7 @@ namespace SolarMapperUI
 
             Predicate<ObjectData> allObjectDataPredicates = x =>
             {
-               
+
 
                 return (x.Type == this.TypeName.Trim()) && (massPredicate(x) && radiusPredicate(x) && densityPredicate(x) && gravityPredicate(x) && orbitalPeriodPredicate(x));
             }
@@ -183,6 +183,11 @@ namespace SolarMapperUI
         }
 
         private void TopCategory_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Avarage_Category_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

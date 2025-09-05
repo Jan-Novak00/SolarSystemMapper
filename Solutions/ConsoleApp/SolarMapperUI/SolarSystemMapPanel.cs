@@ -53,7 +53,18 @@ namespace SolarMapperUI
 
         }
 
-       
+        protected double _minSpeed = double.NegativeInfinity;
+        protected double _maxSpeed = double.PositiveInfinity;
+        protected double _minDistance = double.NegativeInfinity;
+        protected double _maxDistance = double.PositiveInfinity;
+
+        protected override bool _otherVisibilityConditions(IFormBody<EphemerisVectorData> body)
+        {
+            double speed = Math.Sqrt(Math.Pow(body.BodyData.ephemerisTable[this._pictureIndex].VX ?? 0, 2) + Math.Pow(body.BodyData.ephemerisTable[this._pictureIndex].VY ?? 0, 2) + Math.Pow(body.BodyData.ephemerisTable[this._pictureIndex].VZ ?? 0, 2));
+            double distance = Math.Sqrt(Math.Pow(body.BodyData.ephemerisTable[this._pictureIndex].X ?? 0, 2) + Math.Pow(body.BodyData.ephemerisTable[this._pictureIndex].Y ?? 0, 2) + Math.Pow(body.BodyData.ephemerisTable[this._pictureIndex].Z ?? 0, 2));
+            return speed <= _maxSpeed && speed >= _minSpeed && distance <= _maxDistance && distance >= _minDistance;
+        }
+
         public SolarSystemMapPanel(List<ObjectEntry> objects, DateTime mapStartDate, float scale_km = 1_000_000)
         {
             this.Scale_km = scale_km;
@@ -72,6 +83,10 @@ namespace SolarMapperUI
         public SolarSystemMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisVectorData>>, IEnumerable<IFormBody<EphemerisVectorData>>>> typeFilters,
             float scale_km = 1_000_000) : base(generalMapSettings, typeFilters)
         {
+            this._minSpeed = generalMapSettings.minSpeed;
+            this._maxSpeed = generalMapSettings.maxSpeed;
+            this._minDistance = generalMapSettings.minDistance;
+            this._maxDistance = generalMapSettings.maxDistance;
             this.Scale_km = scale_km;
             this._pictureIndex = 0;
             this._originalData = null;

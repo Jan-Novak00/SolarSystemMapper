@@ -40,6 +40,11 @@
             label4 = new Label();
             ObjectTypes_CheckedListBox = new CheckedListBox();
             tableLayoutPanel5 = new TableLayoutPanel();
+            tableLayoutPanel12 = new TableLayoutPanel();
+            MinDistance_TextBox = new TextBox();
+            MaxDistance_TextBox = new TextBox();
+            label23 = new Label();
+            label26 = new Label();
             tableLayoutPanel4 = new TableLayoutPanel();
             MinMass_TextBox = new TextBox();
             MaxMass_TextBox = new TextBox();
@@ -78,20 +83,26 @@
             label20 = new Label();
             label21 = new Label();
             label22 = new Label();
-            Speed_Label = new Label();
-            label24 = new Label();
-            label25 = new Label();
             NextPage_Button = new Button();
+            label25 = new Label();
+            label24 = new Label();
+            Speed_Label = new Label();
+            label3 = new Label();
+            tableLayoutPanel11 = new TableLayoutPanel();
+            textBox1 = new TextBox();
+            textBox2 = new TextBox();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
+            tableLayoutPanel12.SuspendLayout();
             tableLayoutPanel4.SuspendLayout();
             tableLayoutPanel6.SuspendLayout();
             tableLayoutPanel7.SuspendLayout();
             tableLayoutPanel8.SuspendLayout();
             tableLayoutPanel9.SuspendLayout();
             tableLayoutPanel10.SuspendLayout();
+            tableLayoutPanel11.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -230,7 +241,7 @@
             // 
             ObjectTypes_CheckedListBox.Dock = DockStyle.Fill;
             ObjectTypes_CheckedListBox.FormattingEnabled = true;
-            ObjectTypes_CheckedListBox.Items.AddRange(new object[] { "Star", "Terrestrial Planet", "Gas Giant", "Dwarf Planet", "Asteroid", "Comet", "Spacecraft" });
+            ObjectTypes_CheckedListBox.Items.AddRange(new object[] { "Star", "Terrestrial Planet", "Gas Giant", "Dwarf Planet", "Asteroid", "Comet", "Spacecraft", "Moon" });
             ObjectTypes_CheckedListBox.Location = new Point(3, 83);
             ObjectTypes_CheckedListBox.Name = "ObjectTypes_CheckedListBox";
             ObjectTypes_CheckedListBox.Size = new Size(990, 476);
@@ -241,24 +252,26 @@
             tableLayoutPanel5.ColumnCount = 2;
             tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel5.Controls.Add(tableLayoutPanel12, 1, 6);
             tableLayoutPanel5.Controls.Add(tableLayoutPanel4, 1, 1);
             tableLayoutPanel5.Controls.Add(label5, 0, 0);
-            tableLayoutPanel5.Controls.Add(WhiteList_TextBox, 1, 7);
-            tableLayoutPanel5.Controls.Add(BlackList_TextBox, 1, 8);
+            tableLayoutPanel5.Controls.Add(WhiteList_TextBox, 1, 8);
+            tableLayoutPanel5.Controls.Add(BlackList_TextBox, 1, 9);
             tableLayoutPanel5.Controls.Add(tableLayoutPanel6, 1, 2);
             tableLayoutPanel5.Controls.Add(tableLayoutPanel7, 1, 3);
             tableLayoutPanel5.Controls.Add(tableLayoutPanel8, 1, 4);
             tableLayoutPanel5.Controls.Add(tableLayoutPanel9, 1, 5);
-            tableLayoutPanel5.Controls.Add(tableLayoutPanel10, 1, 6);
+            tableLayoutPanel5.Controls.Add(tableLayoutPanel10, 1, 7);
             tableLayoutPanel5.Controls.Add(label18, 0, 1);
             tableLayoutPanel5.Controls.Add(label19, 0, 2);
             tableLayoutPanel5.Controls.Add(label20, 0, 3);
             tableLayoutPanel5.Controls.Add(label21, 0, 4);
             tableLayoutPanel5.Controls.Add(label22, 0, 5);
-            tableLayoutPanel5.Controls.Add(Speed_Label, 0, 6);
-            tableLayoutPanel5.Controls.Add(label24, 0, 7);
-            tableLayoutPanel5.Controls.Add(label25, 0, 8);
             tableLayoutPanel5.Controls.Add(NextPage_Button, 1, 10);
+            tableLayoutPanel5.Controls.Add(label25, 0, 9);
+            tableLayoutPanel5.Controls.Add(label24, 0, 8);
+            tableLayoutPanel5.Controls.Add(Speed_Label, 0, 7);
+            tableLayoutPanel5.Controls.Add(label3, 0, 6);
             tableLayoutPanel5.Dock = DockStyle.Fill;
             tableLayoutPanel5.Location = new Point(1005, 3);
             tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -275,8 +288,64 @@
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel5.Size = new Size(996, 1130);
             tableLayoutPanel5.TabIndex = 4;
+            // 
+            // tableLayoutPanel12
+            // 
+            tableLayoutPanel12.ColumnCount = 2;
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.Controls.Add(MinDistance_TextBox, 1, 0);
+            tableLayoutPanel12.Controls.Add(MaxDistance_TextBox, 1, 1);
+            tableLayoutPanel12.Controls.Add(label23, 0, 0);
+            tableLayoutPanel12.Controls.Add(label26, 0, 1);
+            tableLayoutPanel12.Dock = DockStyle.Fill;
+            tableLayoutPanel12.Location = new Point(501, 593);
+            tableLayoutPanel12.Name = "tableLayoutPanel12";
+            tableLayoutPanel12.RowCount = 3;
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel12.Size = new Size(492, 102);
+            tableLayoutPanel12.TabIndex = 35;
+            // 
+            // MinDistance_TextBox
+            // 
+            MinDistance_TextBox.Dock = DockStyle.Fill;
+            MinDistance_TextBox.Location = new Point(249, 3);
+            MinDistance_TextBox.Name = "MinDistance_TextBox";
+            MinDistance_TextBox.Size = new Size(240, 39);
+            MinDistance_TextBox.TabIndex = 1;
+            MinDistance_TextBox.Text = "0";
+            // 
+            // MaxDistance_TextBox
+            // 
+            MaxDistance_TextBox.Dock = DockStyle.Fill;
+            MaxDistance_TextBox.Location = new Point(249, 44);
+            MaxDistance_TextBox.Name = "MaxDistance_TextBox";
+            MaxDistance_TextBox.Size = new Size(240, 39);
+            MaxDistance_TextBox.TabIndex = 2;
+            MaxDistance_TextBox.Text = "Infinity";
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Location = new Point(3, 0);
+            label23.Name = "label23";
+            label23.Size = new Size(118, 32);
+            label23.TabIndex = 3;
+            label23.Text = "Minimum";
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Location = new Point(3, 41);
+            label26.Name = "label26";
+            label26.Size = new Size(121, 32);
+            label26.TabIndex = 4;
+            label26.Text = "Maximum";
             // 
             // tableLayoutPanel4
             // 
@@ -344,7 +413,7 @@
             // WhiteList_TextBox
             // 
             WhiteList_TextBox.Dock = DockStyle.Fill;
-            WhiteList_TextBox.Location = new Point(501, 701);
+            WhiteList_TextBox.Location = new Point(501, 809);
             WhiteList_TextBox.Multiline = true;
             WhiteList_TextBox.Name = "WhiteList_TextBox";
             WhiteList_TextBox.Size = new Size(492, 102);
@@ -353,7 +422,7 @@
             // BlackList_TextBox
             // 
             BlackList_TextBox.Dock = DockStyle.Fill;
-            BlackList_TextBox.Location = new Point(501, 809);
+            BlackList_TextBox.Location = new Point(501, 917);
             BlackList_TextBox.Multiline = true;
             BlackList_TextBox.Name = "BlackList_TextBox";
             BlackList_TextBox.Size = new Size(492, 102);
@@ -580,7 +649,7 @@
             tableLayoutPanel10.Controls.Add(MinSpeed_TextBox, 1, 0);
             tableLayoutPanel10.Controls.Add(label17, 0, 1);
             tableLayoutPanel10.Dock = DockStyle.Fill;
-            tableLayoutPanel10.Location = new Point(501, 593);
+            tableLayoutPanel10.Location = new Point(501, 701);
             tableLayoutPanel10.Name = "tableLayoutPanel10";
             tableLayoutPanel10.RowCount = 2;
             tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
@@ -668,33 +737,6 @@
             label22.TabIndex = 29;
             label22.Text = "Gravity (m/s^2)";
             // 
-            // Speed_Label
-            // 
-            Speed_Label.AutoSize = true;
-            Speed_Label.Location = new Point(3, 590);
-            Speed_Label.Name = "Speed_Label";
-            Speed_Label.Size = new Size(142, 32);
-            Speed_Label.TabIndex = 30;
-            Speed_Label.Text = "Speed (m/s)";
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Location = new Point(3, 698);
-            label24.Name = "label24";
-            label24.Size = new Size(119, 32);
-            label24.TabIndex = 31;
-            label24.Text = "White List";
-            // 
-            // label25
-            // 
-            label25.AutoSize = true;
-            label25.Location = new Point(3, 806);
-            label25.Name = "label25";
-            label25.Size = new Size(111, 32);
-            label25.TabIndex = 32;
-            label25.Text = "Black List";
-            // 
             // NextPage_Button
             // 
             NextPage_Button.Dock = DockStyle.Fill;
@@ -705,6 +747,73 @@
             NextPage_Button.Text = "Next Page";
             NextPage_Button.UseVisualStyleBackColor = true;
             NextPage_Button.Click += NextPage_Button_Click;
+            // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Location = new Point(3, 914);
+            label25.Name = "label25";
+            label25.Size = new Size(111, 32);
+            label25.TabIndex = 32;
+            label25.Text = "Black List";
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new Point(3, 806);
+            label24.Name = "label24";
+            label24.Size = new Size(119, 32);
+            label24.TabIndex = 31;
+            label24.Text = "White List";
+            // 
+            // Speed_Label
+            // 
+            Speed_Label.AutoSize = true;
+            Speed_Label.Location = new Point(3, 698);
+            Speed_Label.Name = "Speed_Label";
+            Speed_Label.Size = new Size(142, 32);
+            Speed_Label.TabIndex = 30;
+            Speed_Label.Text = "Speed (m/s)";
+            Speed_Label.Click += Speed_Label_Click;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(3, 590);
+            label3.Name = "label3";
+            label3.Size = new Size(316, 32);
+            label3.TabIndex = 34;
+            label3.Text = "Distance From The Sun (km)";
+            // 
+            // tableLayoutPanel11
+            // 
+            tableLayoutPanel11.ColumnCount = 2;
+            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel11.Controls.Add(textBox1, 1, 1);
+            tableLayoutPanel11.Location = new Point(0, 0);
+            tableLayoutPanel11.Name = "tableLayoutPanel11";
+            tableLayoutPanel11.RowCount = 2;
+            tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel11.Size = new Size(200, 100);
+            tableLayoutPanel11.TabIndex = 0;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(103, 23);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(94, 39);
+            textBox1.TabIndex = 12;
+            textBox1.Text = "Infinity";
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(103, 3);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(94, 39);
+            textBox2.TabIndex = 11;
+            textBox2.Text = "0";
             // 
             // MapSettingsForm
             // 
@@ -722,6 +831,8 @@
             tableLayoutPanel3.PerformLayout();
             tableLayoutPanel5.ResumeLayout(false);
             tableLayoutPanel5.PerformLayout();
+            tableLayoutPanel12.ResumeLayout(false);
+            tableLayoutPanel12.PerformLayout();
             tableLayoutPanel4.ResumeLayout(false);
             tableLayoutPanel4.PerformLayout();
             tableLayoutPanel6.ResumeLayout(false);
@@ -734,6 +845,8 @@
             tableLayoutPanel9.PerformLayout();
             tableLayoutPanel10.ResumeLayout(false);
             tableLayoutPanel10.PerformLayout();
+            tableLayoutPanel11.ResumeLayout(false);
+            tableLayoutPanel11.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -793,5 +906,14 @@
         private Label label24;
         private Label label25;
         private Button NextPage_Button;
+        private Label label3;
+        private TableLayoutPanel tableLayoutPanel11;
+        private TextBox textBox1;
+        private TextBox textBox2;
+        private TableLayoutPanel tableLayoutPanel12;
+        private TextBox MinDistance_TextBox;
+        private TextBox MaxDistance_TextBox;
+        private Label label23;
+        private Label label26;
     }
 }

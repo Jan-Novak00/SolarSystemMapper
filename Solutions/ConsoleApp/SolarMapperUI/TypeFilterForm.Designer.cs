@@ -29,11 +29,6 @@
         private void InitializeComponent()
         {
             tableLayoutPanel1 = new TableLayoutPanel();
-            tableLayoutPanel7 = new TableLayoutPanel();
-            MinDistance_TextBox = new TextBox();
-            MaxDistance_TextBox = new TextBox();
-            label18 = new Label();
-            label19 = new Label();
             tableLayoutPanel6 = new TableLayoutPanel();
             MinDensity_TextBox = new TextBox();
             MaxDensity_TextBox = new TextBox();
@@ -66,7 +61,6 @@
             label14 = new Label();
             label15 = new Label();
             label16 = new Label();
-            label17 = new Label();
             tableLayoutPanel8 = new TableLayoutPanel();
             AscendingDescending_ComboBox = new ComboBox();
             TopNumber_NumericUpDown = new NumericUpDown();
@@ -84,7 +78,6 @@
             AvarageSpan_TextBox = new TextBox();
             NextPage_Button = new Button();
             tableLayoutPanel1.SuspendLayout();
-            tableLayoutPanel7.SuspendLayout();
             tableLayoutPanel6.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
@@ -106,7 +99,6 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 17.8571434F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 17.8571434F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 17.8571434F));
-            tableLayoutPanel1.Controls.Add(tableLayoutPanel7, 4, 0);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel6, 1, 5);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel5, 1, 4);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel3, 1, 3);
@@ -119,7 +111,6 @@
             tableLayoutPanel1.Controls.Add(label14, 0, 3);
             tableLayoutPanel1.Controls.Add(label15, 0, 4);
             tableLayoutPanel1.Controls.Add(label16, 0, 5);
-            tableLayoutPanel1.Controls.Add(label17, 3, 0);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel8, 4, 2);
             tableLayoutPanel1.Controls.Add(label20, 3, 2);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel9, 5, 2);
@@ -140,62 +131,6 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
             tableLayoutPanel1.Size = new Size(2157, 1310);
             tableLayoutPanel1.TabIndex = 0;
-            // 
-            // tableLayoutPanel7
-            // 
-            tableLayoutPanel7.ColumnCount = 2;
-            tableLayoutPanel1.SetColumnSpan(tableLayoutPanel7, 2);
-            tableLayoutPanel7.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel7.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel7.Controls.Add(MinDistance_TextBox, 1, 0);
-            tableLayoutPanel7.Controls.Add(MaxDistance_TextBox, 1, 1);
-            tableLayoutPanel7.Controls.Add(label18, 0, 0);
-            tableLayoutPanel7.Controls.Add(label19, 0, 1);
-            tableLayoutPanel7.Dock = DockStyle.Fill;
-            tableLayoutPanel7.Location = new Point(1389, 3);
-            tableLayoutPanel7.Name = "tableLayoutPanel7";
-            tableLayoutPanel7.RowCount = 3;
-            tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel7.Size = new Size(765, 212);
-            tableLayoutPanel7.TabIndex = 12;
-            // 
-            // MinDistance_TextBox
-            // 
-            MinDistance_TextBox.Dock = DockStyle.Fill;
-            MinDistance_TextBox.Location = new Point(385, 3);
-            MinDistance_TextBox.Name = "MinDistance_TextBox";
-            MinDistance_TextBox.Size = new Size(377, 39);
-            MinDistance_TextBox.TabIndex = 1;
-            MinDistance_TextBox.Text = "0";
-            // 
-            // MaxDistance_TextBox
-            // 
-            MaxDistance_TextBox.Dock = DockStyle.Fill;
-            MaxDistance_TextBox.Location = new Point(385, 99);
-            MaxDistance_TextBox.Name = "MaxDistance_TextBox";
-            MaxDistance_TextBox.Size = new Size(377, 39);
-            MaxDistance_TextBox.TabIndex = 2;
-            MaxDistance_TextBox.Text = "Infinity";
-            // 
-            // label18
-            // 
-            label18.AutoSize = true;
-            label18.Location = new Point(3, 0);
-            label18.Name = "label18";
-            label18.Size = new Size(118, 32);
-            label18.TabIndex = 3;
-            label18.Text = "Minimum";
-            // 
-            // label19
-            // 
-            label19.AutoSize = true;
-            label19.Location = new Point(3, 96);
-            label19.Name = "label19";
-            label19.Size = new Size(121, 32);
-            label19.TabIndex = 4;
-            label19.Text = "Maximum";
             // 
             // tableLayoutPanel6
             // 
@@ -538,15 +473,6 @@
             label16.TabIndex = 10;
             label16.Text = "Denisity (g/cm^3)";
             // 
-            // label17
-            // 
-            label17.AutoSize = true;
-            label17.Location = new Point(1004, 0);
-            label17.Name = "label17";
-            label17.Size = new Size(349, 64);
-            label17.TabIndex = 11;
-            label17.Text = "Distance To The Center Of The Map/Observer (km)";
-            // 
             // tableLayoutPanel8
             // 
             tableLayoutPanel8.ColumnCount = 1;
@@ -670,6 +596,7 @@
             Avarage_Category.Name = "Avarage_Category";
             Avarage_Category.Size = new Size(277, 40);
             Avarage_Category.TabIndex = 17;
+            Avarage_Category.SelectedIndexChanged += Avarage_Category_SelectedIndexChanged;
             // 
             // label23
             // 
@@ -733,8 +660,6 @@
             WindowState = FormWindowState.Maximized;
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
-            tableLayoutPanel7.ResumeLayout(false);
-            tableLayoutPanel7.PerformLayout();
             tableLayoutPanel6.ResumeLayout(false);
             tableLayoutPanel6.PerformLayout();
             tableLayoutPanel5.ResumeLayout(false);
@@ -791,12 +716,6 @@
         private Label label14;
         private Label label15;
         private Label label16;
-        private TableLayoutPanel tableLayoutPanel7;
-        private TextBox MinDistance_TextBox;
-        private TextBox MaxDistance_TextBox;
-        private Label label18;
-        private Label label19;
-        private Label label17;
         private TableLayoutPanel tableLayoutPanel8;
         private ComboBox AscendingDescending_ComboBox;
         private NumericUpDown TopNumber_NumericUpDown;

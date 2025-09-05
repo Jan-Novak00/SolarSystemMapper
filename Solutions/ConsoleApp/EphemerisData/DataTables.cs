@@ -195,7 +195,7 @@ namespace SolarSystemMapper
                 case "Asteroid":
                     return Asteroids;
                 default:
-                    throw new NotImplementedException();
+                    return new HashSet<ObjectEntry>();
             }
 
 

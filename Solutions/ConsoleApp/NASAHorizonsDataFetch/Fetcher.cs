@@ -142,7 +142,7 @@ namespace SolarSystemMapper
                 try
                 {
                     string answer = await client.GetStringAsync(_generateURl(obj.Code));
-                    
+                    Debug.WriteLine(answer);
                     return answer;
                 }
                 finally

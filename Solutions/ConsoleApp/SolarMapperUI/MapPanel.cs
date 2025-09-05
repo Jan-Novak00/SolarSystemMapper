@@ -129,8 +129,8 @@ namespace SolarMapperUI
             _data = typeFilteredData.Where(x => !this._blackList.Any(name => name == x.BodyData.objectData.Name))
                 .Union(_data.Where(x=> this._whiteList.Any(name => name == x.BodyData.objectData.Name)))
                 .ToList();
-           
 
+            Debug.WriteLine($"_data.Count = {_data.Count}, ObjectEntries.count = {ObjectEntries.Count}");
             ObjectEntries = ObjectEntries.Where(x=> _data.Any(formBody => formBody.BodyData.objectData.Name == x.Name)).ToList();
 
         }
@@ -181,8 +181,8 @@ namespace SolarMapperUI
 
             this.MouseClick += BodyClick;
             this.Paint += PrintObjects;
-            this.MouseMove += MapPanel_MouseMove;
-            this.MouseLeave += MapPanel_MouseLeave;
+            this.MouseMove += _mouseMoveAcrossBody;
+            this.MouseLeave += _mouseMoveOutOfBody;
         }
 
         protected void _registerVisibleObjects()
@@ -213,13 +213,15 @@ namespace SolarMapperUI
         }
 
 
+        protected virtual bool _otherVisibilityConditions(IFormBody<TData> body) => true;
+
         protected virtual void PrintObjects(object sender, PaintEventArgs e)
         {
             if (_data == null) return;
             foreach (var formBody in this._data)
             {   
                 if (formBody.PixelInfos.Count == 0) continue;
-                if (formBody.PixelInfos[this._pictureIndex].Visible) 
+                if (formBody.PixelInfos[this._pictureIndex].Visible && _otherVisibilityConditions(formBody)) 
                     drawFormBody(formBody.PixelInfos[this._pictureIndex], 
                     e, 
                     (formBody.PixelInfos[this._pictureIndex].ShowName && 
@@ -236,11 +238,11 @@ namespace SolarMapperUI
             if (_data == null) return;
             foreach (var formBody in _data)
             {
-                
+                if (!_otherVisibilityConditions(formBody) || !formBody.PixelInfos[_pictureIndex].Visible) continue;
                 var centerX = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.X + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
                 var centerY = formBody.PixelInfos[this._pictureIndex].BodyCoordinates.Y + formBody.PixelInfos[this._pictureIndex].Diameter / 2;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5) ShowBodyReport(formBody);
+                if (distance < formBody.PixelInfos[this._pictureIndex].Diameter / 2 + 5 + ((formBody.PixelInfos[this._pictureIndex].Diameter < 5) ? 10 : 0)) ShowBodyReport(formBody);
             }
         }
 
@@ -368,23 +370,26 @@ namespace SolarMapperUI
 
         private System.Windows.Forms.ToolTip _toolTip = new System.Windows.Forms.ToolTip();
         private IFormBody<TData>? _currentHoveredBody = null;
-        private void MapPanel_MouseMove(object sender, MouseEventArgs e)
+
+        private void _mouseMoveAcrossBody(object sender, MouseEventArgs e)
         {
             if (_data == null) return;
 
             IFormBody<TData>? hovered = null;
             foreach (var formBody in _data)
             {
+                if (!_otherVisibilityConditions(formBody) || !formBody.PixelInfos[_pictureIndex].Visible) continue;
                 var pixel = formBody.PixelInfos[this._pictureIndex];
                 var centerX = pixel.BodyCoordinates.X + pixel.Diameter / 2;
                 var centerY = pixel.BodyCoordinates.Y + pixel.Diameter / 2;
                 var distance = Math.Sqrt((centerX - e.X) * (centerX - e.X) + (centerY - e.Y) * (centerY - e.Y));
-                if (distance < pixel.Diameter / 2)
+                if (distance < pixel.Diameter / 2 + 5 + ((pixel.Diameter < 5) ? 10 : 0))
                 {
                     hovered = formBody;
                     break;
                 }
             }
+            
 
             if (hovered != _currentHoveredBody)
             {
@@ -398,8 +403,9 @@ namespace SolarMapperUI
                     _toolTip.Hide(this);
                 }
             }
+            this.Cursor = (hovered != null) ? Cursors.Hand : Cursors.Default;
         }
-        private void MapPanel_MouseLeave(object sender, EventArgs e)
+        private void _mouseMoveOutOfBody(object sender, EventArgs e)
         {
             _currentHoveredBody = null;
             _toolTip.Hide(this);

@@ -14,11 +14,14 @@ namespace SolarMapperUI
 {
 
     internal record GeneralMapSettings(SolarMapperMainForm.MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
-        double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double? latitude = null, double? longitude = null);
+        double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double minDistance = 0, double maxDistance = double.PositiveInfinity, double? latitude = null, double? longitude = null);
 
 
     public partial class MapSettingsForm : Form
     {
+
+
+
         internal GeneralMapSettings GeneralMapSettings { get; private set; }
         public MapSettingsForm()
         {
@@ -44,6 +47,8 @@ namespace SolarMapperUI
             double longitude = double.NaN;
             double minSpeed = double.NaN;
             double maxSpeed = double.NaN;
+            double minDistance = double.NaN;
+            double maxDistance = double.NaN;
             Predicate<ObjectData> filter = null;
             try
             {
@@ -57,8 +62,22 @@ namespace SolarMapperUI
                 }
                 if (!maxSpeedSuccess)
                 {
-                    if (MaxSpeed_TextBox.Text.Trim() == "Infinity") maxSpeed = double.NegativeInfinity;
+                    if (MaxSpeed_TextBox.Text.Trim() == "Infinity") maxSpeed = double.PositiveInfinity;
                     else throw new ArgumentException("Max speed value was entered incorrectly.");
+                }
+
+                bool minDistanceSuccess = double.TryParse(MinDistance_TextBox.Text, out minDistance);
+                bool maxDistanceSuccess = double.TryParse(MaxDistance_TextBox.Text, out maxDistance);
+
+                if (!minDistanceSuccess)
+                {
+                    if (MinDistance_TextBox.Text.Trim() == "-Infinity") minDistance = double.NegativeInfinity;
+                    else throw new ArgumentException("Min distance value was entered incorrectly.");
+                }
+                if (!maxDistanceSuccess)
+                {
+                    if (MaxDistance_TextBox.Text.Trim() == "Infinity") maxDistance = double.PositiveInfinity;
+                    else throw new ArgumentException($"Max distance value was entered incorrectly.");
                 }
 
                 if (mapType == SolarMapperMainForm.MapType.NightSky)
@@ -88,7 +107,7 @@ namespace SolarMapperUI
             }
 
 
-            this.GeneralMapSettings = new GeneralMapSettings(mapType, date, objectTypes, whiteList, blackList, filter, minSpeed, maxSpeed, (double.IsNormal(latitude)) ? latitude : null, (double.IsNormal(longitude)) ? longitude : null);
+            this.GeneralMapSettings = new GeneralMapSettings(mapType, date, objectTypes, whiteList, blackList, filter, minSpeed, maxSpeed, minDistance, maxDistance, (double.IsNormal(latitude)) ? latitude : null, (double.IsNormal(longitude)) ? longitude : null);
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -140,7 +159,7 @@ namespace SolarMapperUI
             Predicate<ObjectData> gravityPredicate = x => (x.EquatorialGravity_mps2 > parsedValues["Min Gravity"] && x.EquatorialGravity_mps2 < parsedValues["Max Gravity"]) || double.IsNaN(x.EquatorialGravity_mps2);
 
             Predicate<ObjectData> orbitalPeriodPredicate = x => (x.OrbitalPeriod_y > parsedValues["Min Orbital Period"] && x.OrbitalPeriod_y < parsedValues["Max Orbital Period"]) || double.IsNaN(x.OrbitalPeriod_y);
-            //dodelat speed
+
 
 
             Predicate<ObjectData> allObjectDataPredicates = x => massPredicate(x) && radiusPredicate(x) && densityPredicate(x) && gravityPredicate(x) && orbitalPeriodPredicate(x);
@@ -173,6 +192,11 @@ namespace SolarMapperUI
         }
 
         private void Coordinates_TextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Speed_Label_Click(object sender, EventArgs e)
         {
 
         }

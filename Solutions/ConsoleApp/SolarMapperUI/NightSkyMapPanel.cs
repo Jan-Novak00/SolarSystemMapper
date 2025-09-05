@@ -38,7 +38,7 @@ namespace SolarMapperUI
         }
         public NightSkyMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisObserverData>>, IEnumerable<IFormBody<EphemerisObserverData>>>> typeFilters) : base(generalMapSettings, typeFilters)
         {
-            
+            this.ObjectEntries = this.ObjectEntries.Union(DataTables.EarthSatelites).ToList();
             this._pictureIndex = 0;
             this._originalData = null;
             this._data = null;
@@ -90,14 +90,14 @@ namespace SolarMapperUI
             e.Graphics.DrawString("S", font, brush, center.X - 10, center.Y + radius);
             e.Graphics.DrawString("E", font, brush, center.X + radius + 5, center.Y);
             e.Graphics.DrawString("W", font, brush, center.X - radius - 45, center.Y );
-                //Thread.Sleep(10000);
+                
 
-                // Úhly po 30°
+                
             for (int angle = 0; angle < 360; angle += 30)
             {
                 if (angle % 90 == 0) continue;
                 double radians = Math.PI - ((angle + 90) * Math.PI / 180.0);
-                int x = (int)(center.X + (int)((radius + 15) * Math.Cos(radians))) - ((angle < 180) ? 45 : 0);
+                int x = (int)(center.X + (int)((radius + 40 + ((angle<180) ? ((angle == 60 || angle == 120) ? 50 : 80) : 0)) * Math.Cos(radians))) - ((angle < 180) ? 45 : 0);
                 int y = (int)(center.Y - (int)((radius + 15) * Math.Sin(radians)));
                 string text = angle.ToString();
                 SizeF textSize = e.Graphics.MeasureString(text, font);
