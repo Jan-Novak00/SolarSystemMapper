@@ -1,10 +1,19 @@
 # Uživatelská část
 Aplikace vyžaduje pro své fungování připojení k internetu, aby mohla aplikace získat informace o efemeridách z NASA Horizons API (dále jen API).
 
+## Slovník
+
+Efemerida je údaj o astronomickém objektu. Mluvíme-li o objektu nebo o tělese, mluvíme přímo o daném astronomickém objektu. Mluvíme-li o vlastnostech tělesa/objektu, myslíme tím např. jeho hmotnost, gravitační zrychlení, poloměr apod.
+
 ## Spuštění
+Program lze spustit přes Visual Studio Code 2022, kdy vstupním bodem programu musí být metoda Main v projektu SolarMapperUI. Je důležité, aby při spouštění byl v adresáři Solutions/ConsoleApp/SolarMapperUI/bin/Debug/net8.0-windows/ (nebo Solutions/ConsoleApp/SolarMapperUI/bin/Release/net8.0-windows/) adresář s názvem objectData a v něm následující json soubory: Asteroids.json, Comets.json, DwarfPlanets.json, EarthSatelites.json, GasGiants.json, JupiterSatelites.json, MarsSatelites.json, NeptuneSatelites.json, Planets.json, PlutoSatelites.json, SaturnSatelites.json, Spacecrafts.json, Stars.json, TerrestrialPlanets.json, UranusSatelites.json.
+
+Json soubory obsahují lokální informace o tělesech. Každý soubor obsahuje jednu json kolekci objektů ve tvaru {"Name":"<Jméno Objektu>","Code":\<NASA Horizons API číslo objektu>,"Type":"Typ objektu"}.
+
+Je třeba mít nainstalovaný .NET 8.
 
 ## Typy map
-K dispozici jsou tři tpy map - mapa sluneční soustavy, mapa noční oblohy a mapa soustavy měsíců pro vybraná tělesa. Po spuštění uživatel má přístup pouze k mapě sluneční soustavy a mapě noční oblohy -  z těchto map se lze dostat na měsíční mapu kliknutím na dané těleso, jehož měsíční soustava uživatele zajímá.
+K dispozici jsou tři typy map - mapa sluneční soustavy, mapa noční oblohy a mapa soustavy měsíců pro vybraná tělesa. Po spuštění uživatel má přístup pouze k mapě sluneční soustavy a mapě noční oblohy -  z těchto map se lze dostat na měsíční mapu kliknutím na dané těleso, jehož měsíční soustava uživatele zajímá.
 
 ## Nastavení mapy
 Na první obrazovce je uživateli dána možnost vybrat typ mapy, kterou chce uživatel zobrazit. Lze zvolit buď Night sky, pro mapu noční oblohy, nebo Solar system, pro mapu sluneční soustavy.
@@ -22,7 +31,7 @@ Filtry se neaplikují na měsíční mapy.
 
 Poznámka: tíhové zrychlení a gravitační zrychlení jsou v této aplikaci zaměňovány, jelikož API je udává souhrně jako "Gravity" (v angličtině neexitují pro tyto koncepty oddělené termíny). Obecně platí, že u větších těles byl vybírán parametr "Equatorial gravity", u menších těles byl vybírán parametr "Gravity", či byl tento parametr vypočten z hmotnosti tělesa.
 
-V neposlední řadě uživatel může nastavit tzv. white list, kam může napsat názvy těles, které chce, aby se zobrazily, i kdyby neprošly filtry. Též může nastavit black list. Ve white/black list musí být názvy oddělené čárkou.
+V neposlední řadě uživatel může nastavit tzv. white list, kam může napsat názvy těles, které chce, aby se zobrazily, i kdyby neprošly filtry. Též může nastavit black list. Ve white/black list musí být názvy oddělené čárkou. Objekty ve white/black list musí být typu, který uživatel vybral.
 
 Pokud pro nějaký parametr se nepodařilo získat hodnotu, dané těleso filtr automaticky splní.
 
@@ -67,6 +76,13 @@ Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl ref
 
 Není-li uvedeno jinak, "typem tělesa" se myslí sémantický typ vesmírného tělesa (hvězda, kamenná planeta etc.). Tyto typy jsou, kvůli rozšiřitelnosti a snadnému manipulování s řetězci, reprezentovány řetězcem. Tyto řetězce mohou mít následující tvary: "Star", "Terrestrial Planet", "Gas Giant", "Asteroid", "Comet", "Moon", "Spacecraft".
 
+
+## Zvolená implementace
+Jelikož nemám příliž zkušenosti s návrhem uživatelského prostředí, strukturu kódu UI jsem napsal tak, že se celá implementace točí kolem jednoho formuláře, který zprostředkovává komunikaci mezi částmi aplikace.
+
+Filtrování objektů jsem implementoval tak, že se z nejrůznějších formuláří sesbítaly údaje o preferencích uživatele a vytvořily se z nich delegáty, které se předaly hlavní mapě (buď mapě sluneční soustavy nebo mapě oblohy). Filtry jsou aplikovány až po prvním fetch dat ze serveru. Program si následně zapamatuje, jaká tělesa nebyla filtorvána a při dalším fetch pracuje již s vyfiltrovanými daty. Tedy na začátku musí být fetchována všechna data zvolených typů. Toto je jediné známé pořadí, v jaémk filtr implementovat bez ukládání dat o tělesech lokálně.
+
+Filtry nejsou aplikovány na mapy měsíců, jelikož těles na těchto mapách je pomálu a propojení s filtry na hlavní mapě není pro uživatele příjemné.
 
 ## Struktura kódu
 Kód je rozdělen do dvou namespace - SolarSystemMapper, který obsahuje hlavně třídy pro datovou reprezentaci a fetch dat, a SolarMapperUI - který je vstupním bodem programu a který se stará o UI stránku aplikace.
@@ -394,6 +410,19 @@ public MapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumera
 Parametr typeFilters obsahuje delegáty, které jsou určeny pro filtrování dat jednotlivých typů těles. K třídě GeneralMapSettings se dostaneme později - obsahuje informace důležité pro nastavení mapy, včetně predikátu pro filtrování všech těles, názvy typů těles pro zobrazení, bílou a černou listinu etc. Viz. GeneralMapSettings.
 K dispozici je i bezparametrický konstruktor, který slouží pro opakované spouštění panelu a přeskakuje filtrování objektů.
 
+Přepínání map probíhá díky MapSwitch handleru, zde je průběh přepínání mapy:
+
+1) přepínání z hlavní mapy (slunečního systému nebo noční oblohy) na mapu měsíců:
+- uživatel klikl na tlačítko "Moon View" které je vytvářeno formulářem v ShowBodyReport
+- metoda ShowMoonsButtonClick získá instance ObjectEntry pro dané měsíce a danou planetu a pomocí InvokeMapSwitch vyvolá událost SwitchViewRequestedEvent
+- událost je zachycena v hlavním formuláři (viz hlavní formulář) a je zavolána metoda ShowMoonPanel
+
+2) přepínání zpátky do hlavní mapy
+- uživatel klikl na tlačítko Back v ControlFrom
+- v mapě je zavolána metoda ReturnBack (viz SateliteMapPanel)
+- metoda vyvolá událost SwitchViewRequestedEvent
+- formulář událost zachytí a zavolá funkci ShowMainPanel
+
 #### NightSkyMapPanel
 Třída
 ```c#
@@ -446,6 +475,25 @@ Také má navíc pole
 protected virtual bool _respectScaleForBodySize { get; } = false;
 ```
 které říká, zda se při vykreslování objektů má respektovat jejich velikost.
+
+Tato třída také využívá událost
+```c#
+  internal class ChangeScaleEvent : EventArgs
+    {
+        public ChangeScaleEvent(float scale_Km)
+        {
+            Scale_Km = scale_Km;
+        }
+
+        public float Scale_Km { get; init; }
+    }
+```
+pro změnu měřítka.
+
+Změna měřítka probíhá následovně:
+- v ControlForm (viz níže) je stisknutím tlačítka s nápisem "Zoom In" nebo "Zoom Out" vyvolána událost ChangeScaleEvent do, které uloží nové měřítko
+- handler ScaleChange událost zachytí a spustí metodu OnChangeScale, která přepočítá polohy objektů a jejich viditelnost
+
 
 #### SateliteMapPanel
 Třída
@@ -557,7 +605,7 @@ slouží pro to aby uživatel mohl nastavit typ mapy pro zobrazení, typ těles,
 internal record GeneralMapSettings(MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
     double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double minDistance = 0, double maxDistance = double.PositiveInfinity, double? latitude = null, double? longitude = null);
 ```
-Predikát GenralFilter je vytvářen metodou 
+Predikát GeneralFilter je vytvářen metodou 
 ```c#
 private Predicate<ObjectData> _makeFilter();
 ```
@@ -580,7 +628,7 @@ Ten, obdobně jako předchozí formulář, vytvoří při stisknutí tlačítka 
 internal record TypeSettings<TData>(string TypeName, Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> linqFilter) 
     where TData : IEphemerisData<IEphemerisTableRow>;
 ```
-kde linqFilter je delegát, který sám zvládne filtrovat kolekce obahující IFormBody. Instace tohotorecordu je následně vyrvena v poli
+kde linqFilter je delegát, který sám zvládne filtrovat kolekce obahující IFormBody. Instace tohoto recordu je následně vystavena v poli
 ```c#
 internal TypeSettings<TData>? TypeSettings { get; private set; }
 ```
@@ -603,9 +651,54 @@ internal static void SetUpMainForm<TData>(GeneralMapSettings settings)
 ```
 která podle zvoleného typu mapy zobrazuje instance TypeFilterForm a SolarMapperMainForm.
 
+## Zdroj dat
+
+Instance ObjectEntry lze získat ze statické třídy SolarSystemMapper.DataTables.
+
+Tato třída má několik vlstností, které nabízejí přístup k záznamům o objektech. Tyto pole předávají záznamy v HashSet. Proces si uvedem na příkaldu:
+```c#
+private static HashSet<ObjectEntry>? _GasGiants_BackingField = null;
+        public static HashSet<ObjectEntry> GasGiants
+        {
+            get
+            {
+                if (_GasGiants_BackingField == null) _GasGiants_BackingField = _loadObjectEntries(_objectDataFolder + "GasGiants.json");
+                return _GasGiants_BackingField;
+
+            }
+        }
+```
+Chce-li uživatel záznamy o plynných obrech, přistoupí k vlastnosti GasGiants. Stejný postup je prováděn u ostatních typů. Pokud již byl getter této vlastnosti volán, vrátá se obsah pole _GasGiants_BackingField, jinak se pomocí generiky nahrají data z objectData/GasGiants.json a výsledek se vrátí. nahrávání ze souboru se provádá třídou
+```c#
+private static HashSet<ObjectEntry> _loadObjectEntries(string file);
+```
+Chceme-li přistoupit k údajům o satelitech planety, zavoláme metodu
+```c#
+public static HashSet<ObjectEntry> GiveSatelitesToPlanet(string planetName)
+```
+kde jako parametr je název planety.
+
+Pokud chceme pouze záznamy nějakého typu, zavoláme metodu
+```c#
+public static HashSet<ObjectEntry> GiveEntries(string typeName);
+```
+kde jako parametr je název typu.
+
+## Místa pro rozšíření a zlepšení
+
+Hlavním problémem je, že data zaslaná od API mají nekonzistentní tvar, (jak bylo ukázáno výše) a pro různé tvary vstupu je třeba spousta regulárních výrazů. Bylo by dobré rozšířit možnosti, ve kterých dokáže program rozeznat v datech hledané hodnoty a nemusel místo nich dosazovat NaN.
+
+Dále by bylo dobré přidat možnost filtrovat podle vzdálenosti i pro mapu noční oblohy. Toto je teoreticky možné, ale má to svá úskalí:
+1) OBSERVER formát dat sice udává vzdálenost od pozorovatele, ovšem tyto informace posílá velmi nespolehlivě a velmi často je vynechává.
+2) Alternativně by šlo kromě OBSERVER dat získávat paralelně s nimi i VECTOR data, ovšem to by zásadně zkomplikovalo architekturu a navíc by celkem zdvojnásobilo počet dotazů na server.
+
+Zajímavé by určitě bylo i rizšířit pohled noční oblohy tak, aby neukazoval pouze půlnoc a aby šlo se dívat na noční oblohu i jiných těles než je Země.
 
 
+## Rozšiřitelnost
+Pokud chce uživatel přidat některá svá data, stačí aby do potřebného json souboru vložil objekt ve správném formátu, viz Uživatelská část - Spuštění.
 
+Další typy map lze vytvořit odvozováním z MapPanel.
 
 
 
