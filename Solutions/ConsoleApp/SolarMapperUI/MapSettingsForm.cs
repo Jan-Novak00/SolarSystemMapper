@@ -183,6 +183,9 @@ namespace SolarMapperUI
                 MinSpeed_TextBox.Enabled = false;
                 MaxSpeed_TextBox.Enabled = false;
                 Speed_Label.Enabled = false;
+                Distance_label.Enabled = false;
+                MinDistance_TextBox.Enabled = false;
+                MaxDistance_TextBox.Enabled = false;
                 return;
             }
             Coordinates_Label.Enabled = false;
@@ -190,7 +193,9 @@ namespace SolarMapperUI
             MinSpeed_TextBox.Enabled = true;
             MaxSpeed_TextBox.Enabled = true;
             Speed_Label.Enabled = true;
-
+            Distance_label.Enabled = true;
+            MinDistance_TextBox.Enabled = true;
+            MaxDistance_TextBox.Enabled = true;
 
         }
 

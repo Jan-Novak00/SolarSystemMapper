@@ -87,7 +87,7 @@
             label25 = new Label();
             label24 = new Label();
             Speed_Label = new Label();
-            label3 = new Label();
+            Distance_label = new Label();
             tableLayoutPanel11 = new TableLayoutPanel();
             textBox1 = new TextBox();
             textBox2 = new TextBox();
@@ -271,7 +271,7 @@
             tableLayoutPanel5.Controls.Add(label25, 0, 9);
             tableLayoutPanel5.Controls.Add(label24, 0, 8);
             tableLayoutPanel5.Controls.Add(Speed_Label, 0, 7);
-            tableLayoutPanel5.Controls.Add(label3, 0, 6);
+            tableLayoutPanel5.Controls.Add(Distance_label, 0, 6);
             tableLayoutPanel5.Dock = DockStyle.Fill;
             tableLayoutPanel5.Location = new Point(1005, 3);
             tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -776,14 +776,14 @@
             Speed_Label.Text = "Speed (m/s)";
             Speed_Label.Click += Speed_Label_Click;
             // 
-            // label3
+            // Distance_label
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(3, 590);
-            label3.Name = "label3";
-            label3.Size = new Size(316, 32);
-            label3.TabIndex = 34;
-            label3.Text = "Distance From The Sun (km)";
+            Distance_label.AutoSize = true;
+            Distance_label.Location = new Point(3, 590);
+            Distance_label.Name = "Distance_label";
+            Distance_label.Size = new Size(316, 32);
+            Distance_label.TabIndex = 34;
+            Distance_label.Text = "Distance From The Sun (km)";
             // 
             // tableLayoutPanel11
             // 
@@ -906,7 +906,7 @@
         private Label label24;
         private Label label25;
         private Button NextPage_Button;
-        private Label label3;
+        private Label Distance_label;
         private TableLayoutPanel tableLayoutPanel11;
         private TextBox textBox1;
         private TextBox textBox2;
