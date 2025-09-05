@@ -254,10 +254,23 @@ Součástí URL je též parametr STEP_SIZE, který udává časové rozdíly me
 
 Metoda Fetch režíruje fetchování a parsování dat, přičemž samotný fetch je prováděn metodou
 ```c#
-private async Task<string[]> _fetchAnswersWithLimit(int maxParallelism)
+private async Task<List<Tuple<ObjectEntry,string>>> _fetchAnswersWithLimit()
 ```
-která jako vstupní argument potřebuje maximální množství vláken, na kterých může posílat dotazy. Z vlastní zkušenosti server nezvládá více než dva dotazy najednou.
+která režíruje paralelní dotazování na server.
+Pro režii dotazů se používá třída
+```c#
+private class HttpWorker
+{
+public HttpClient Client { get; init; }
+public ObjectEntry Entry { get; init; }
+public int NumberOfAttempts { get; private set; } = 0;
+public string URL { get; init; }
 
+public async Task<HttpResponseMessage> Work();
+}
+```
+která v metodě Work provádí samotný dotaz na server. Pole NumberOfAttempts slouží pro debugování. 
+Pro každé ObjectEntry pro které chceme provést dotaz probíhá uvnitř _fetchAnswerWithLimit následující algoritmus: Por každou instanci ObjectEntry se vytvoří instance HttpWorker a dá se do fronty. Počet souběžně běžících vláken se zvyšuje a snižuje  podle toho, jak se daří fetchovat data. Pokud je kód http odpovědi typu 4xx, pak se dotaz zahodí. Pokud je kód odpovědi typu 5xx, sníží se počet povolených souběžně běžících vláken a dotaz je vrácen do fronty. Pokud dotaz uspěje, počet povolených vláken se zvýší a odpověď se uloží.
 Parsování dat provádí třídy:
 ```c#
 public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
@@ -315,7 +328,8 @@ internal class SwitchViewRequestedEvent : EventArgs
 která ukládá a sdílí vnitřní stav mapy.
 ObjectEntries obsahuje informace pro fetchování dat o tělesech a CenterName značí jméno středového tělesa.
 
-Dále všechny mapy dědí od abstraktní generické třídy
+#### Třída MapPanel
+Všechny mapy dědí od abstraktní generické třídy
 ```c#
 internal abstract class MapPanel<TData> : Panel, IMap
     where TData : IEphemerisData<IEphemerisTableRow>
@@ -345,6 +359,7 @@ private void _mouseMoveOutOfBody(object sender, EventArgs e)
 protected abstract List<IFormBody<TData>> _prepareBodyData(List<TData> data);
 ```
 - vytvoření instancí FormBody pro zobrazení na mapě
+- v odvozených třídách provádí tuto činost paralelně, ovšem není deklarována jako async -> proto je volána metodě SetData která je sama volána v asynchroní metodě SettingDataAsync
 ```c#
 protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
 ```
@@ -353,6 +368,7 @@ protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEn
 protected async Task SettingDataAsync()
 ```
 - fetch a parosvání dat
+- volána v metodě AdvanceMap a v přepsané metodě OnHandleCreated
 ```c#
 private void SetData()
 ```
@@ -361,3 +377,76 @@ private void SetData()
 protected void _filter()
 ```
 - filtrování
+
+Konstruktor vypadá takto: 
+```c#
+public MapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> typeFilters)
+```
+Parametr typeFilters obsahuje delegáty, které jsou určeny pro filtrování dat jednotlivých typů těles. K třídě GeneralMapSettings se dostaneme později - obsahuje informace důležité pro nastavení mapy, včetně predikátu pro filtrování všech těles, názvy typů těles pro zobrazení, bílou a černou listinu etc. Viz. GeneralMapSettings.
+K dispozici je i bezparametrický konstruktor, který slouží pro opakované spouštění panelu a přeskakuje filtrování objektů.
+
+#### NightSkyMapPanel
+Třída
+```c#
+internal class NightSkyMapPanel : MapPanel<EphemerisObserverData>
+{
+public NightSkyMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisObserverData>>, IEnumerable<IFormBody<EphemerisObserverData>>>> typeFilters);
+public NightSkyMapPanel(List<ObjectEntry> objects, DateTime mapStartDate)
+}
+```
+slouží pro zobrazení mapy noční oblohy. Druhý konstruktor bere přímo objekty pro zobrazení a přeskakuje filtrování - tento konstruktor se používá při opakovaném spouštění panelu.
+Kromě metody třídy MapPanel obsahuje i metodu
+```c#
+private void PrintMapBackground(object sender, PaintEventArgs e)
+```
+pro nakreslení podkladu mapy.
+
+#### SolarSystemMapPanel
+Třída
+```c#
+internal class SolarSystemMapPanel : MapPanel<EphemerisVectorData>
+{
+public SolarSystemMapPanel(GeneralMapSettings generalMapSettings, IEnumerable<Func<IEnumerable<IFormBody<EphemerisVectorData>>, IEnumerable<IFormBody<EphemerisVectorData>>>> typeFilters,
+    float scale_km = 1_000_000);
+public SolarSystemMapPanel(List<ObjectEntry> objects, DateTime mapStartDate, float scale_km = 1_000_000);
+}
+```
+slouží pro zobrazení mapy sluneční soustavy. V konstruktoru navíc bere parametr scale_km, který říká, jaké měřítko má mapa použít. 
+Druhý konstruktor bere přímo objekty pro zobrazení a přeskakuje filtrování - tento konstruktor se používá při opakovaném spouštění panelu.
+Měřítko je dostupné přes pole
+```c#
+public float Scale_km { get; private set; }
+```
+Dále má navíc event handler
+```c#
+public event EventHandler<ChangeScaleEvent> ScaleChange;
+```
+a k němu má navíc dvě metody
+```c#
+protected void OnChangeScale(object sender, ChangeScaleEvent e);
+
+public void InvokeScaleSwitchEvent(float scale_km)
+{
+    ScaleChange?.Invoke(this, new ChangeScaleEvent(scale_km));
+}
+```
+kde OnChangeScale se stará o změnu měřítka mapy, zatímco InvokeScaleSwitchEvent, pouze vytváří event, který změnu měřítka provádí. Změna měřítka je prováděna přes události, jelikož je spouštěna stisknutím tlačítka v ControlPanel (viz ControlPanel), což je jiný formulář.
+
+Také má navíc pole
+```c#
+protected virtual bool _respectScaleForBodySize { get; } = false;
+```
+které říká, zda se při vykreslování objektů má respektovat jejich velikost.
+
+#### SateliteMapPanel
+Třída
+```c#
+internal class SateliteMapPanel : SolarSystemMapPanel
+```
+slouží pro zobrazování mapy měsíců.
+Na rozdíl od svého předka má _respectScaleForBodySize nastaveno na true. Dále obsahuje metody
+```c#
+private void _printDirections(PaintEventArgs e)
+private void _drawArrowAtTheEdge(Graphics graphics, PointF location, Color color, string name)
+```
+které slouží pro zobrazování směru Země a Slunce.
