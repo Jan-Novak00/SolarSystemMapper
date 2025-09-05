@@ -65,6 +65,9 @@ Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl ref
 
 # Programátorská část
 
+Není-li uvedeno jinak, "typem tělesa" se myslí sémantický typ vesmírného tělesa (hvězda, kamenná planeta etc.). Tyto typy jsou, kvůli rozšiřitelnosti a snadnému manipulování s řetězci, reprezentovány řetězcem. Tyto řetězce mohou mít následující tvary: "Star", "Terrestrial Planet", "Gas Giant", "Asteroid", "Comet", "Moon", "Spacecraft".
+
+
 ## Struktura kódu
 Kód je rozdělen do dvou namespace - SolarSystemMapper, který obsahuje hlavně třídy pro datovou reprezentaci a fetch dat, a SolarMapperUI - který je vstupním bodem programu a který se stará o UI stránku aplikace.
 
@@ -458,9 +461,9 @@ private void _drawArrowAtTheEdge(Graphics graphics, PointF location, Color color
 které slouží pro zobrazování směru Země a Slunce.
 
 ### Hlavní formulář
-Hlavním formulářek, který provádí řežii zobrazování map je
+Hlavním formulářem, který provádí řežii zobrazování map je
 ```c#
-public partial class SolarMapperMainForm<TData> : Form
+public class SolarMapperMainForm<TData> : Form
     where TData : IEphemerisData<IEphemerisTableRow>
 ```
 Tento formulář má následující fieldy:
@@ -537,16 +540,68 @@ Tato třída slouží k ovládání mapy. Jde o formluář s tlačítky. Větši
 public ControlForm(IMap mapPanel)
 ```
 V konstruktoru bere třída instanci implementace IMap a podle typu implementace vybírá tlačítka, která se na kontrolním panelu zobrazí.
+
+### Ostatní formuláře
+První formulář, který se uživateli zobrazí je formulář
 ```c#
+public partial class OpeningForm : Form
 ```
 
+#### MapSettingsForm
+Formulář
+```c#
+public partial class MapSettingsForm : Form
+```
+slouží pro to aby uživatel mohl nastavit typ mapy pro zobrazení, typ těles, které chce zobrazi a nastavení obecných filtrů těles. Výsledkem vyplnění formuláře je instance recordu
+```c#
+internal record GeneralMapSettings(MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
+    double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double minDistance = 0, double maxDistance = double.PositiveInfinity, double? latitude = null, double? longitude = null);
+```
+Predikát GenralFilter je vytvářen metodou 
+```c#
+private Predicate<ObjectData> _makeFilter();
+```
+a slouží k tomu aby byl použit v LINQ v metodě Where.
 
+V třídě MapSettingsForm je instance recordu GeneralMapSettings vytvořena při stisknutí tlačítka s nápisem "Next Page" a je vystavena v poli
+```c#
+internal GeneralMapSettings GeneralMapSettings { get; private set; }
+```
 
+#### TypeFilterForm
 
+Pro každý uživatelem vybraný typ tělesa se zobrazí následující formulář
+```c#
+public partial class TypeFilterForm<TData> : Form
+    where TData : IEphemerisData<IEphemerisTableRow>
+```
+Ten, obdobně jako předchozí formulář, vytvoří při stisknutí tlačítka "Next Page" instanci recordu 
+```c#
+internal record TypeSettings<TData>(string TypeName, Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> linqFilter) 
+    where TData : IEphemerisData<IEphemerisTableRow>;
+```
+kde linqFilter je delegát, který sám zvládne filtrovat kolekce obahující IFormBody. Instace tohotorecordu je následně vyrvena v poli
+```c#
+internal TypeSettings<TData>? TypeSettings { get; private set; }
+```
 
+Delegát je vytvářen metodou
+```c#
+private Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> _makeLINQQuerry();
+```
+která podle zadaných parametrů ve formuláři vytvoří daný delegát. Delegát nejprve vyfiltruje kolekci pomoccí predikátu z třídy
+```c#
+private Predicate<IFormBody<TData>> _makeRangeFilter()
+```
+Ten v kolekci nechá pouze instace daného typu tělesa a ty, které splňují zadané podmínky.
 
-
-
+### Vstupní bod aplikace
+Vstupním bodem aplikace je metoda Main ve třídě Program, nacházející se v souboru SolarMapperUI/Program.cs. Metoda main představuje staovový automat který postupně spouští formuláře. Využívá metodu
+```c#
+internal static void SetUpMainForm<TData>(GeneralMapSettings settings)
+    where TData : IEphemerisData<IEphemerisTableRow>
+```
+která podle zvoleného typu mapy zobrazuje instance TypeFilterForm a SolarMapperMainForm.
 
 
 
