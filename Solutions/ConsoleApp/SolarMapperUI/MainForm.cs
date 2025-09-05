@@ -9,8 +9,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SolarMapperUI
 {
-   
-    public partial class SolarMapperMainForm : Form
+    internal enum MapType
+    {
+        NightSky, SolarSystem
+    }
+
+    public partial class SolarMapperMainForm<TData> : Form
+        where TData : IEphemerisData<IEphemerisTableRow>
     {
 
 
@@ -18,19 +23,16 @@ namespace SolarMapperUI
 
         private SateliteMap _sateliteMap = null;
         private List<ObjectEntry> ObjectEntries;
-        internal enum MapType
-        {
-            NightSky, SolarSystem
-        }
+        
 
-        private MapType mainMapType = MapType.SolarSystem;
+        private MapType mainMapType;
 
         private ControlForm _controlForm;
 
         private GeneralMapSettings _mapSettings;
 
-        private IEnumerable<Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>>> _typeFilters;
-        internal SolarMapperMainForm(GeneralMapSettings generalMapSettings, IEnumerable<TypeSettings> typeSettings)
+        private IEnumerable<Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>>> _typeFilters;
+        internal SolarMapperMainForm(GeneralMapSettings generalMapSettings, IEnumerable<TypeSettings<TData>> typeSettings, Panel panel)
         {
             InitializeComponent();
 
@@ -44,7 +46,13 @@ namespace SolarMapperUI
             
             _mapSettings = generalMapSettings;
             _typeFilters = typeSettings.Select(x=>x.linqFilter);
-            _setUpMainPanel(_mapSettings);
+            _mainMapPanel = panel;
+            if (_mainMapPanel is IMap map)
+            {
+                this._controlForm = new ControlForm(map);
+                map.MapSwitch += ShowMoonPanel;
+            }
+            this.Controls.Add(_mainMapPanel);
             this.Load += this.SolarSystemMap_Load;
             this.KeyPreview = true; // pøeposílá klávesy na form
             this.KeyDown += this.SolarMapperUI_KeyDown;
@@ -62,6 +70,7 @@ namespace SolarMapperUI
             this.FormBorderStyle = FormBorderStyle.None;
             this.TopMost = true;
             this.Bounds = Screen.PrimaryScreen.Bounds;
+            this.mainMapType = (typeof(TData) == typeof(EphemerisObserverData)) ? MapType.NightSky : MapType.SolarSystem;
 
             ObjectEntries = DataTables.TerrestrialPlanets.ToList();
             ObjectEntries = ObjectEntries.Union(DataTables.Stars).ToList();
@@ -90,35 +99,7 @@ namespace SolarMapperUI
             this.Controls.Add(_mainMapPanel);
         }
 
-        private void _setUpMainPanel(GeneralMapSettings mapSettings)
-        {
-            _mainMapPanel = (this.mainMapType == MapType.NightSky)
-                            ? new NightSkyMapPanel(
-                                mapSettings,
-                                _typeFilters.Select(f => new Func<IEnumerable<IFormBody<EphemerisObserverData>>,
-                                                              IEnumerable<IFormBody<EphemerisObserverData>>>(data =>
-                                    f(data.Cast<IFormBody<IEphemerisData<IEphemerisTableRow>>>())
-                                     .Cast<IFormBody<EphemerisObserverData>>()
-                                ))
-                            )
-                            : new SolarSystemMapPanel(
-                                mapSettings,
-                                _typeFilters.Select(f => new Func<IEnumerable<IFormBody<EphemerisVectorData>>,
-                                                              IEnumerable<IFormBody<EphemerisVectorData>>>(data =>
-                                    f(data.Cast<IFormBody<IEphemerisData<IEphemerisTableRow>>>())
-                                     .Cast<IFormBody<EphemerisVectorData>>()
-                                ))
-                            );
-
-
-
-            if (_mainMapPanel is IMap map)
-            {
-                this._controlForm = new ControlForm(map);
-                map.MapSwitch += ShowMoonPanel;
-            }
-            this.Controls.Add(_mainMapPanel);
-        }
+        
        
 
         private void _destroyMainMapPanel()

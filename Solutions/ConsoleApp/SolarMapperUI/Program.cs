@@ -1,3 +1,4 @@
+using SolarSystemMapper;
 using System.Diagnostics;
 
 namespace SolarMapperUI
@@ -27,21 +28,49 @@ namespace SolarMapperUI
                 return;
             var generalSettings = mapSettingsForm.GeneralMapSettings;
 
-            List<TypeSettings> typeSettings = new List<TypeSettings>();
+            if (generalSettings.MapType == MapType.NightSky)
+            {
+                SetUpMainForm<EphemerisObserverData>(generalSettings);
+            }
+            else if (generalSettings.MapType == MapType.SolarSystem)
+            {
+                SetUpMainForm<EphemerisVectorData>(generalSettings);
+            }
 
             
 
-            foreach (var typeName in generalSettings.ObjectTypes)
+        }
+
+        internal static void SetUpMainForm<TData>(GeneralMapSettings settings)
+            where TData : IEphemerisData<IEphemerisTableRow>
+        {
+            var typeSettings = new List<TypeSettings<TData>>();
+
+
+            foreach (var typeName in settings.ObjectTypes)
             {
-                var typeForm = new TypeFilterForm(typeName);
+                var typeForm = new TypeFilterForm<TData>(typeName);
                 if (typeForm.ShowDialog() != DialogResult.OK)
                     return;
                 typeSettings.Add(typeForm.TypeSettings!);
             }
-            
-            var mainForm = new SolarMapperMainForm(generalSettings, typeSettings);
-            mainForm.ShowDialog();
+            Panel panel = new Panel();
 
+            if (typeSettings is List<TypeSettings<EphemerisObserverData>> typeSettingsObserver)
+            {
+                panel = new NightSkyMapPanel(settings, typeSettingsObserver.Select(x => x.linqFilter));
+            }
+            if (typeSettings is List<TypeSettings<EphemerisVectorData>> typeSettingsVector)
+            {
+                panel = new SolarSystemMapPanel(settings, typeSettingsVector.Select(x => x.linqFilter));
+            }
+
+            var mainForm = new SolarMapperMainForm<TData>(settings, typeSettings, panel);
+            mainForm.ShowDialog();
         }
+
+        
+
+
     }
 }

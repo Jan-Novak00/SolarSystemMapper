@@ -14,12 +14,14 @@ using System.Windows.Forms;
 namespace SolarMapperUI
 {
 
-    internal record TypeSettings(string TypeName, Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> linqFilter);
+    internal record TypeSettings<TData>(string TypeName, Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> linqFilter) 
+        where TData : IEphemerisData<IEphemerisTableRow>;
 
-    public partial class TypeFilterForm : Form
+    public partial class TypeFilterForm<TData> : Form
+        where TData : IEphemerisData<IEphemerisTableRow>
     {
         public string TypeName { get; init; }
-        internal TypeSettings? TypeSettings { get; private set; }
+        internal TypeSettings<TData>? TypeSettings { get; private set; }
         public TypeFilterForm(string typeName)
         {
             InitializeComponent();
@@ -29,7 +31,7 @@ namespace SolarMapperUI
 
 
 
-        private Predicate<IFormBody<IEphemerisData<IEphemerisTableRow>>> _makeRangeFilter()
+        private Predicate<IFormBody<TData>> _makeRangeFilter()
         {
             Dictionary<string, string> rawValues = new Dictionary<string, string>()
             {
@@ -84,7 +86,7 @@ namespace SolarMapperUI
             return x => allObjectDataPredicates(x.BodyData.objectData);
         }
 
-        private Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> _makeLINQQuerry()
+        private Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> _makeLINQQuerry()
         {
 
             var rangeFilter = _makeRangeFilter();
@@ -102,12 +104,12 @@ namespace SolarMapperUI
             bool aroundAverage = Avarage_Category.Text != "" && averageSpanParseSuccess;
             bool allowNaN = !FilterNaN_CheckBox.Checked;
 
-            Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>, IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> result = x =>
+            Func<IEnumerable<IFormBody<TData>>, IEnumerable<IFormBody<TData>>> result = x =>
             {
                 var collection = from formBody in x
                                  where rangeFilter(formBody)
                                  select formBody;
-                Dictionary<string, Func<IFormBody<IEphemerisData<IEphemerisTableRow>>, double>> fieldDictionary = new Dictionary<string, Func<IFormBody<IEphemerisData<IEphemerisTableRow>>, double>>()
+                Dictionary<string, Func<IFormBody<TData>, double>> fieldDictionary = new Dictionary<string, Func<IFormBody<TData>, double>>()
                     {
                         {"Mass", x=>x.BodyData.objectData.Mass_kg },
                         {"Radius", x=>x.BodyData.objectData.Radius_km },
@@ -121,9 +123,9 @@ namespace SolarMapperUI
                 {
 
 
-                    Func<IEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>,
-                    Func<IFormBody<IEphemerisData<IEphemerisTableRow>>, double>,
-                    IOrderedEnumerable<IFormBody<IEphemerisData<IEphemerisTableRow>>>> orderMethod = (sortDirection == "Ascending") ? Enumerable.OrderBy : Enumerable.OrderByDescending;
+                    Func<IEnumerable<IFormBody<TData>>,
+                    Func<IFormBody<TData>, double>,
+                    IOrderedEnumerable<IFormBody<TData>>> orderMethod = (sortDirection == "Ascending") ? Enumerable.OrderBy : Enumerable.OrderByDescending;
 
                     collection = orderMethod(collection, fieldDictionary[sortCategory]).Take(numberOfTopItems);
                 }
@@ -165,7 +167,7 @@ namespace SolarMapperUI
             if (result == DialogResult.Cancel) return;
             try
             {
-                this.TypeSettings = new TypeSettings(this.TypeName, this._makeLINQQuerry());
+                this.TypeSettings = new TypeSettings<TData>(this.TypeName, this._makeLINQQuerry());
             }
             catch (ArgumentException ae)
             {

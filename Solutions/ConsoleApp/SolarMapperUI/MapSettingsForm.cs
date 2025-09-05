@@ -13,7 +13,7 @@ using System.Windows.Forms;
 namespace SolarMapperUI
 {
 
-    internal record GeneralMapSettings(SolarMapperMainForm.MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
+    internal record GeneralMapSettings(MapType MapType, DateTime StartDate, List<string> ObjectTypes, List<string> WhiteList, List<string> BlackList, Predicate<ObjectData> GeneralFilter, 
         double minSpeed = 0, double maxSpeed = double.PositiveInfinity, double minDistance = 0, double maxDistance = double.PositiveInfinity, double? latitude = null, double? longitude = null);
 
 
@@ -38,7 +38,7 @@ namespace SolarMapperUI
                                                     );
             if (result == DialogResult.Cancel) return;
 
-            SolarMapperMainForm.MapType mapType = (MapType_ComboBox.SelectedItem?.ToString() == "Night Sky") ? SolarMapperMainForm.MapType.NightSky : SolarMapperMainForm.MapType.SolarSystem;
+            MapType mapType = (MapType_ComboBox.SelectedItem?.ToString() == "Night Sky") ? MapType.NightSky : MapType.SolarSystem;
             DateTime date = Date_TimePicker.Value;
             List<string> objectTypes = ObjectTypes_CheckedListBox.CheckedItems.Cast<string>().ToList();
             List<string> whiteList = WhiteList_TextBox.Text.Split(',').ToList();
@@ -80,7 +80,7 @@ namespace SolarMapperUI
                     else throw new ArgumentException($"Max distance value was entered incorrectly.");
                 }
 
-                if (mapType == SolarMapperMainForm.MapType.NightSky)
+                if (mapType == MapType.NightSky)
                 {
                     string coorString = Coordinates_TextBox.Text;
                     if (coorString == "") throw new ArgumentException("Please, fill in coordinates. Two numbers, separated by comma.");

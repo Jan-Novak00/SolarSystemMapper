@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DataReader_Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2c957a4f2cc633e1951d3b7d83cd9841b928459")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a6972860913215f24ca3d90950d6b40d7514186")]
 [assembly: System.Reflection.AssemblyProductAttribute("DataReader_Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DataReader_Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

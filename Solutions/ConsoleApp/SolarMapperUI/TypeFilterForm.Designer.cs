@@ -1,6 +1,9 @@
-﻿namespace SolarMapperUI
+﻿using SolarSystemMapper;
+
+namespace SolarMapperUI
 {
-    partial class TypeFilterForm
+    partial class TypeFilterForm<TData> : Form
+        where TData : IEphemerisData<IEphemerisTableRow>
     {
         /// <summary>
         /// Required designer variable.
