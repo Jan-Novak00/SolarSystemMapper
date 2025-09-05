@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace SolarSystemMapper
 {
@@ -117,7 +118,8 @@ namespace SolarSystemMapper
         /**
          * Fetches data in parallel form NASA Horizons API and parses them.
         */
-        public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch()
+        [Obsolete]
+        public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch2()
         {
 
             var answers = await _fetchAnswersWithLimit(2);
@@ -176,6 +178,142 @@ namespace SolarSystemMapper
                 });
 
             return results;
+        }
+        
+
+        private IEnumerable<TData> _readDataParallel<TReader, TData>(List<Tuple<ObjectEntry, string>> rawData)
+            where TReader : IHorizonsResponseReader<TData>
+            where TData : IEphemerisData<IEphemerisTableRow>
+        {
+            var results = new TData[rawData.Count];
+
+            Parallel.ForEach(
+                Enumerable.Range(0, rawData.Count),
+                i =>
+                {
+                    
+                    IHorizonsResponseReader<TData> reader = (Mode == MapMode.NightSky)
+                                                            ? (IHorizonsResponseReader<TData>)new HorizonsObserverResponseReader(rawData[i].Item2, rawData[i].Item1.Name, rawData[i].Item1.Type, rawData[i].Item1.Code)
+                                                            : (IHorizonsResponseReader<TData>)new HorizonsVectorResponseReader(rawData[i].Item2, rawData[i].Item1.Name, rawData[i].Item1.Type, rawData[i].Item1.Code);
+
+                    results[i] = reader.Read();
+                });
+
+            return results;
+        }
+        public async Task<IEnumerable<IEphemerisData<IEphemerisTableRow>>> Fetch()
+        {
+
+            var answers = await _fetchAnswersWithLimit();
+
+            return (Mode == MapMode.NightSky)
+                ? _readDataParallel<HorizonsObserverResponseReader, EphemerisObserverData>(answers)
+                : _readDataParallel<HorizonsVectorResponseReader, EphemerisVectorData>(answers);
+
+        }
+
+
+
+        private int _maxParallelism = 3;
+
+        private async Task<List<Tuple<ObjectEntry,string>>> _fetchAnswersWithLimit()
+        {
+           
+            using var client = new HttpClient();
+            var queue = new ConcurrentQueue<HttpWorker>();
+            foreach (var obj in _objectsToFetch) queue.Enqueue(new HttpWorker(client, this._generateURl(obj.Code),obj));
+
+            int maxNumerOfParallelRequests = _maxParallelism;
+            var maxNumberLock = new object();
+
+            var results = new List<Tuple<ObjectEntry, string>>();
+            object resultsLock = new object();
+
+            var activeTasks = new List<Task>();
+            
+
+            while (!queue.IsEmpty || activeTasks.Count > 0)
+            {
+                
+
+                while (queue.TryDequeue(out var worker))
+                {
+                    lock (maxNumberLock)
+                    {
+                        if (activeTasks.Count >= maxNumerOfParallelRequests) 
+                        {
+                            queue.Enqueue(worker);
+                            break;
+                        }
+                    }
+                    var task = Task.Run(async () =>
+                    {
+                        var response = await worker.Work();
+
+                        if ((int)response.StatusCode >= 500)
+                        {
+                            lock (maxNumberLock)
+                            {
+                                if (maxNumerOfParallelRequests != 1) maxNumerOfParallelRequests--;
+                            }
+
+                            queue.Enqueue(worker);
+                            return;
+                        }
+
+                        if ((int)response.StatusCode >= 400)
+                            return;
+
+                        lock (maxNumberLock)
+                        {
+                            maxNumerOfParallelRequests++;
+                        }
+                        
+                        var answer = await response.Content.ReadAsStringAsync();
+                        lock (resultsLock) results.Add(new Tuple<ObjectEntry, string>(worker.Entry, answer));
+                    });
+
+                    activeTasks.Add(task);
+                }
+
+                if (activeTasks.Count == 0)
+                    break;
+
+                var finishedTask = await Task.WhenAny(activeTasks);
+                activeTasks.Remove(finishedTask);
+            }
+            return results;
+
+
+        }
+
+
+
+
+
+
+        private class HttpWorker
+        {
+            public HttpWorker(HttpClient client, string url, ObjectEntry entry)
+            {
+                Client = client;
+                Entry = entry;
+                URL = url;
+                
+            }
+
+            public HttpClient Client { get; init; }
+            public ObjectEntry Entry { get; set; }
+            public int NumberOfAttempts { get; private set; } = 0;
+            public string URL { get; set; }
+
+            public async Task<HttpResponseMessage> Work()
+            {
+                NumberOfAttempts++;
+                var response = await Client.GetAsync(URL);
+                return response;
+            }
+
         }
 
 
