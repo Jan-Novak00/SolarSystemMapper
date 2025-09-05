@@ -3,17 +3,22 @@ Aplikace vyžaduje pro své fungování připojení k internetu, aby mohla aplik
 
 ## Spuštění
 
+## Typy map
+K dispozici jsou tři tpy map - mapa sluneční soustavy, mapa noční oblohy a mapa soustavy měsíců pro vybraná tělesa. Po spuštění uživatel má přístup pouze k mapě sluneční soustavy a mapě noční oblohy -  z těchto map se lze dostat na měsíční mapu kliknutím na dané těleso, jehož měsíční soustava uživatele zajímá.
+
 ## Nastavení mapy
-Na první obrazovce je uživateli dána možnost vybrat typ mapy, kterou chce uživatel zobrazit. Lze zvolit buď Night sky, pro mapu noční oblohy, nebo SOlar system, pro mapu sluneční soustavy.
+Na první obrazovce je uživateli dána možnost vybrat typ mapy, kterou chce uživatel zobrazit. Lze zvolit buď Night sky, pro mapu noční oblohy, nebo Solar system, pro mapu sluneční soustavy.
 Uživatel dále musí zadat datum, pro které chce zobrazit mapu.
 Pokud uživatel zvolil mapu noční oblohy, musí ještě zadat souřadnice na Zemi, pro které chce mapu zobrazit. Souřadnice musí být zadány ve tvaru "šířka,délka", kde čísla šířka a délka musí být zadány v double formátu, oddělené čáskou, s desetinou tečkou.
 
-Dále uživatel může vybrat, které typy těles chce zobrazit.
+Dále uživatel může vybrat, které typy těles chce zobrazit. Tyto typy jsou: Stars (v této skupině je jen Slunce), Terrestrail Planet (kamenné planety), Gas Giant (plynné planety), Dwarf Planet (vybrané největší trpasličí planetyú, Asteroid (vybrané asteroidy), Comet (vybrané komety), Spacecraft (umělé družice) a Moon (toto nastavení neovlivňuje mapy měsíčních soustav - je zde pro vypnutí/zapnutí zobrazení polohy měsíce na mapě noční oblohy).
 
 Stisknutím tlačítka "Next page" se uživatel přesune na další okno pro nastavení mapy. Po přesunutí se nelze vrátit zpět.
 
 ### Obecné filtry
-Uživatel může zadat obecné filtry pro tělesa, resp. maximální a minimální hodnoty pro hmotnost, poloměr, periodu oběhu, tíhové zrychlení a hustotu. Minima jsou v základu nastavena na 0 a maxima na "Infinity", tedy maximální hodnota je neomezená. Vstup musí být převoditelný na double.
+Uživatel může zadat obecné filtry pro tělesa, resp. maximální a minimální hodnoty pro hmotnost, poloměr, periodu oběhu, tíhové zrychlení a hustotu. Navíc též může nastavit filtr na vzdálenost od středu a rychlost tělesa, ale to jen pro mapu slunečního systému. Minima jsou v základu nastavena na 0 a maxima na "Infinity", tedy maximální hodnota je neomezená. Vstup musí být převoditelný na double.
+
+Filtry se neaplikují na měsíční mapy.
 
 Poznámka: tíhové zrychlení a gravitační zrychlení jsou v této aplikaci zaměňovány, jelikož API je udává souhrně jako "Gravity" (v angličtině neexitují pro tyto koncepty oddělené termíny). Obecně platí, že u větších těles byl vybírán parametr "Equatorial gravity", u menších těles byl vybírán parametr "Gravity", či byl tento parametr vypočten z hmotnosti tělesa.
 
@@ -21,15 +26,16 @@ V neposlední řadě uživatel může nastavit tzv. white list, kam může napsa
 
 Pokud pro nějaký parametr se nepodařilo získat hodnotu, dané těleso filtr automaticky splní.
 
-### Filtry pro jednotlivé typy
+### Filtry pro jednotlivé typy těles
+Pro každyý typ těles může uživatel nastavit další filtry. Tyto filtry budou aplikovány po obecných filtrech. Uživatel může, kromě již výše zmíněných vlastností jako jsou hmotnost, poloměr, perioda oběhu, tíhové zrychlení a hustota, nastavit též, že chce pouze několik těles s největší/nejmenší hodnotou dané vlastnosti. Uživatel dále může odfiltrovat tělesa daného typu, u kterých se nepodařilo ze serveru získat nějakou informaci o vlastnostech tělesa (možnost FIlter NaN Values).
 
 ## Mapy
 ### Společné ovládací prvky
 Stiskem tlačítka ESC se aplikace vypne.
 Stiskem tlačítka TAB se otevře ovládací panel.
 
-Jednotlivá tělesa jsou na mapě zobrazené jako barevné kruhy. Pokud uživatel stiskne některé těleso,, zobrazí se uživateli v levém dolním rohu panel s údaji o daném tělese - údaje jsou získány přímo od API. Údaje které se nepodaří získat se ve nezobrazí, nebo se místo jejich hodnoty vypíše NaN.
-Některá tělesa mají pod sebou vypsaný jejich název - toto automaticky platí pro Slunce a planety. Na informačním panelu je tlačítko Track/Untrack, kterým lze zapnout/vypnout zobrazování jména daného tělesa.
+Jednotlivá tělesa jsou na mapě zobrazené jako barevné kruhy. Pokud uživatel stiskne některé těleso, zobrazí se uživateli v levém dolním rohu panel s údaji o daném tělese - údaje jsou získány přímo od API. Údaje které se nepodaří získat se ve nezobrazí, nebo se místo jejich hodnoty vypíše NaN.
+Některá tělesa mají pod sebou vypsaný jejich název - toto automaticky platí pro Slunce a planety (tělesa s typem Terrestrial Planet nebo Gas Giant). Na informačním panelu je tlačítko Track/Untrack, kterým lze zapnout/vypnout zobrazování jména daného tělesa.
 U některých těles je též tlačítko "Moon View", kterými lze zobrazit mapu měsíční soustavy daného tělesa, viz sekce "Měsíční mapa".
 
 Pokud se na mapě vypíše nápis "Loading..." znamená to, že aplikace nahrává data ze serveru.
@@ -60,6 +66,7 @@ Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl ref
 # Programátorská část
 
 ## Struktura kódu
+Kód je rozdělen do dvou namespace - SolarSystemMapper, který obsahuje hlavně třídy pro datovou reprezentaci a fetch dat, a SolarMapperUI - který je vstupním bodem programu a který se stará o UI stránku aplikace.
 
 ### Reprezentace dat
 Data posílaná od API pro konkrétní nebezké těleso mají následující tvar: nejprve jsou udány vlastnosti tělesa (hmotnost, poloměr, název, gravitační zrychlení apod. - konkrétní vlastnosti jsou různé mezi různými typy těles), po kterém následuje tabulka souřadnic - nebezkých nebo kartézských. Každý řádek tabulky udává souřadnice pro konkrétní čas. Jednotlivé časy se liší o předem daný časový rozdíl (náš program fixně vyžaduje rozdíl jednoho dne).
@@ -141,9 +148,21 @@ internal class PixelBodyInfo
     public bool ShowName { get; set; }
 }
 ```
-K datům o objektech je v UI přistupováno přes třídu
+K datům o objektech je v UI přistupováno přes třídu a interface
 ```c#
-internal class FormBody<TData> where TData : IEphemerisData<IEphemerisTableRow>
+internal interface IFormBody<out TData> where TData : IEphemerisData<IEphemerisTableRow>
+{
+    TData BodyData { get; }
+    public List<PixelBodyInfo> PixelInfos { get; }
+    void SetNameVisibility(bool visibility);
+    string BodyReport(DateTime date);
+    void SwitchNameVisibility();
+    void ChangePixelInfos(List<PixelBodyInfo> pixelInfos);
+
+}
+
+internal class FormBody<TData> : IFormBody<TData>
+    where TData : IEphemerisData<IEphemerisTableRow>
 {
     public TData BodyData { get; init; }
     public List<PixelBodyInfo> PixelInfos { get; private set; }
@@ -155,6 +174,7 @@ internal class FormBody<TData> where TData : IEphemerisData<IEphemerisTableRow>
     }
     public string BodyReport(DateTime date);
     public void SetNameVisibility(bool visibility);
+    public void SwitchNameVisibility();
     public void ChangePixelInfos(List<PixelBodyInfo> pixelInfos);
 }
 ```
@@ -264,3 +284,80 @@ protected ObjectData createObjectInfo()
 ```
 která vrací instanci ObjectData. Tato metoda je dále využívána v implementacích metody IHorizonsResponseReader<out TData>.Read().
 
+### UI map
+Slovem "mapa" v následující modílu myslíme instancí potmků třídy MapPanel.
+
+Všechny mapy jsou implementace rozhraní 
+```c#
+internal interface IMap : IDisposable
+{
+    public void AdvanceMap();
+    public DateTime CurrentPictureDate { get; }
+
+    public event EventHandler<SwitchViewRequestedEvent> MapSwitch;
+    public List<ObjectEntry> ObjectEntries { get; }
+    public void CleanAndDispose();
+}
+```
+Metoda AdvanceMap slouží pro posun času mapy o jednu časovou jednotku, CurrentPictureDate aktuální zobrazovaný časový okamžik, MapSwitch event handler slouží pro přepínání map, k čemuž se využívá událost
+CleanAndDispose slouží k bezpečnému dispose mapy (včetně odhlášení event handlerů). Je definována zde, ač všechny mapy dědí od třídy Panel, která je disposable, protože metoda Panel.Dispose není virtuální.
+```c#
+internal class SwitchViewRequestedEvent : EventArgs
+{
+    public List<ObjectEntry> ObjectEntries;
+    public DateTime Date;
+    public NASAHorizonsDataFetcher.MapMode MapMode;
+    public string CenterName;
+
+    public SwitchViewRequestedEvent(List<ObjectEntry> objectEntries, DateTime date, NASAHorizonsDataFetcher.MapMode mapMode, string centerName);
+}
+```
+která ukládá a sdílí vnitřní stav mapy.
+ObjectEntries obsahuje informace pro fetchování dat o tělesech a CenterName značí jméno středového tělesa.
+
+Dále všechny mapy dědí od abstraktní generické třídy
+```c#
+internal abstract class MapPanel<TData> : Panel, IMap
+    where TData : IEphemerisData<IEphemerisTableRow>
+```
+Tato třída obsahuje spoustu třídy, mezi nejdůležitější patří:
+```c#
+protected virtual void BodyClick(object sender, MouseEventArgs e)
+```
+- slouží pro zpracování kliknutí na mapu. Implementace pro každé těleso testuje, zda bylo kliknuto do jeho blízkosti.
+```c#
+protected virtual void drawFormBody(PixelBodyInfo pixelInfo, PaintEventArgs e, string? name)
+```
+- vykresluje těleso na obrazovku, volitelně i jeho jméno
+```c#
+protected void ShowBodyReport(IFormBody<TData> formBody)
+```
+- generuje formulář pro zobrazení informací o tělese s tlačítkem Track/Untrack a tlačítkem Moon View.
+```c#
+ private void _mouseMoveAcrossBody(object sender, MouseEventArgs e)
+```
+- detekce, zda uživatel umístil kurzor poblíž tělesa
+```c#
+private void _mouseMoveOutOfBody(object sender, EventArgs e)
+```
+- detekce, zda uživatel již nemá kurzor poblíž tělesa
+```c#
+protected abstract List<IFormBody<TData>> _prepareBodyData(List<TData> data);
+```
+- vytvoření instancí FormBody pro zobrazení na mapě
+```c#
+protected virtual async Task<IReadOnlyList<TData>> GetHorizonsData(List<ObjectEntry> objects)
+```
+- fetch dat
+```c#
+protected async Task SettingDataAsync()
+```
+- fetch a parosvání dat
+```c#
+private void SetData()
+```
+- aktualizace dat, filtrování
+```c#
+protected void _filter()
+```
+- filtrování
