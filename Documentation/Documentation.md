@@ -8,7 +8,7 @@ Efemerida je údaj o astronomickém objektu. Mluvíme-li o objektu nebo o těles
 ## Spuštění
 Program lze spustit přes Visual Studio Code 2022, kdy vstupním bodem programu musí být metoda Main v projektu SolarMapperUI. Je důležité, aby při spouštění byl v adresáři Solutions/ConsoleApp/SolarMapperUI/bin/Debug/net8.0-windows/ (nebo Solutions/ConsoleApp/SolarMapperUI/bin/Release/net8.0-windows/) adresář s názvem objectData a v něm následující json soubory: Asteroids.json, Comets.json, DwarfPlanets.json, EarthSatelites.json, GasGiants.json, JupiterSatelites.json, MarsSatelites.json, NeptuneSatelites.json, Planets.json, PlutoSatelites.json, SaturnSatelites.json, Spacecrafts.json, Stars.json, TerrestrialPlanets.json, UranusSatelites.json.
 
-Json soubory obsahují lokální informace o tělesech. Každý soubor obsahuje jednu json kolekci objektů ve tvaru {"Name":"<Jméno Objektu>","Code":\<NASA Horizons API číslo objektu>,"Type":"Typ objektu"}.
+Json soubory obsahují lokální informace o tělesech. Každý soubor obsahuje jednu json kolekci objektů, které jsou ve tvaru {"Name":"<Jméno Objektu>","Code":\<NASA Horizons API číslo objektu>,"Type":"<Typ objektu>"}.
 
 Je třeba mít nainstalovaný .NET 8.
 
@@ -16,11 +16,11 @@ Je třeba mít nainstalovaný .NET 8.
 K dispozici jsou tři typy map - mapa sluneční soustavy, mapa noční oblohy a mapa soustavy měsíců pro vybraná tělesa. Po spuštění uživatel má přístup pouze k mapě sluneční soustavy a mapě noční oblohy -  z těchto map se lze dostat na měsíční mapu kliknutím na dané těleso, jehož měsíční soustava uživatele zajímá.
 
 ## Nastavení mapy
-Na první obrazovce je uživateli dána možnost vybrat typ mapy, kterou chce uživatel zobrazit. Lze zvolit buď Night sky, pro mapu noční oblohy, nebo Solar system, pro mapu sluneční soustavy.
+Na první obrazovce je uživateli dána možnost vybrat typ mapy, pro zobrazení zobrazit. Lze zvolit buď Night sky, pro mapu noční oblohy, nebo Solar system, pro mapu sluneční soustavy.
 Uživatel dále musí zadat datum, pro které chce zobrazit mapu.
-Pokud uživatel zvolil mapu noční oblohy, musí ještě zadat souřadnice na Zemi, pro které chce mapu zobrazit. Souřadnice musí být zadány ve tvaru "šířka,délka", kde čísla šířka a délka musí být zadány v double formátu, oddělené čáskou, s desetinou tečkou.
+Pokud uživatel zvolil mapu noční oblohy, musí ještě zadat souřadnice na Zemi, pro které chce mapu zobrazit. Souřadnice musí být zadány ve tvaru "šířka,délka", kde čísla šířka a délka musí být zadány v double formátu, oddělené čárkou, s desetinou tečkou.
 
-Dále uživatel může vybrat, které typy těles chce zobrazit. Tyto typy jsou: Stars (v této skupině je jen Slunce), Terrestrail Planet (kamenné planety), Gas Giant (plynné planety), Dwarf Planet (vybrané největší trpasličí planetyú, Asteroid (vybrané asteroidy), Comet (vybrané komety), Spacecraft (umělé družice) a Moon (toto nastavení neovlivňuje mapy měsíčních soustav - je zde pro vypnutí/zapnutí zobrazení polohy měsíce na mapě noční oblohy).
+Dále uživatel může vybrat, které typy těles chce zobrazit. Tyto typy jsou: Stars (v této skupině je jen Slunce), Terrestrial Planet (kamenné planety), Gas Giant (plynné planety), Dwarf Planet (vybrané největší trpasličí planety), Asteroid (vybrané asteroidy), Comet (vybrané komety), Spacecraft (vybrané umělé družice) a Moon (toto nastavení neovlivňuje mapy měsíčních soustav - je zde pro vypnutí/zapnutí zobrazení polohy měsíce na mapě noční oblohy).
 
 Stisknutím tlačítka "Next page" se uživatel přesune na další okno pro nastavení mapy. Po přesunutí se nelze vrátit zpět.
 
@@ -36,7 +36,7 @@ V neposlední řadě uživatel může nastavit tzv. white list, kam může napsa
 Pokud pro nějaký parametr se nepodařilo získat hodnotu, dané těleso filtr automaticky splní.
 
 ### Filtry pro jednotlivé typy těles
-Pro každyý typ těles může uživatel nastavit další filtry. Tyto filtry budou aplikovány po obecných filtrech. Uživatel může, kromě již výše zmíněných vlastností jako jsou hmotnost, poloměr, perioda oběhu, tíhové zrychlení a hustota, nastavit též, že chce pouze několik těles s největší/nejmenší hodnotou dané vlastnosti. Uživatel dále může odfiltrovat tělesa daného typu, u kterých se nepodařilo ze serveru získat nějakou informaci o vlastnostech tělesa (možnost FIlter NaN Values).
+Pro každý typ těles může uživatel nastavit další filtry. Tyto filtry budou aplikovány po obecných filtrech. Uživatel může, kromě již výše zmíněných vlastností jako jsou hmotnost, poloměr, perioda oběhu, tíhové zrychlení a hustota, nastavit též, že chce pouze několik těles s největší/nejmenší hodnotou dané vlastnosti. Uživatel dále může odfiltrovat tělesa daného typu, u kterých se nepodařilo ze serveru získat nějakou informaci o vlastnostech tělesa (možnost Filter NaN Values).
 
 ## Mapy
 ### Společné ovládací prvky
@@ -76,11 +76,10 @@ Na mapě se automaticky zobrazí i poloha Země a Slunce, aby uživatel měl ref
 
 Není-li uvedeno jinak, "typem tělesa" se myslí sémantický typ vesmírného tělesa (hvězda, kamenná planeta etc.). Tyto typy jsou, kvůli rozšiřitelnosti a snadnému manipulování s řetězci, reprezentovány řetězcem. Tyto řetězce mohou mít následující tvary: "Star", "Terrestrial Planet", "Gas Giant", "Asteroid", "Comet", "Moon", "Spacecraft".
 
-
 ## Zvolená implementace
-Jelikož nemám příliž zkušenosti s návrhem uživatelského prostředí, strukturu kódu UI jsem napsal tak, že se celá implementace točí kolem jednoho formuláře, který zprostředkovává komunikaci mezi částmi aplikace.
+Jelikož nemám příliš zkušeností s návrhem uživatelského prostředí, strukturu kódu UI jsem napsal tak, že se celá implementace točí kolem jednoho formuláře, který zprostředkovává komunikaci mezi částmi aplikace.
 
-Filtrování objektů jsem implementoval tak, že se z nejrůznějších formuláří sesbítaly údaje o preferencích uživatele a vytvořily se z nich delegáty, které se předaly hlavní mapě (buď mapě sluneční soustavy nebo mapě oblohy). Filtry jsou aplikovány až po prvním fetch dat ze serveru. Program si následně zapamatuje, jaká tělesa nebyla filtorvána a při dalším fetch pracuje již s vyfiltrovanými daty. Tedy na začátku musí být fetchována všechna data zvolených typů. Toto je jediné známé pořadí, v jaémk filtr implementovat bez ukládání dat o tělesech lokálně.
+Filtrování objektů jsem implementoval tak, že se nejprve z nejrůznějších formulářů sesbírají údaje o preferencích uživatele a vytvoří se z nich delegáty, které se předají hlavní mapě (buď mapě sluneční soustavy nebo mapě oblohy). Filtry jsou aplikovány až po prvním fetch dat ze serveru. Program si následně zapamatuje, jaká tělesa nebyla filtorvána a při dalším fetch pracuje již s vyfiltrovanými daty. Tedy na začátku musí být fetchována všechna data zvolených typů. Toto je jediné známé pořadí, v jakém filtr implementovat bez ukládání dat o tělesech lokálně.
 
 Filtry nejsou aplikovány na mapy měsíců, jelikož těles na těchto mapách je pomálu a propojení s filtry na hlavní mapě není pro uživatele příjemné.
 
@@ -88,7 +87,7 @@ Filtry nejsou aplikovány na mapy měsíců, jelikož těles na těchto mapách 
 Kód je rozdělen do dvou namespace - SolarSystemMapper, který obsahuje hlavně třídy pro datovou reprezentaci a fetch dat, a SolarMapperUI - který je vstupním bodem programu a který se stará o UI stránku aplikace.
 
 ### Reprezentace dat
-Data posílaná od API pro konkrétní nebezké těleso mají následující tvar: nejprve jsou udány vlastnosti tělesa (hmotnost, poloměr, název, gravitační zrychlení apod. - konkrétní vlastnosti jsou různé mezi různými typy těles), po kterém následuje tabulka souřadnic - nebezkých nebo kartézských. Každý řádek tabulky udává souřadnice pro konkrétní čas. Jednotlivé časy se liší o předem daný časový rozdíl (náš program fixně vyžaduje rozdíl jednoho dne).
+Data posílaná od API pro konkrétní nebeské těleso mají následující tvar: nejprve jsou udány vlastnosti tělesa (hmotnost, poloměr, název, gravitační zrychlení apod. - konkrétní vlastnosti jsou různé mezi různými typy těles), po kterém následuje tabulka souřadnic - nebeských nebo kartézských. Každý řádek tabulky udává souřadnice pro konkrétní čas. Jednotlivé časy se liší o předem daný časový rozdíl (náš program fixně vyžaduje rozdíl jednoho dne).
 Data leze buď získat jako plain text, nebo jako json. Ovšem, textová a jsonové podoby dat jsou prakticky identické, json jen odděluje číslo verze API, a zbytek dat udává jako jeden řetězec. Navíc, pouze tabulka poloh je udávána v konzistentním formátu.
 
 Následující třídy jsou součástí namespace SolarSystemMapper.
@@ -145,7 +144,7 @@ První třída slouží pro zobrazení noční oblohy, druhá pro zobrazení map
 #### Reprezentace dat v UI
 Následující třídy jsou součástí namespace SolarMapperUI.
 
-Pozici těles na obrazovce v daný okamžik
+Pozici těles a vzhled na obrazovce v daný okamžik popisuje třída
 ```c#
 internal class PixelBodyInfo
 { 
@@ -257,6 +256,7 @@ public enum MapMode : int
 }
 ```
 Dotaz poslaný na NASA Horizons API obsahuje parametr EPHEM_TYPE, který může mít dvě hodnoty: buď OBSERVER, kdy jsou udány polární souřadnice objektu na obloze, jmenovitě obsahují azimut a výšku objektu, nebo VECTOR, kdy zaslaná data obsahují kartézské souřadnice objektu vzhledem ke zvolenému středu. Střed souřadné soustavy je má v querry části URL název CENTER, těleso, klteré nás zajímá se udává pod názvem COMMAND.
+
 Je-li vstupem NightSky, pak je dotaz v módu OBSERVER a střed je nastaven na Zemi, je-li vstupem SolarSystem, je dotaz v módu VECTOR a středem je Slunce. U ostatních explicitně zmíněných hodnot je EPHEM_TYPE hodnoty VECTOR a středem je těleso, které je udáno v názvu hodnoty (např. pro JupiterSatelites je středem Jupiter). Tyto hodnoty jsou pak použity pro získání dat měsíců. Explicitně nastavené intové hodnoty jsou přímo kódy středových těles.
 
 Parametry observerLatitude a observerLongitude jsou relevantní jen pro mapu noční oblohy, tedy pokud je mode roven MapMode.NightSky. V dotazu jsou tyto hodnoty dosazeny do parametru SITE_COORD.
@@ -290,6 +290,9 @@ public async Task<HttpResponseMessage> Work();
 ```
 která v metodě Work provádí samotný dotaz na server. Pole NumberOfAttempts slouží pro debugování. 
 Pro každé ObjectEntry pro které chceme provést dotaz probíhá uvnitř _fetchAnswerWithLimit následující algoritmus: Por každou instanci ObjectEntry se vytvoří instance HttpWorker a dá se do fronty. Počet souběžně běžících vláken se zvyšuje a snižuje  podle toho, jak se daří fetchovat data. Pokud je kód http odpovědi typu 4xx, pak se dotaz zahodí. Pokud je kód odpovědi typu 5xx, sníží se počet povolených souběžně běžících vláken a dotaz je vrácen do fronty. Pokud dotaz uspěje, počet povolených vláken se zvýší a odpověď se uloží.
+
+Původně byl pro fetch dat použitý semaphore - ten však prakticky dovoloval jen dvě souběžně běžící vlákna, jelikož víc dotazů najednou po delší čas server nezvládal. Tato dynamická implementace dovoluje snižovat a zvyšovat počet paralelních dotazů pro zvýšení efektivity fetchování. Navíc, při selhání dotazu se nevyhazují výjimky, tedy jedniný overhead ze selhaného dotazu je jen čekání na odpověď a zařazení dotazu zpátky do fronty, nikoliv nároční zpracovávání výjímek.
+
 Parsování dat provádí třídy:
 ```c#
 public class HorizonsObserverResponseReader : ObjectReader, IHorizonsResponseReader<EphemerisObserverData>
@@ -314,10 +317,10 @@ Tyto metody jsou používány metodou
 ```c#
 protected ObjectData createObjectInfo()
 ```
-která vrací instanci ObjectData. Tato metoda je dále využívána v implementacích metody IHorizonsResponseReader<out TData>.Read().
+která vrací instanci ObjectData. Tato metoda je dále využívána v implementacích metody IHorizonsResponseReader\<out TData>.Read().
 
 ### UI map
-Slovem "mapa" v následující modílu myslíme instancí potmků třídy MapPanel.
+Slovem "mapa" v následující modílu myslíme instancí potomků třídy MapPanel.
 
 Všechny mapy jsou implementace rozhraní 
 ```c#
@@ -509,12 +512,23 @@ private void _drawArrowAtTheEdge(Graphics graphics, PointF location, Color color
 které slouží pro zobrazování směru Země a Slunce.
 
 ### Hlavní formulář
+
+Hlavní formulář obsluhuje jak hlavní mapu (sluneční soustava nebo noční obloha), kde informaci o jejím typu představuje enum
+```c#
+internal enum MapType
+    {
+        NightSky, SolarSystem
+    }
+```
+Též obsluhuje mapu měsíců.
+
+
 Hlavním formulářem, který provádí řežii zobrazování map je
 ```c#
 public class SolarMapperMainForm<TData> : Form
     where TData : IEphemerisData<IEphemerisTableRow>
 ```
-Tento formulář má následující fieldy:
+Tento formulář má následující pole:
 
 ```c#
 private Panel _mainMapPanel;
@@ -696,9 +710,12 @@ Zajímavé by určitě bylo i rizšířit pohled noční oblohy tak, aby neukazo
 
 
 ## Rozšiřitelnost
-Pokud chce uživatel přidat některá svá data, stačí aby do potřebného json souboru vložil objekt ve správném formátu, viz Uživatelská část - Spuštění.
+Pokud chce uživatel přidat některá svá data, stačí aby do potřebného json souboru vložil objekt ve správném formátu, viz Uživatelská část - Spuštění. Kódy těles lze získat z telnet NASA Horizons API.
 
 Další typy map lze vytvořit odvozováním z MapPanel.
 
-
+## Zdroje
+NASA Horizons API: https://ssd.jpl.nasa.gov/api/horizons.api
+[NASA Horizons API webová aplikace](https://ssd.jpl.nasa.gov/horizons/app.html#/)
+[NASA Horizons API dokumentace](https://ssd-api.jpl.nasa.gov/doc/horizons.html)
 
